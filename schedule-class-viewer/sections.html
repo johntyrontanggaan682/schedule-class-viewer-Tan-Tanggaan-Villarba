@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sections • SLSU Lucena</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+  theme:{ extend:{ colors:{ primary:'#16a34a', secondary:'#22c55e' },
+  borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'} } }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<style>
+  :where([class^="ri-"])::before{content:"\f3c2";}
+  .rounded-button{border-radius:8px}
+  /* ✅ Make the custom radio “shade” when selected */
+  label input[type="radio"]:checked + .relative .student-type-indicator { transform: scale(1); }
+
+  /* === added: simple fade-in keyframes/class === */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn .25s ease-out both; }
+  /* === end added === */
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Nav -->
+<nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
+  <div class="px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
+        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+      </div>
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="index.html"     class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="sections.html"  class="nav-link px-3 py-2 rounded-button bg-white/20 flex items-center space-x-2"><i class="ri-book-2-line"></i><span>Sections</span></a>
+        <a href="schedules.html" class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+        <a href="students.html"  class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-user-line"></i><span>Students</span></a>
+        <a href="teachers.html"  class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="about.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+      </div>
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
+    </div>
+    <div id="mobile-menu" class="md:hidden mt-4 hidden">
+      <div class="space-y-2">
+        <a href="index.html"     class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="sections.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-book-2-line"></i><span>Sections</span></a>
+        <a href="schedules.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+        <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
+        <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="about.html"     class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-information-line"></i><span>About</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-20">
+  <!-- Sections Section -->
+  <section id="sections" class="min-h-screen bg-gray-50">
+    <div class="px-6 py-16">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-800 mb-4">Academic Sections</h2>
+          <p class="text-xl text-gray-600">Browse all available sections and access their schedules and student lists</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- BIT 3A-A -->
+          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-bold text-primary">BIT 3A-A</h3>
+              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+            </div>
+            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section A</p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <span><span class="sec-stu" data-sec="BIT 3A-A">0</span> Students</span>
+              <span><span class="sec-subj" data-sec="BIT 3A-A">0</span> Subjects</span>
+            </div>
+          </div>
+
+          <!-- BIT 3A-B -->
+          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-bold text-primary">BIT 3A-B</h3>
+              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+            </div>
+            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section A</p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <span><span class="sec-stu" data-sec="BIT 3A-B">0</span> Students</span>
+              <span><span class="sec-subj" data-sec="BIT 3A-B">0</span> Subjects</span>
+            </div>
+          </div>
+
+          <!-- BIT 3B-A -->
+          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-bold text-primary">BIT 3B-A</h3>
+              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+            </div>
+            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section B</p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <span><span class="sec-stu" data-sec="BIT 3B-A">0</span> Students</span>
+              <span><span class="sec-subj" data-sec="BIT 3B-A">0</span> Subjects</span>
+            </div>
+          </div>
+
+          <!-- BIT 3B-B -->
+          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-bold text-primary">BIT 3B-B</h3>
+              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+            </div>
+            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section B</p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <span><span class="sec-stu" data-sec="BIT 3B-B">0</span> Students</span>
+              <span><span class="sec-subj" data-sec="BIT 3B-B">0</span> Subjects</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Detail Modal -->
+  <div id="section-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 id="section-detail-title" class="text-2xl font-bold text-gray-800">Section Details</h3>
+            <p id="section-detail-subtitle" class="text-gray-600">View students and schedules</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button id="add-section-student-btn" class="bg-secondary text-white px-4 py-2 rounded-button hover:bg-secondary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
+              <i class="ri-user-add-line"></i><span>Add Student</span>
+            </button>
+            <button id="add-section-schedule-btn" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-primary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
+              <i class="ri-add-line"></i><span>Add Schedule</span>
+            </button>
+            <button id="close-section-detail-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+              <i class="ri-close-line text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Students</h4>
+            <div id="section-students" class="space-y-3 max-h-96 overflow-y-auto"></div>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Class Schedule</h4>
+            <div id="section-schedule" class="space-y-3 max-h-96 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Modal -->
+  <div id="student-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 id="student-modal-title" class="text-2xl font-bold text-gray-800">Add New Student</h3>
+          <button id="close-student-modal-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <form id="student-form" class="p-6 space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+          <input type="text" id="student-name" name="student-name" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter student's full name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+          <input type="text" id="student-id" name="student-id" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="e.g. 2023-001234">
+        </div>
+
+        <!-- ✅ Student Type radios (shade fixed) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Student Type</label>
+          <div class="space-y-3">
+            <label class="flex items-center space-x-3 cursor-pointer">
+              <input type="radio" name="student-type" value="Regular" class="sr-only" checked>
+              <div class="relative">
+                <div class="w-5 h-5 border-2 border-gray-300 rounded-full bg-white student-type-radio"></div>
+                <div class="student-type-indicator absolute inset-0 w-5 h-5 bg-primary rounded-full scale-0 transition-transform"></div>
+              </div>
+              <span class="text-gray-700">Regular Student</span>
+            </label>
+            <label class="flex items-center space-x-3 cursor-pointer">
+              <input type="radio" name="student-type" value="Irregular" class="sr-only">
+              <div class="relative">
+                <div class="w-5 h-5 border-2 border-gray-300 rounded-full bg-white student-type-radio"></div>
+                <div class="student-type-indicator absolute inset-0 w-5 h-5 bg-primary rounded-full scale-0 transition-transform"></div>
+              </div>
+              <span class="text-gray-700">Irregular Student</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ❌ Assign Section removed -->
+
+        <div class="flex justify-end space-x-4 pt-6">
+          <button type="button" id="cancel-student-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
+          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden trigger required by schedules.manage.js -->
+  <button id="add-schedule-btn" type="button" class="hidden"></button>
+
+  <!-- Schedule Modal -->
+  <div id="schedule-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 id="modal-title" class="text-2xl font-bold text-gray-800">Add New Schedule</h3>
+          <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <form id="schedule-form" class="p-6 space-y-6">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+            <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter subject name">
+          </div>
+
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
+            <button type="button" id="section-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+              <span id="section-selected">Select section</span>
+              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+            </button>
+            <div id="section-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3A-A">BIT 3A-A</div>
+              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3A-B">BIT 3A-B</div>
+              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3B-A">BIT 3B-A</div>
+              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3B-B">BIT 3B-B</div>
+            </div>
+            <input type="hidden" id="section" name="section" required>
+          </div>
+
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Room</label>
+            <button type="button" id="room-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+              <span id="room-selected">Select room</span>
+              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+            </button>
+            <div id="room-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A101">A101</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A102">A102</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A103">A103</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A104">A104</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A201">A201</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A202">A202</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A203">A203</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A204">A204</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A301">A301</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A302">A302</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A303">A303</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A304">A304</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B101">B101</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B102">B102</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B103">B103</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B104">B104</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B201">B201</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B202">B202</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B203">B203</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B204">B204</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B301">B301</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B302">B302</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B303">B303</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B304">B304</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Cet Center">Cet Center</div>
+              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Cet Shop">Cet Shop</div>
+            </div>
+            <input type="hidden" id="room" name="room" required>
+          </div>
+
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Teacher</label>
+            <button type="button" id="teacher-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+              <span id="teacher-selected">Select teacher</span>
+              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+            </button>
+            <div id="teacher-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Maria Santos">Prof. Maria Santos</div>
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. John Cruz">Prof. John Cruz</div>
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Anna Reyes">Prof. Anna Reyes</div>
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Robert Garcia">Prof. Robert Garcia</div>
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Lisa Mendoza">Prof. Lisa Mendoza</div>
+              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Engr. Carlos Dela Cruz">Engr. Carlos Dela Cruz</div>
+            </div>
+            <input type="hidden" id="teacher" name="teacher" required>
+          </div>
+
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Day</label>
+            <button type="button" id="day-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+              <span id="day-selected">Select day</span>
+              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+            </button>
+            <div id="day-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden">
+              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Monday">Monday</div>
+              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Tuesday">Tuesday</div>
+              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Wednesday">Wednesday</div>
+              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Thursday">Thursday</div>
+              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Friday">Friday</div>
+            </div>
+            <input type="hidden" id="day" name="day" required>
+          </div>
+
+          <div class="relative">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+            <button type="button" id="time-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+              <span id="time-selected">Select time</span>
+              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+            </button>
+            <div id="time-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="7:30 AM – 9:00 AM">7:30 AM – 9:00 AM</div>
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="10:00 AM – 12:30 PM">10:00 AM – 12:30 PM</div>
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="1:00 PM – 3:30 PM">1:00 PM – 3:30 PM</div>
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="3:30 PM – 6:00 PM">3:30 PM – 6:00 PM</div>
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="4:00 PM – 5:30 PM">4:00 PM – 5:30 PM</div>
+              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="4:00 PM – 7:00 PM">4:00 PM – 7:00 PM</div>
+            </div>
+            <input type="hidden" id="time" name="time" required>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-4 pt-6">
+          <button type="button" id="cancel-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
+          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+            <span id="submit-text">Add Schedule</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full">
+      <div class="p-6">
+        <div class="flex items-center space-x-4 mb-4">
+          <div class="w-12 h-12 flex items-center justify-center bg-red-100 rounded-full">
+            <i class="ri-delete-bin-line text-red-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">Delete Schedule</h3>
+            <p class="text-gray-600">Are you sure you want to delete this schedule? This action cannot be undone.</p>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button id="confirm-cancel-btn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
+          <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-button hover:bg-red-700 transition-colors !rounded-button whitespace-nowrap">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-primary text-white py-12">
+  <div class="px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
+          <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
+          <div class="flex items-center space-x-4"><i class="ri-facebook-line text-xl"></i><i class="ri-twitter-line text-xl"></i><i class="ri-instagram-line text-xl"></i></div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+          <div class="space-y-3 text-white/80">
+            <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
+            <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
+            <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <div class="space-y-2">
+            <a href="index.html"     class="block text-white/80 hover:text-white">Home</a>
+            <a href="sections.html"  class="block text-white/80 hover:text-white">Sections</a>
+            <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
+            <a href="students.html"  class="block text-white/80 hover:text-white">Students</a>
+            <a href="teachers.html"  class="block text-white/80 hover:text-white">Teachers</a>
+            <a href="about.html" class=" block text-white/80 hover:text-white"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
+        <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Minimal interactivity -->
+<script>
+  // Mobile nav
+  document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>document.getElementById('mobile-menu')?.classList.toggle('hidden'));
+
+  const SECTIONS = ['BIT 3A-A','BIT 3A-B','BIT 3B-A','BIT 3B-B'];
+
+  const students = {
+    'BIT 3A-A': [{name:'Alexandra Johnson', id:'2023-001234', type:'Regular'}],
+    'BIT 3A-B': [{name:'Joseph Umali', id:'2023-001235', type:'Regular'}, {name:'Steven Vistan', id:'2023-001235', type:'Regular'}, {name:'Marc Alex Glorioso', id:'2023-001235', type:'Regular'}, ],
+    'BIT 3B-A': [{name:'Sarah Williams', id:'2023-001236', type:'Regular'}],
+    'BIT 3B-B': [{name:'John Lloyd P. Babasa', id:'2023-001237', type:'Irregular'}, 
+    {name:'Tristan Venegas', id:'23-000059', type:'Regular'},
+    {name:'Tristan Millanes', id:'2023-001238', type:'Regular'}, 
+    {name:'Jon Carlo Malate', id:'2023-001238', type:'Regular'}, 
+    {name:'Joey Odnimer', id:'2023-001238', type:'Regular'},
+    {name:'Ericka Sarcilla', id:'2023-001238', type:'Regular'},
+    {name:'John Tyron TAnggaan', id:'23-000056', type:'Regular'},
+    {name:'Jhustine Garcia', id:'2023-001238', type:'Regular'}]
+  };
+
+  const schedules = {
+    'BIT 3A-A': [
+      {day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Computer Fundamentals', room:'A101', teacher:'Prof. Maria Santos'}
+    ],
+    // ✅ Full BIT 3A-B schedule (added)
+    'BIT 3A-B': [
+      {day:'Monday',    time:'7:40 AM – 10:30 AM', subject:'Seminar in Information Trends and Specialized (CPT12)',                 room:'A303',       teacher:'Prof. Maria Santos'},
+      {day:'Monday',    time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)',              room:'B102',       teacher:'Prof. Robert Garcia'},
+      {day:'Monday',    time:'1:00 PM – 2:30 PM',   subject:'Basic Statistics (STA01)',                   room:'B203',       teacher:'Prof. Anna Reyes'},
+      {day:'Tuesday',   time:'7:30 AM – 10:00 AM',  subject:'Web Development (CPT11)',                    room:'A304',       teacher:'Prof. John Cruz'},
+      {day:'Tuesday',   time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)',            room:'A304',       teacher:'Prof. John Cruz'},
+      {day:'Tuesday',   time:'1:00 PM – 4:30 PM',   subject:'Specialized Technology (CPT13)',             room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
+      {day:'Wednesday', time:'7:30 AM – 10:00 AM',  subject:'Data Structure and Algorithm(CPT10)',                    room:'CET Center', teacher:'Prof. Maria Santos'},
+      {day:'Wednesday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)',              room:'B102',       teacher:'Prof. Robert Garcia'},
+      {day:'Wednesday', time:'1:00 PM – 2:30 PM',   subject:'Basic Statistics (STA01)',                   room:'B203',       teacher:'Prof. Anna Reyes'},
+      {day:'Thursday',  time:'7:30 AM – 10:00 AM',  subject:'Web Development (CPT11)',                    room:'CET Center', teacher:'Prof. John Cruz'},
+      {day:'Friday',    time:'7:30 AM – 10:00 AM',  subject:'Data Structure and Algorithm(CPT10)',                    room:'B204',       teacher:'Prof. Maria Santos'},
+      {day:'Friday',    time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)',            room:'A304',       teacher:'Prof. John Cruz'},
+      {day:'Friday',    time:'1:00 PM – 4:30 PM',   subject:'Specialized Technology (CPT13)',             room:'B204',       teacher:'Prof. Lisa Mendoza'},
+    ],
+    'BIT 3B-A': [
+      {day:'Wednesday', time:'3:30 PM – 6:00 PM', subject:'Programming 2', room:'A204', teacher:'Prof. Lisa Mendoza'}
+    ],
+    'BIT 3B-B': [
+      {day:'Monday', time:'7:30 AM – 9:00 AM',  subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Monday', time:'10:00 AM – 12:30 PM',subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Monday', time:'1:00 PM – 3:30 PM',  subject:'Specialized Technology 1 (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
+      {day:'Monday', time:'4:00 PM – 5:30 PM',  subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
+      {day:'Tuesday', time:'1:00 PM – 3:30 PM',  subject:'Data Structure and Algorithm (CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
+      {day:'Tuesday', time:'3:30 PM – 6:00 PM',  subject:'Web Development (CPT11)', room:'B203', teacher:'Prof. John Cruz'},
+      {day:'Wednesday', time:'7:30 AM – 9:00 AM',  subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Wednesday', time:'4:00 PM – 5:30 PM',  subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
+      {day:'Thursday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Thursday', time:'1:00 PM – 3:30 PM',  subject:'Specialized Technology 1 (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'},
+      {day:'Thursday', time:'4:00 PM – 7:00 PM',  subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Engr. Carlos Dela Cruz'},
+      {day:'Friday', time:'1:00 PM – 3:30 PM',   subject:'Data Structure and Algorithm (CPT10)', room:'Cet Center', teacher:'Prof. Maria Santos'},
+      {day:'Friday', time:'3:30 PM – 6:00 PM',   subject:'Web Development (CPT11)', room:'Cet Center', teacher:'Prof. John Cruz'},
+    ]
+  };
+
+  // --- Section modal and rendering ---
+  const sectionModal = document.getElementById('section-detail-modal');
+  const secTitle = document.getElementById('section-detail-title');
+  const listStudents = document.getElementById('section-students');
+  const listSchedule = document.getElementById('section-schedule');
+  let activeSection = null;
+
+  // === added: helper to re-trigger fade each time ===
+  function fadeList(el){
+    if(!el) return;
+    el.classList.remove('fade-in');      // reset
+    void el.offsetWidth;                 // reflow to restart animation
+    el.classList.add('fade-in');         // play
+  }
+  // === end added ===
+
+  function openSection(sectionName){
+    activeSection = sectionName;
+    secTitle.textContent = sectionName;
+    renderStudents();
+    renderSchedule();
+    // === added: fade the lists on each open/switch ===
+    fadeList(listStudents);
+    fadeList(listSchedule);
+    // === end added ===
+    sectionModal.classList.remove('hidden');
+  }
+  function closeSection(){ sectionModal.classList.add('hidden'); }
+  document.getElementById('close-section-detail-btn').onclick = closeSection;
+
+  document.querySelectorAll('.section-card').forEach(card=>{
+    const name = card.querySelector('h3')?.textContent.trim();
+    card.addEventListener('click',()=>openSection(name));
+  });
+
+  function renderStudents(){
+    const rows = (students[activeSection]||[]).map(s=>`
+      <div class="p-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between">
+        <div>
+          <div class="font-semibold text-gray-800">${s.name}</div>
+          <div class="text-sm text-gray-500">ID: ${s.id}</div>
+        </div>
+        <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type}</span>
+      </div>
+    `).join('');
+    listStudents.innerHTML = rows || `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No students yet.</div>`;
+  }
+
+  function renderSchedule(){
+    const data = schedules[activeSection]||[];
+    if(!data.length){ listSchedule.innerHTML = `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No schedule yet.</div>`; return; }
+    const order = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    const byDay = {};
+    data.forEach(i=>{ (byDay[i.day]=byDay[i.day]||[]).push(i); });
+    listSchedule.innerHTML = order.filter(d=>byDay[d]).map(day=>{
+      const items = byDay[day].map(it=>`
+        <div class="p-3 bg-primary/5 rounded border border-primary/10">
+          <div class="text-sm text-gray-700"><span class="font-medium">${it.time}</span></div>
+          <div class="text-gray-800 font-semibold">${it.subject}</div>
+          <div class="text-xs text-gray-600 mt-1">${it.room} • ${it.teacher}</div>
+        </div>`).join('');
+      return `<div class="mb-4"><div class="text-primary font-semibold mb-2">${day}</div><div class="space-y-2">${items}</div></div>`;
+    }).join('');
+  }
+
+  // --- Real-time counts on cards ---
+  function uniqueSubjectCount(sec){
+    const set = new Set();
+    (schedules[sec]||[]).forEach(x=>set.add(x.subject));
+    return set.size;
+  }
+  function updateSectionCounts(){
+    document.querySelectorAll('.sec-stu').forEach(span=>{
+      const sec = span.getAttribute('data-sec');
+      span.textContent = (students[sec]||[]).length;
+    });
+    document.querySelectorAll('.sec-subj').forEach(span=>{
+      const sec = span.getAttribute('data-sec');
+      span.textContent = uniqueSubjectCount(sec);
+    });
+  }
+
+  // --- Add Student (Assign Section removed; uses activeSection) ---
+  const studentModal = document.getElementById('student-modal');
+  document.getElementById('add-section-student-btn').onclick = ()=>{
+    studentModal.classList.remove('hidden');
+  };
+  document.getElementById('close-student-modal-btn').onclick = ()=>studentModal.classList.add('hidden');
+  document.getElementById('cancel-student-btn').onclick = ()=>studentModal.classList.add('hidden');
+
+  document.getElementById('student-form').addEventListener('submit', e=>{
+    e.preventDefault();
+    const name = document.getElementById('student-name').value.trim();
+    const id = document.getElementById('student-id').value.trim();
+    const picked = [...document.querySelectorAll('input[name="student-type"]')].find(r=>r.checked);
+    const type = picked ? picked.value : 'Regular';
+    const sec  = activeSection; // ✅ always use the opened section
+
+    if(!name || !id || !sec) return;
+
+    students[sec] = students[sec] || [];
+    students[sec].push({name,id,type});
+    if(sec===activeSection) renderStudents();
+    updateSectionCounts();               // update card numbers
+    // === added: fade students list after adding ===
+    fadeList(listStudents);
+    // === end added ===
+    studentModal.classList.add('hidden');
+    e.target.reset();
+  });
+
+  // --- Custom dropdown wiring for schedule modal ---
+  const scheduleModal = document.getElementById('schedule-modal');
+  document.getElementById('add-section-schedule-btn').onclick = ()=>{
+    document.getElementById('section').value = activeSection;
+    document.getElementById('section-selected').textContent = activeSection;
+    scheduleModal.classList.remove('hidden');
+  };
+  document.getElementById('close-modal-btn').onclick = ()=>scheduleModal.classList.add('hidden');
+  document.getElementById('cancel-btn').onclick = ()=>scheduleModal.classList.add('hidden');
+
+  function wireDropdown(buttonId, panelId, hiddenId, optionClass, labelId){
+    const btn = document.getElementById(buttonId);
+    const panel = document.getElementById(panelId);
+    const hidden = document.getElementById(hiddenId);
+    const label = document.getElementById(labelId);
+    btn.addEventListener('click', ()=>panel.classList.toggle('hidden'));
+    panel.querySelectorAll('.'+optionClass).forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        const val = opt.dataset.value;
+        hidden.value = val;
+        if(label) label.textContent = val;
+        panel.classList.add('hidden');
+      });
+    });
+    document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden'); });
+  }
+  wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
+  wireDropdown('room-dropdown','room-options','room','room-option','room-selected');
+  wireDropdown('teacher-dropdown','teacher-options','teacher','teacher-option','teacher-selected');
+  wireDropdown('day-dropdown','day-options','day','day-option','day-selected');
+  wireDropdown('time-dropdown','time-options','time','time-selected');
+
+  document.getElementById('schedule-form').addEventListener('submit', e=>{
+    e.preventDefault();
+    const sec = document.getElementById('section').value || activeSection;
+    const subject = document.getElementById('subject').value.trim();
+    const room = document.getElementById('room').value.trim();
+    const teacher = document.getElementById('teacher').value.trim();
+    const day = document.getElementById('day').value.trim();
+    const time = document.getElementById('time').value.trim();
+    if(!sec || !subject || !room || !teacher || !day || !time) return;
+
+    schedules[sec] = schedules[sec] || [];
+    schedules[sec].push({day,time,subject,room,teacher});
+
+    if(sec===activeSection) renderSchedule();
+    updateSectionCounts();               // update card numbers
+    // === added: fade schedule list after adding ===
+    fadeList(listSchedule);
+    // === end added ===
+    scheduleModal.classList.add('hidden');
+    e.target.reset();
+    document.getElementById('section-selected').textContent = 'Select section';
+    document.getElementById('room-selected').textContent = 'Select room';
+    document.getElementById('teacher-selected').textContent = 'Select teacher';
+    document.getElementById('day-selected').textContent = 'Select day';
+    document.getElementById('time-selected').textContent = 'Select time';
+  });
+
+  // Close modals by clicking backdrop
+  [sectionModal, studentModal, scheduleModal].forEach(m=>{
+    m.addEventListener('click', (e)=>{ if(e.target===m) m.classList.add('hidden'); });
+  });
+
+  // Initial counts
+  updateSectionCounts();
+</script>
+</body>
+</html>

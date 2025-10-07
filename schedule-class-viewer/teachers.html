@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SLSU Lucena Class Schedule Viewer — Teachers</title>
+
+  <!-- Tailwind (same config as your main file) -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#16a34a', secondary: '#22c55e' },
+          borderRadius: {
+            'none': '0px','sm': '4px', DEFAULT: '8px','md': '12px','lg': '16px',
+            'xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts / Icons to match your original -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+
+  <!-- tiny fix for remixicon pseudo rule you included -->
+  <style>:where([class^="ri-"])::before{content:"\f3c2";}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Navigation Header -->
+  <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
+    <div class="px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
+        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+      </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-home-line"></i></div><span>Home</span>
+          </a>
+          <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-book-2-line"></i></div><span>Sections</span>
+          </a>
+          <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-calendar-line"></i></div><span>Schedules</span>
+          </a>
+          <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-user-line"></i></div><span>Students</span>
+          </a>
+          <a href="teachers.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition-colors">
+            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-user-star-line"></i></div><span>Teachers</span>
+          </a>
+          <a href="about.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
+          <div class="w-6 h-6 flex items-center justify-center"><i class="ri-menu-line text-xl"></i></div>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="md:hidden mt-4 hidden">
+        <div class="space-y-2">
+          <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="sections.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-book-2-line"></i><span>Sections</span></a>
+          <a href="schedules.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+          <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-line"></i><span>Students</span></a>
+          <a href="teachers.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 transition-colors"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+          <a href="about.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-information-line"></i><span>About</span></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-20">
+    <!-- Teachers Section (content preserved) -->
+    <section id="teachers" class="min-h-screen bg-white">
+      <div class="px-6 py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Faculty Directory</h2>
+            <p class="text-xl text-gray-600">Meet our dedicated faculty members and their subject assign</p>
+          </div>
+
+          <!-- Teachers Grid -->
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Jerome Yanga</h3>
+                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programming 1</span>
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programing 2</span>
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Web Development</span>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Cet Center, Laboratory</p>
+                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Jerold Oticio</h3>
+                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Computer Programming 1</span>
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Networking</span>
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Maintenance & TroubleShooting</span>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Faculty</p>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Ed Cedeno</h3>
+                  <p class="text-gray-600 mb-4">President of Faculty</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Industrial Management</span><br>
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Readings in the Philippine History</span>
+                      <br>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Faculty</p>
+                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Mam. Paul Perez</h3>
+                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Computer Fundamentals and System Hardware</span>
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Maintenance & TroubleShooting</span>
+                      <br>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Faculty</p>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Mam. Maila Caliao</h3>
+                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Data Structures</span>
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programming</span>
+                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Flowcharts</span>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Faculty</p>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-8">
+              <div class="flex items-start space-x-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <i class="ri-user-star-line text-primary text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Generoso Maano</h3>
+                  <p class="text-gray-600 mb-4">Department of Engineering</p>
+                  <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Tech Draw 1</span>
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Tech Draw 2 Autocad</span>
+                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Mathematics</span>
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    <p><strong>Office:</strong> Faculty</p>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /grid -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (same as original) -->
+  <footer class="bg-primary text-white py-12 mt-12">
+    <div class="px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
+            <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
+            <div class="flex items-center space-x-4">
+              <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page">
+              <i class="ri-facebook-line text-xl"></i>
+            </a>
+              <div class="w-8 h-8 flex items-center justify-center"><i class="ri-twitter-line text-xl"></i></div>
+              <div class="w-8 h-8 flex items-center justify-center"><i class="ri-instagram-line text-xl"></i></div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+            <div class="space-y-3 text-white/80">
+              <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+            <div class="space-y-2">
+              <a href="index.html#home" class="block text-white/80 hover:text-white transition-colors">Home</a>
+              <a href="sections.html" class="block text-white/80 hover:text-white transition-colors">Sections</a>
+              <a href="schedules.html" class="block text-white/80 hover:text-white transition-colors">Schedules</a>
+              <a href="students.html" class="block text-white/80 hover:text-white transition-colors">Students</a>
+              <a href="teachers.html" class="block text-white/80 hover:text-white transition-colors">Teachers</a>
+              <a href="about.html" class=" block text-white/80 hover:text-white"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
+          <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Minimal mobile menu toggle (you said you have the other JS) -->
+  <script src="assets/js/nav.js"></script>
+<script src="assets/js/realtime-calendar.js"></script>
+</body>
+</html>

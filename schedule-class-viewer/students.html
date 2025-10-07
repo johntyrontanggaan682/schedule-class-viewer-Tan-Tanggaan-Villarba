@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SLSU Lucena Class Schedule Viewer — Students</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#16a34a', secondary: '#22c55e' },
+          borderRadius: {
+            'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px',
+            'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
+
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    .rounded-button { border-radius: 8px; }
+  </style>
+
+  <!-- === added: tiny fade-in animation === -->
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn .25s ease-out both; }
+  </style>
+  <!-- === end added === -->
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Navigation Header (unchanged) -->
+  <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
+    <div class="px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
+          <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
+          <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+          <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-user-line"></i><span>Students</span></a>
+          <a href="teachers.html" class="flex items-centered space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+          <a href="about.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+        </div>
+
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
+          <i class="ri-menu-line text-xl"></i>
+        </button>
+      </div>
+
+      <div id="mobile-menu" class="md:hidden mt-4 hidden">
+        <div class="space-y-2">
+          <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="sections.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
+          <a href="schedules.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+          <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-user-line"></i><span>Students</span></a>
+          <a href="teachers.html" class="flex items-centered space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+          <a href="about.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-information-line"></i><span>About</span></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="pt-20">
+    <section class="min-h-screen bg-gray-50">
+      <div class="px-6 py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Title -->
+          <div class="text-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Student Directory</h2>
+            <p class="text-sm md:text-base text-gray-600">Select a section or search for students</p>
+          </div>
+
+          <!-- Controls -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4 mb-4">
+            <div class="flex flex-col md:flex-row gap-3 md:gap-4">
+              <div class="relative w-full md:w-64">
+                <select id="sectionSelect"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm appearance-none">
+                  <option value="">Select Section</option>
+                  <option value="BIT 3A-A">BIT 3A-A</option>
+                  <option value="BIT 3A-B">BIT 3A-B</option>
+                  <option value="BIT 3B-A">BIT 3B-A</option>
+                  <option value="BIT 3B-B">BIT 3B-B</option>
+                </select>
+                <i class="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+              </div>
+
+              <div class="relative flex-1">
+                <input id="searchInput"
+                       type="text"
+                       placeholder="Search by name, ID, or section..."
+                       class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"/>
+                <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- STATS — moved ABOVE grid -->
+          <div id="statsWrap" class="hidden mb-6">
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <!-- Total in section -->
+              <div class="bg-white border border-gray-200 rounded-xl p-6">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                    <i class="ri-user-line text-lg text-blue-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold" id="statTotal">0</div>
+                    <div class="text-xs text-gray-500">Total Students in Section</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Regular -->
+              <div class="bg-white border border-gray-200 rounded-xl p-6">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                    <i class="ri-user-smile-line text-lg text-green-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold" id="statRegular">0</div>
+                    <div class="text-xs text-gray-500">Regular Students</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Irregular -->
+              <div class="bg-white border border-gray-200 rounded-xl p-6">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+                    <i class="ri-alert-line text-lg text-orange-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold" id="statIrregular">0</div>
+                    <div class="text-xs text-gray-500">Irregular Students</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Active -->
+              <div class="bg-white border border-gray-200 rounded-xl p-6 lg:block hidden">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+                    <i class="ri-check-line text-lg text-emerald-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold" id="statActive">0</div>
+                    <div class="text-xs text-gray-500">Active Students</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="emptyState" class="text-center py-16">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+              <i class="ri-search-line text-2xl text-gray-400"></i>
+            </div>
+            <h3 class="mt-6 text-gray-800 font-semibold">Search or Select a Section</h3>
+            <p class="mt-2 text-sm text-gray-500">Use the search box to find students by name, ID, or section — or pick a section to browse.</p>
+          </div>
+
+          <!-- Grid -->
+          <div id="grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+          <!-- No results -->
+          <div id="noResults" class="hidden text-center py-16">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+              <i class="ri-information-line text-2xl text-gray-400"></i>
+            </div>
+            <h3 class="mt-6 text-gray-800 font-semibold">No matches</h3>
+            <p class="mt-2 text-sm text-gray-500">Try a different name, ID, or section.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (unchanged) -->
+  <footer class="bg-primary text-white py-12 mt-16">
+    <div class="px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
+            <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
+            <div class="flex items-center space-x-4">
+              <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page">
+                <i class="ri-facebook-line text-xl"></i>
+              </a>
+              <i class="ri-twitter-line text-xl"></i>
+              <i class="ri-instagram-line text-xl"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+            <div class="space-y-3 text-white/80">
+              <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+            <div class="space-y-2">
+              <a href="index.html#home" class="block text-white/80 hover:text-white">Home</a>
+              <a href="sections.html" class="block text-white/80 hover:text-white">Sections</a>
+              <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
+              <a href="students.html" class="block text-white/80 hover:text-white">Students</a>
+              <a href="teachers.html" class="block text-white/80 hover:text-white">Teachers</a>
+              <a href="about.html" class=" block text-white/80 hover:text-white"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
+          <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile nav -->
+  <script>
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+      document.getElementById('mobile-menu')?.classList.toggle('hidden');
+    });
+  </script>
+
+  <!-- Students Directory Logic -->
+  <script>
+    // Data
+    const STUDENTS = [
+      { id:'2023-001234', name:'John Lloyd P. Babasa', section:'BIT 3B-B', year:'3rd Year', type:'Irregular',   status:'Active' },
+      { id:'2023-001235', name:'Tristan Venegas',       section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001236', name:'Tristan Millanes',     section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001237', name:'Jhon Carlo Malate',    section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001238', name:'John Tyron Tanggaan',      section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001239', name:'Joseph Umali',     section:'BIT 3A-B', year:'3rd Year', type:'Regular', status:'Active' },
+      { id:'2023-001240', name:'Steven Vistan',       section:'BIT 3A-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001241', name:'Marc Alex Glorioso',          section:'BIT 3A-B', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001242', name:'Anna Reyes',         section:'BIT 3A-A', year:'3rd Year', type:'Regular',   status:'Active' },
+      { id:'2023-001243', name:'Robert Garcia',      section:'BIT 3B-A', year:'3rd Year', type:'Irregular', status:'Active' },
+    ];
+
+    // Elements
+    const sectionSelect = document.getElementById('sectionSelect');
+    const searchInput   = document.getElementById('searchInput');
+    const grid          = document.getElementById('grid');
+    const emptyState    = document.getElementById('emptyState');
+    const noResults     = document.getElementById('noResults');
+    const statsWrap     = document.getElementById('statsWrap');
+    const statTotal     = document.getElementById('statTotal');
+    const statRegular   = document.getElementById('statRegular');
+    const statIrregular = document.getElementById('statIrregular');
+    const statActive    = document.getElementById('statActive');
+
+    function renderCards(list){
+      grid.innerHTML = '';
+      list.forEach(s=>{
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 p-6';
+        card.innerHTML = `
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+              <i class="ri-user-line text-primary text-xl"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">${s.name}</h3>
+              <p class="text-sm text-gray-600">Student ID: ${s.id}</p>
+            </div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-gray-600">Section:</span><span class="font-medium text-primary">${s.section}</span></div>
+            <div class="flex justify-between"><span class="text-gray-600">Year Level:</span><span class="text-gray-800">${s.year}</span></div>
+            <div class="flex justify-between"><span class="text-gray-600">Type:</span>
+              <span class="text-xs px-2 py-1 ${s.type==='Regular' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'} rounded">${s.type}</span>
+            </div>
+            <div class="flex justify-between"><span class="text-gray-600">Status:</span><span class="text-green-600 font-medium">${s.status}</span></div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Fill stats. Total shows TOTAL students in selected section (not just matches).
+    function fillStats(results, sec){
+      const sectionTotal = sec ? STUDENTS.filter(s => s.section === sec).length : 0;
+      const regular = results.filter(s=>s.type==='Regular').length;
+      const irregular = results.filter(s=>s.type==='Irregular').length;
+      const active = results.filter(s=>s.status==='Active').length;
+
+      statTotal.textContent = sectionTotal;
+      statRegular.textContent = regular;
+      statIrregular.textContent = irregular;
+      statActive.textContent = active;
+    }
+
+    function updateView(){
+      const q   = searchInput.value.trim().toLowerCase();
+      const sec = sectionSelect.value;
+
+      let results = [];
+
+      if(q.length){
+        results = STUDENTS.filter(s =>
+          s.name.toLowerCase().includes(q) ||
+          s.id.toLowerCase().includes(q) ||
+          s.section.toLowerCase().includes(q)
+        );
+      } else if(sec){
+        results = STUDENTS.filter(s => s.section === sec);
+      } else {
+        // Initial empty state
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        noResults.classList.add('hidden');
+        statsWrap.classList.add('hidden'); // hide stats when no section picked
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      if(results.length === 0){
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        statsWrap.classList.add('hidden'); // hide when nothing to show
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      renderCards(results);
+
+      // Show stats ONLY when a section is selected (so "Total Students in Section" makes sense)
+      if (sec) {
+        fillStats(results, sec);
+        statsWrap.classList.remove('hidden');
+      } else {
+        statsWrap.classList.add('hidden');
+      }
+    }
+
+    sectionSelect.addEventListener('change', updateView);
+    searchInput.addEventListener('input', updateView);
+
+    // Initial
+    updateView();
+  </script>
+
+  <!-- === added: tiny helper to trigger fades on grid/stats updates (no logic changed) === -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid      = document.getElementById('grid');
+      const statsWrap = document.getElementById('statsWrap');
+      const sectionSelect = document.getElementById('sectionSelect');
+      const searchInput   = document.getElementById('searchInput');
+
+      const fade = (el) => {
+        if (!el) return;
+        el.classList.remove('fade-in'); // reset
+        void el.offsetWidth;            // reflow to restart animation
+        el.classList.add('fade-in');    // play
+      };
+
+      // Initial soft entrance
+      fade(grid);
+
+      // Observe grid changes so any re-render fades in
+      const mo = new MutationObserver(() => fade(grid));
+      mo.observe(grid, { childList: true });
+
+      // When user changes section or search, fade grid (and stats when visible)
+      sectionSelect?.addEventListener('change', () => {
+        fade(grid);
+        if (!statsWrap.classList.contains('hidden')) fade(statsWrap);
+      });
+      searchInput?.addEventListener('input', () => {
+        fade(grid);
+        if (!statsWrap.classList.contains('hidden')) fade(statsWrap);
+      });
+    });
+  </script>
+  <!-- === end added === -->
+</body>
+</html>
