@@ -1,8 +1,6 @@
 // Real-Time Calendar (from <script id="real-time-calendar">)
 document.addEventListener('DOMContentLoaded', function() {
-  const currentDateElement = document.getElementById('current-date');
-  const currentTimeElement = document.getElementById('current-time');
-
+  
   function updateDateTime() {
     const now = new Date();
     const options = {
@@ -28,3 +26,4 @@ document.addEventListener('DOMContentLoaded', function() {
   updateDateTime();
   setInterval(updateDateTime, 1000);
 });
+
