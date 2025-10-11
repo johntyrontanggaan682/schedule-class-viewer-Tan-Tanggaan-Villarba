@@ -1,13 +1,9 @@
-pls  add a contact button in section if click the contact it will scroll down in home page the contact information plss just do what i ask pls just do what i ask remain unchanged and do not add a comment pls remove it
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLSU Lucena Class Schedule Viewer</title>
-
-<!-- Tailwind (same version and config) -->
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
@@ -17,40 +13,38 @@ tailwind.config = {
       borderRadius: {
         'none':'0px','sm':'4px', DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px',
         '2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
+      },
+      keyframes: {
+        fadeIn: { '0%':{opacity:0,transform:'translateY(6px)'}, '100%':{opacity:1,transform:'translateY(0)'} },
+        fadeOut: { '0%':{opacity:1}, '100%':{opacity:0} },
+        slideSwap: {
+          '0%,45%':{opacity:1},
+          '55%,100%':{opacity:0}
+        },
+        slideSwapAlt: {
+          '0%,45%':{opacity:0},
+          '55%,100%':{opacity:1}
+        }
+      },
+      animation: {
+        'fade-in': 'fadeIn .25s ease-out both',
+        'page-fade-out': 'fadeOut .2s ease-in forwards',
+        'slide-a': 'slideSwap 10s ease-in-out infinite',
+        'slide-b': 'slideSwapAlt 10s ease-in-out infinite'
       }
     }
   }
 }
 </script>
-
-<!-- Fonts & Icons (unchad) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-
-<!-- Tiny CSS (unchanged) -->
 <style>
 :where([class^="ri-"])::before { content: "\f3c2"; }
-
-/* === added: simple fade-in / fade-out === */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.fade-in { animation: fadeIn .25s ease-out both; }
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-.page-fade-out { animation: fadeOut .2s ease-in forwards; }
-/* === end added === */
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-
-<!-- Navigation Header (unchanged) -->
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
   <div class="px-6 py-4">
     <div class="flex items-center justify-between">
@@ -58,38 +52,57 @@ tailwind.config = {
         <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
         <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
       </div>
-      <div class="hidden md:flex items-center space-x-8">
-        <a href="index.html" class="nav-link flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-home-line"></i><span>Home</span></a>
-        <a href="sections.html"  class="nav-link flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
-        <a href="schedules.html" class="nav-link flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-        <a href="students.html"  class="nav-link flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
-        <a href="teachers.html"  class="nav-link flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-        <a href="about.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
+      <div class="hidden md:flex items-center space-x-2">
+        <a href="index.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition hover:bg-white/25 active:scale-[.98]">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/10"></span>
+          <i class="ri-home-line"></i><span>Home</span>
+        </a>
+        <a href="sections.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
+          <i class="ri-book-2-line"></i><span>Sections</span>
+        </a>
+        <a href="schedules.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
+          <i class="ri-calendar-line"></i><span>Schedules</span>
+        </a>
+        <a href="students.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
+          <i class="ri-user-line"></i><span>Students</span>
+        </a>
+        <a href="teachers.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
+          <i class="ri-user-star-line"></i><span>Teachers</span>
+        </a>
+        <a href="about.html" class="relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition hover:bg-white/25">
+          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/10"></span>
+          <i class="ri-login-circle-line"></i><span>LogIn/Register</span>
+        </a>
       </div>
-      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10 active:scale-95 transition">
         <i class="ri-menu-line text-xl"></i>
       </button>
     </div>
     <div id="mobile-menu" class="md:hidden mt-4 hidden">
       <div class="space-y-2">
-        <a href="index.html"    class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-home-line"></i><span>Home</span></a>
-        <a href="sections.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
-        <a href="schedules.html"class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-        <a href="students.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
-        <a href="teachers.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-        <a href="about.html"    class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-information-line"></i><span>LogIn/Register</span></a>
+        <a href="index.html"    class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 active:scale-95 transition"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="sections.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-book-2-line"></i><span>Sections</span></a>
+        <a href="schedules.html"class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+        <a href="students.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-line"></i><span>Students</span></a>
+        <a href="teachers.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="about.html"    class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-information-line"></i><span>LogIn/Register</span></a>
       </div>
     </div>
   </div>
 </nav>
 
-<!-- Main -->
 <main class="pt-20">
-  <!-- Home / Hero -->
   <section id="home" class="min-h-screen bg-white relative overflow-hidden">
-    <!-- Background Image -->
-    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('lucena.png');">
-      <div class="absolute inset-0 bg-white/60"></div>
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-[1.02] animate-slide-a" style="background-image:url('lucena.png');"></div>
+      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-[1.02] animate-slide-b" style="background-image:url('bldg.jpg');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/60 to-white/80"></div>
+      <div class="absolute -top-24 -right-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
     </div>
 
     <div class="relative z-10 px-6 py-16">
@@ -100,67 +113,62 @@ tailwind.config = {
           </div>
         </div>
 
-        <h1 class="text-5xl font-bold text-primary mb-8 drop-shadow-sm">SLSU Lucena Class Schedule Viewer</h1>
+        <h1 class="text-5xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-sm">SLSU Lucena Class Schedule Viewer</h1>
 
         <div class="max-w-3xl mx-auto">
           <p class="text-xl text-gray-700 leading-relaxed mb-8 drop-shadow-sm">
             This website helps you manage class schedules, students, and faculty fast and easy.
           </p>
 
-          
           <div class="grid md:grid-cols-3 gap-8 mt-16">
-            <div class="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-white/50">
-              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-3">
                 <i class="ri-calendar-check-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Easy Scheduling</h3>
               <p class="text-gray-600">Manage weekly timetables with subjects, rooms, and teachers.</p>
-              <div class="mt-4">
-                <a href="schedules.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm">
+              <div class="mt-5">
+                <a href="schedules.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Schedules <i class="ri-arrow-right-up-line"></i>
                 </a>
               </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-white/50">
-              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:-rotate-3">
                 <i class="ri-group-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Student Management</h3>
               <p class="text-gray-600">Searchable directory with section organization and tags.</p>
-              <div class="mt-4">
-                <a href="students.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm">
+              <div class="mt-5">
+                <a href="students.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Students <i class="ri-arrow-right-up-line"></i>
                 </a>
               </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-white/50">
-              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
                 <i class="ri-user-star-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Faculty Directory</h3>
               <p class="text-gray-600">Subjects, rooms, and assignments in one view.</p>
-              <div class="mt-4">
-                <a href="teachers.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm">
+              <div class="mt-5">
+                <a href="teachers.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Teachers <i class="ri-arrow-right-up-line"></i>
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- (Quick-link row removed as requested) -->
-
         </div>
       </div>
     </div>
   </section>
 
-  <!-- MERGED “About” content styled to fit Home -->
   <section id="about-merged" class="bg-gray-50">
     <div class="px-6 py-16">
       <div class="max-w-6xl mx-auto space-y-10">
-        <!-- System Purpose -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 relative overflow-hidden">
           <div class="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-primary/10"></div>
           <div class="absolute -bottom-12 -left-12 w-52 h-52 rounded-full bg-secondary/10"></div>
@@ -173,15 +181,13 @@ tailwind.config = {
               information, and academic resources. It reduces conflicts and gives real-time access
               through a clean, student- and faculty-friendly interface.
             </p>
-            <!-- Chips removed as requested -->
           </div>
         </div>
 
-        <!-- Key Features -->
         <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 shadow-sm p-8">
           <h3 class="text-2xl font-extrabold text-gray-900 mb-6">Key Features</h3>
           <div class="grid md:grid-cols-3 gap-6">
-            <div class="group p-6 rounded-xl border border-gray-200 bg-white hover:shadow-md transition">
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
               <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
                 <i class="ri-calendar-check-line text-xl"></i>
               </div>
@@ -191,7 +197,7 @@ tailwind.config = {
                 Go to Master Schedule <i class="ri-arrow-right-up-line"></i>
               </a>
             </div>
-            <div class="group p-6 rounded-xl border border-gray-200 bg-white hover:shadow-md transition">
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
               <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-4">
                 <i class="ri-group-line text-xl"></i>
               </div>
@@ -201,7 +207,7 @@ tailwind.config = {
                 Open Student Directory <i class="ri-arrow-right-up-line"></i>
               </a>
             </div>
-            <div class="group p-6 rounded-xl border border-gray-200 bg-white hover:shadow-md transition">
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
               <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center mb-4">
                 <i class="ri-user-star-line text-xl"></i>
               </div>
@@ -214,14 +220,13 @@ tailwind.config = {
           </div>
         </div>
 
-        <!-- CTA -->
         <div class="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-8">
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h4 class="text-xl font-extrabold text-gray-900">Ready to explore the schedules?</h4>
               <p class="text-gray-700">Jump to the Master Schedule and try the filters.</p>
             </div>
-            <a href="schedules.html" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition">
+            <a href="schedules.html" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-button hover:bg-primary/90 active:scale-95 transition">
               <i class="ri-calendar-2-line"></i> Open Master Schedule
             </a>
           </div>
@@ -232,7 +237,6 @@ tailwind.config = {
   </section>
 </main>
 
-<!-- Footer (unchanged except FB link kept) -->
 <footer class="bg-primary text-white py-12 mt-20">
   <div class="px-6">
     <div class="max-w-6xl mx-auto">
@@ -241,9 +245,9 @@ tailwind.config = {
           <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
           <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
           <div class="flex items-center space-x-4">
-            <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page">
+            <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
               <i class="ri-facebook-line text-xl"></i>
-            </a>  
+            </a>
           </div>
         </div>
         <div>
@@ -257,12 +261,12 @@ tailwind.config = {
         <div>
           <h3 class="text-xl font-bold mb-4">Quick Links</h3>
           <div class="space-y-2">
-            <a href="index.html"     class="block text-white/80 hover:text-white">Home</a>
-            <a href="sections.html"  class="block text-white/80 hover:text-white">Sections</a>
-            <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
-            <a href="students.html"  class="block text-white/80 hover:text-white">Students</a>
-            <a href="teachers.html"  class="block text-white/80 hover:text-white">Teachers</a>
-            <a href="about.html"     class="block text-white/80 hover:text-white">About</a>
+            <a href="index.html"     class="block text-white/80 hover:text-white transition">Home</a>
+            <a href="sections.html"  class="block text-white/80 hover:text-white transition">Sections</a>
+            <a href="schedules.html" class="block text-white/80 hover:text-white transition">Schedules</a>
+            <a href="students.html"  class="block text-white/80 hover:text-white transition">Students</a>
+            <a href="teachers.html"  class="block text-white/80 hover:text-white transition">Teachers</a>
+            <a href="about.html"     class="block text-white/80 hover:text-white transition">About</a>
           </div>
         </div>
       </div>
@@ -273,33 +277,25 @@ tailwind.config = {
   </div>
 </footer>
 
-<!-- JS (unchanged) -->
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/realtime-calendar.js"></script>
-
-<!-- === added: tiny fade behavior === -->
 <script>
-  // fade in hero + about section on load
   document.addEventListener('DOMContentLoaded', function () {
     ['home', 'about-merged'].forEach(function(id){
       var el = document.getElementById(id);
       if(!el) return;
-      el.classList.remove('fade-in'); // reset if hot-reloaded
-      void el.offsetWidth;            // reflow
-      el.classList.add('fade-in');
+      el.classList.remove('animate-fade-in');
+      void el.offsetWidth;
+      el.classList.add('animate-fade-in');
     });
-
-    // quick page fade-out when clicking any top nav link
     document.querySelectorAll('a.nav-link').forEach(function(a){
       a.addEventListener('click', function(){
         var href = a.getAttribute('href') || '';
-        if(href.startsWith('#')) return; // don't fade for in-page
-        document.body.classList.add('page-fade-out');
+        if(href.startsWith('#')) return;
+        document.body.classList.add('animate-page-fade-out');
       });
     });
   });
 </script>
-<!-- === end added === -->
-
 </body>
 </html>
