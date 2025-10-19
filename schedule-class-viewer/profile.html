@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SLSU Lucena Class Schedule Viewer — Profile</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { primary:'#16a34a', secondary:'#22c55e' },
+      borderRadius: { DEFAULT:'10px','lg':'16px','xl':'20px','2xl':'24px','full':'9999px' },
+      boxShadow: { glow:'0 18px 60px rgba(22,163,74,.18)' }
+    }
+  }
+}
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<style>:where([class^="ri-"])::before{content:"\f3c2"} body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
+  <div class="px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="lucenalogo.jpg" class="w-16 h-16 object-contain rounded-full" alt="">
+        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+      </div>
+      <div class="hidden md:flex items-center space-x-2">
+        <a href="index.html"    class="px-3 py-2 rounded-lg hover:bg-white/10 flex items-center gap-2"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="sections.html" class="px-3 py-2 rounded-lg hover:bg-white/10 flex items-center gap-2"><i class="ri-book-2-line"></i><span>Sections</span></a>
+        <a href="schedules.html"class="px-3 py-2 rounded-lg hover:bg-white/10 flex items-center gap-2"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+        <a href="students.html" class="px-3 py-2 rounded-lg hover:bg-white/10 flex items-center gap-2"><i class="ri-user-line"></i><span>Students</span></a>
+        <a href="teachers.html" class="px-3 py-2 rounded-lg hover:bg-white/10 flex items-center gap-2"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="profile.html"  class="px-3 py-2 rounded-lg bg-white/20 flex items-center gap-2"><i class="ri-user-3-line"></i><span>Profile</span></a>
+      </div>
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
+    </div>
+  </div>
+</nav>
+
+<header class="relative pt-28 pb-8">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-white via-white/70 to-white"></div>
+    <div class="absolute -top-24 -right-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <div id="avatar" class="w-28 h-28 mx-auto rounded-2xl bg-white/90 backdrop-blur border-2 border-primary/20 shadow-glow flex items-center justify-center text-3xl font-extrabold text-primary overflow-hidden"></div>
+
+      <div class="mt-3 flex items-center justify-center gap-2">
+        <input id="file-input" type="file" accept="image/*" class="hidden" />
+        <button id="btn-change" class="px-3 py-2 text-sm rounded-lg border border-primary/30 text-primary bg-white hover:bg-primary/5 active:scale-95">Change Photo</button>
+        <span id="upload-status" class="text-xs text-gray-500"></span>
+      </div>
+
+      <h1 id="name-heading" class="mt-4 text-3xl md:text-4xl font-extrabold text-gray-900"></h1>
+      <div class="mt-2 flex items-center justify-center gap-2">
+        <span id="role-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"></span>
+        <span id="email-sub" class="text-sm text-gray-600"></span>
+      </div>
+      <div class="mt-1 flex items-center justify-center gap-1 text-sm text-gray-600">
+        <i class="ri-id-card-line"></i><span id="id-sub"></span>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <a href="index.html" class="px-4 py-2 rounded-lg border border-primary/30 text-primary bg-white active:scale-95 text-sm">Back to Home</a>
+        <button id="signout" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 active:scale-95 flex items-center gap-2 text-sm"><i class="ri-logout-box-r-line"></i><span>Sign out</span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="px-6 pb-24">
+  <div class="max-w-3xl mx-auto">
+    <section class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+      <h2 class="text-lg font-semibold text-gray-900 text-center">Account Info</h2>
+      <div class="mt-4 grid sm:grid-cols-2 gap-4">
+        <div class="border rounded-xl p-4"><div class="text-xs text-gray-500">Full Name</div><div id="d-name" class="font-medium text-gray-900"></div></div>
+        <div class="border rounded-xl p-4"><div class="text-xs text-gray-500">Role</div><div id="d-role" class="font-medium text-gray-900"></div></div>
+        <div class="border rounded-xl p-4"><div class="text-xs text-gray-500">Email</div><div id="d-email" class="font-medium text-gray-900 break-all"></div></div>
+        <div class="border rounded-xl p-4"><div class="text-xs text-gray-500">Section</div><div id="d-id" class="font-medium text-gray-900 break-all"></div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="confirm-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center"><i class="ri-question-line"></i></div>
+      <div class="font-semibold text-gray-900">Sign out?</div>
+    </div>
+    <p class="mt-3 text-sm text-gray-600">Are you sure you want to sign out?</p>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button id="cancel-signout" class="px-4 py-2 rounded-lg bg-gray-100">Cancel</button>
+      <button id="confirm-signout" class="px-4 py-2 rounded-lg bg-primary text-white">Yes</button>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-primary text-white py-8">
+  <div class="px-6">
+    <div class="max-w-6xl mx-auto text-center text-white/80 text-sm">© 2025 SLSU Lucena. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- Firebase config -->
+<script type="module" src="assets/js/firebase-config.js"></script>
+
+<!-- Profile logic -->
+<script type="module">
+  import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  const { auth, db } = window.__FB;
+  const CLOUDINARY_CLOUD_NAME = "dexqmjbtj";
+  const CLOUDINARY_UPLOAD_PRESET = "slsu-class";
+
+  const initials = s => (s||'').trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || 'GU';
+  const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
+
+  let currentUser = null, cachedData = {};
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){ location.href='about.html'; return; }
+    currentUser = user;
+
+    const snap = await getDoc(doc(db,'users',user.uid));
+    cachedData = snap.exists()? snap.data(): { name:user.displayName||'User', email:user.email||'', role:'guest' };
+
+    const avatarEl = document.getElementById('avatar');
+    avatarEl.innerHTML = '';
+    const url = cachedData.photoURL || user.photoURL || '';
+    if (url) {
+      avatarEl.innerHTML = `<img src="${url}?v=${Date.now()}" class="w-full h-full object-cover" alt="Profile">`;
+      sessionStorage.setItem('auth_photo', url);
+    } else {
+      avatarEl.textContent = initials(cachedData.name);
+      sessionStorage.removeItem('auth_photo');
+    }
+
+    document.getElementById('name-heading').textContent = cachedData.name || 'User';
+    document.getElementById('role-badge').textContent = cap(cachedData.role||'guest');
+    document.getElementById('email-sub').textContent = cachedData.email || '—';
+    document.getElementById('id-sub').textContent = 'ID: ' + (cachedData.studentId || sessionStorage.getItem('auth_id') || '—');
+
+    document.getElementById('d-name').textContent  = cachedData.name || '—';
+    document.getElementById('d-role').textContent  = cap(cachedData.role||'guest');
+    document.getElementById('d-email').textContent = cachedData.email || '—';
+    document.getElementById('d-id').textContent    = cachedData.section || '—';
+
+    sessionStorage.setItem('auth_name', cachedData.name||'User');
+    sessionStorage.setItem('auth_role', cachedData.role||'guest');
+    sessionStorage.setItem('auth_email', cachedData.email||'');
+    if (cachedData.studentId) sessionStorage.setItem('auth_id', cachedData.studentId);
+    if (cachedData.section)   sessionStorage.setItem('auth_section', cachedData.section);
+  });
+
+  // Upload to Cloudinary
+  const fileInput = document.getElementById('file-input');
+  document.getElementById('btn-change').addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', async (e)=>{
+    const f = e.target.files?.[0]; if(!f || !currentUser) return;
+    const status = document.getElementById('upload-status'); status.textContent = 'Uploading...';
+    try{
+      const form = new FormData();
+      form.append('file', f);
+      form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      form.append('folder', 'avatars');
+
+      const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method:'POST', body: form });
+      const j = await r.json();
+      if(!j.secure_url) throw new Error(j.error?.message || 'Upload failed');
+
+      const url = j.secure_url;
+      await setDoc(doc(db,'users',currentUser.uid), { photoURL:url, updatedAt:serverTimestamp() }, { merge:true });
+      await updateProfile(currentUser, { photoURL:url });
+
+      sessionStorage.setItem('auth_photo', url);                           // for navbar on next page
+      document.getElementById('avatar').innerHTML = `<img src="${url}?v=${Date.now()}" class="w-full h-full object-cover">`;
+      status.textContent = 'Saved!';
+    }catch(e){
+      alert('Upload failed: ' + (e.message||e));
+      status.textContent = 'Upload failed';
+    }finally{
+      setTimeout(()=> status.textContent='', 1500);
+    }
+  });
+
+  // Sign-out
+  const modal = document.getElementById('confirm-modal');
+  document.getElementById('signout').addEventListener('click', ()=> modal.classList.remove('hidden'));
+  document.getElementById('cancel-signout').addEventListener('click', ()=> modal.classList.add('hidden'));
+  document.getElementById('confirm-signout').addEventListener('click', async ()=>{
+    try{ await signOut(auth);}catch(_){}
+    sessionStorage.clear();
+    location.href='about.html';
+  });
+</script>
+</body>
+</html>
