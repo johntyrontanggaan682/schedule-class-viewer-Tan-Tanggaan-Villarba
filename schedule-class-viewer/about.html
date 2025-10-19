@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SLSU Lucena — Login</title>
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -16,15 +15,12 @@
             'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px',
             'xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
           },
-          boxShadow: {
-            glow: '0 10px 30px rgba(22,163,74,.15)'
-          }
+          boxShadow: { glow: '0 10px 30px rgba(22,163,74,.15)' }
         }
       }
     }
   </script>
 
-  <!-- Fonts / Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,79 +28,40 @@
   <style>
     :where([class^="ri-"])::before{content:"\f3c2";}
     body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-    /* tiny animation */
     @keyframes fadeIn { from {opacity:0; transform: translateY(6px)} to {opacity:1; transform: none} }
     .fade-in { animation: fadeIn .25s ease-out both; }
+    @media (min-width: 768px){
+      .bg-shift-top{ background-position: center -140px !important; }
+    }
+    @media (max-width: 767px){
+      .bg-shift-top{ background-position: center -80px !important; }
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-  <!-- Nav -->
-  <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
-    <div class="px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-12 h-12 object-contain rounded-full" />
-          <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
-        </div>
-
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html#home"     class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
-          <a href="sections.html"       class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
-          <a href="schedules.html"      class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-          <a href="students.html"       class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
-          <a href="teachers.html"       class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-          <a href="about.html"          class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
-        </div>
-
-        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
-      </div>
-
-      <div id="mobile-menu" class="md:hidden mt-4 hidden">
-        <div class="space-y-2">
-          <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
-          <a href="sections.html"   class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
-          <a href="schedules.html"  class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-          <a href="students.html"   class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
-          <a href="teachers.html"   class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-          <a href="about.html"      class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-login-circle-line"></i><span>About</span></a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- LOGIN -->
-  <main class="pt-20">
+  <main class="pt-0">
     <section class="min-h-[calc(100vh-5rem)] bg-white relative overflow-hidden">
-      <!-- Background image + soft shapes -->
       <div class="absolute inset-0">
-        <!-- school building image (slightly more visible) -->
-        <div class="absolute inset-0 bg-center bg-cover opacity-30" style="background-image:url('lucena.png')"></div>
+        <div class="absolute inset-0 bg-center bg-cover opacity-30 bg-shift-top" style="background-image:url('lucena.png')"></div>
         <div class="absolute inset-0 bg-gradient-to-br from-white/30 via-white/20 to-white/10"></div>
-
-        <!-- subtle circles -->
         <div class="absolute -left-24 top-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl"></div>
         <div class="absolute -right-24 bottom-10 w-72 h-72 rounded-full bg-secondary/10 blur-3xl"></div>
       </div>
 
       <div class="relative px-6 py-12">
-        <!-- Brand strip -->
-        <div class="max-w-[700px] mx-auto mb-4 px-4 flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center">
-            <i class="ri-shield-check-line text-lg"></i>
-          </div>
+        <div class="max-w-[560px] mx-auto mb-4 px-4 flex items-center gap-3">
+          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-9 h-9 rounded-full object-cover ring-2 ring-primary/20">
           <div class="leading-tight">
             <div class="text-sm font-semibold text-gray-800">SLSU Lucena</div>
             <div class="text-[11px] text-gray-500 -mt-0.5">Class Schedule Management System</div>
           </div>
           <div class="ml-auto flex items-center gap-2 text-gray-500 text-xs">
-            <i class="ri-time-line"></i><span>Academic Year 2024–2025</span>
+            <i class="ri-time-line"></i><span>Academic Year 2025–2026</span>
           </div>
         </div>
 
-        <!-- Card (slightly smaller as requested) -->
-        <div class="max-w-[700px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-glow overflow-hidden fade-in">
-          <!-- Green header -->
+        <div class="max-w-[560px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-glow overflow-hidden fade-in">
           <div class="bg-primary text-white px-6 py-5">
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
@@ -117,7 +74,6 @@
             </div>
           </div>
 
-          <!-- Tabs -->
           <div class="px-5 md:px-6 pt-5 md:pt-6">
             <div class="inline-flex bg-gray-100 p-1 rounded-full text-sm">
               <button id="tab-student" class="tab-btn px-4 py-2 rounded-full font-medium bg-white text-primary shadow-sm flex items-center gap-2 transition">
@@ -132,10 +88,18 @@
             </div>
           </div>
 
-          <!-- Form body -->
-          <div class="px-5 md:px-6 py-5 md:py-6">
+          <div class="px-5 md:px-6 py-5 md:py-6 max-h-[60vh] overflow-y-auto">
             <form id="login-form" class="space-y-4" onsubmit="event.preventDefault();">
-              <!-- ID / Username (role-specific label) -->
+              <div id="student-name-row" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <div class="relative">
+                  <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="student-fullname" type="text"
+                         class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Enter your full name">
+                </div>
+              </div>
+
               <div>
                 <label id="id-label" class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
                 <div class="relative">
@@ -146,7 +110,16 @@
                 </div>
               </div>
 
-              <!-- Section (students only, placed under password as requested) -->
+              <div id="email-row" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <div class="relative">
+                  <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="email-input" type="email"
+                         class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Enter your email address">
+                </div>
+              </div>
+
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                 <div class="relative">
@@ -175,7 +148,6 @@
                 </div>
               </div>
 
-              <!-- Remember + forgot -->
               <div class="flex items-center justify-between pt-1">
                 <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                   <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
@@ -184,7 +156,6 @@
                 <a href="#" class="text-sm text-primary hover:underline">Forgot password?</a>
               </div>
 
-              <!-- Submit -->
               <button id="submit-btn" type="submit"
                       class="w-full px-4 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition shadow-sm active:scale-[.99]">
                 Sign in as Student
@@ -192,7 +163,6 @@
             </form>
           </div>
 
-          <!-- Bottom area -->
           <div class="px-5 md:px-6 pb-5 md:pb-6">
             <div class="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
               <div class="flex items-center justify-between flex-wrap gap-3">
@@ -205,15 +175,6 @@
                   Register Now
                 </button>
               </div>
-              <p class="text-[11px] text-gray-500 mt-3">
-                By registering, you agree to our
-                <a href="#" class="text-primary hover:underline">Terms of Service</a> and
-                <a href="#" class="text-primary hover:underline">Privacy Policy</a>.
-              </p>
-            </div>
-
-            <div class="text-center text-xs text-gray-500 mt-4">
-              Need help? <a href="#" class="text-primary hover:underline">Contact Support</a>
             </div>
           </div>
         </div>
@@ -221,51 +182,117 @@
     </section>
   </main>
 
-  <!-- Register Modal -->
-  <div id="register-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl">
-      <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-            <i class="ri-user-add-line text-lg"></i>
+  <div id="register-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+    <div class="min-h-full w-full flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl">
+        <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+              <i class="ri-user-add-line text-lg"></i>
+            </div>
+            <div>
+              <div id="register-title" class="text-lg font-bold text-gray-800">Create an Account</div>
+              <div id="register-subtitle" class="text-xs text-gray-500 -mt-0.5">Choose your role to continue</div>
+            </div>
           </div>
-          <div>
-            <div class="text-lg font-bold text-gray-800">Create an Account</div>
-            <div class="text-xs text-gray-500 -mt-0.5">Choose your role to continue</div>
+          <button id="close-register" class="w-8 h-8 rounded-full hover:bg-gray-100 text-gray-500 flex items-center justify-center">
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+
+        <div id="register-role" class="px-6 py-6 space-y-4">
+          <button id="choose-student" class="w-full px-4 py-3 rounded-button border border-primary text-primary hover:bg-primary/10 transition flex items-center justify-center gap-2">
+            <i class="ri-graduation-cap-line"></i><span>Register as Student</span>
+          </button>
+          <button id="choose-teacher" class="w-full px-4 py-3 rounded-button border border-primary text-primary hover:bg-primary/10 transition flex items-center justify-center gap-2">
+            <i class="ri-user-voice-line"></i><span>Register as Teacher</span>
+          </button>
+        </div>
+
+        <div id="register-form-wrap" class="hidden">
+          <div class="max-h-[70vh] overflow-y-auto px-6 py-6">
+            <form id="register-form" class="space-y-4" onsubmit="event.preventDefault();">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <div class="relative">
+                  <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="reg-fullname" type="text" required
+                         class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Enter your full name">
+                </div>
+              </div>
+
+              <div id="reg-student-id-group">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                <div class="relative">
+                  <i class="ri-id-card-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="reg-student-id" type="text"
+                         class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Enter your student ID">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <div class="relative">
+                  <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="reg-email" type="email" required
+                         class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Enter your email address">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <div class="relative">
+                  <i class="ri-lock-2-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="reg-password" type="password" required
+                         class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                         placeholder="Create a password">
+                  <button type="button" id="toggle-reg-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <i class="ri-eye-line"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div id="reg-student-section-group">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
+                <div class="relative">
+                  <i class="ri-layout-grid-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <select id="reg-section"
+                          class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                    <option value="" disabled selected>Select your section</option>
+                    <option>BIT 3A-A</option>
+                    <option>BIT 3A-B</option>
+                    <option>BIT 3B-A</option>
+                    <option>BIT 3B-B</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full px-4 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition">
+                Create Account
+              </button>
+            </form>
           </div>
         </div>
-        <button id="close-register" class="w-8 h-8 rounded-full hover:bg-gray-100 text-gray-500 flex items-center justify-center">
-          <i class="ri-close-line text-xl"></i>
-        </button>
-      </div>
 
-      <div class="px-6 py-6 space-y-4">
-        <button class="w-full px-4 py-3 rounded-button border border-primary text-primary hover:bg-primary/10 transition flex items-center justify-center gap-2">
-          <i class="ri-graduation-cap-line"></i><span>Register as Student</span>
-        </button>
-        <button class="w-full px-4 py-3 rounded-button border border-primary text-primary hover:bg-primary/10 transition flex items-center justify-center gap-2">
-          <i class="ri-user-voice-line"></i><span>Register as Teacher</span>
-        </button>
-        <p class="text-[11px] text-gray-500 pt-2">
-          By continuing, you agree to the campus acceptable use policy.
-        </p>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="bg-primary text-white py-12">
     <div class="px-6">
       <div class="max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-2 gap-8">
           <div>
             <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
             <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
             <div class="flex items-center space-x-4">
+            <a href="https://www.facebook.com/profile.php?id=100064260360036" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
               <i class="ri-facebook-line text-xl"></i>
-              <i class="ri-twitter-line text-xl"></i>
-              <i class="ri-instagram-line text-xl"></i>
-            </div>
+            </a>
+          </div>
           </div>
           <div>
             <h3 class="text-xl font-bold mb-4">Contact Information</h3>
@@ -273,17 +300,6 @@
               <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
               <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
               <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-            <div class="space-y-2">
-              <a href="index.html#home" class="block text-white/80 hover:text-white">Home</a>
-              <a href="sections.html" class="block text-white/80 hover:text-white">Sections</a>
-              <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
-              <a href="students.html" class="block text-white/80 hover:text-white">Students</a>
-              <a href="teachers.html" class="block text-white/80 hover:text-white">Teachers</a>
-              <a href="about.html" class=" block text-white/80 hover:text-white"><i class="ri-login-circle-line"></i><span>LogIn/Register</span></a>
             </div>
           </div>
         </div>
@@ -294,14 +310,7 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script>
-    // Mobile nav
-    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-      document.getElementById('mobile-menu')?.classList.toggle('hidden');
-    });
-
-    // Tabs behavior
     const tabStudent = document.getElementById('tab-student');
     const tabTeacher = document.getElementById('tab-teacher');
     const tabAdmin   = document.getElementById('tab-admin');
@@ -309,50 +318,59 @@
     const idLabel = document.getElementById('id-label');
     const idInput = document.getElementById('id-input');
     const submitBtn = document.getElementById('submit-btn');
+
     const studentRow = document.getElementById('student-section-row');
+    const studentNameRow = document.getElementById('student-name-row');
+    const emailRow = document.getElementById('email-row');
+    let currentRole = 'student';
 
     function setActive(tab){
-      // reset styles
       [tabStudent, tabTeacher, tabAdmin].forEach(b=>{
         b.classList.remove('bg-white','text-primary','shadow-sm');
         b.classList.add('text-gray-700');
       });
-      // apply active
       tab.classList.add('bg-white','text-primary','shadow-sm');
       tab.classList.remove('text-gray-700');
     }
 
     tabStudent.addEventListener('click', () => {
       setActive(tabStudent);
+      currentRole = 'student';
       idLabel.textContent = 'Student ID';
       idInput.placeholder = 'Enter your student ID';
       idInput.type = 'text';
       submitBtn.textContent = 'Sign in as Student';
       studentRow.classList.remove('hidden');
+      studentNameRow.classList.remove('hidden');
+      emailRow.classList.remove('hidden');
     });
 
     tabTeacher.addEventListener('click', () => {
       setActive(tabTeacher);
-      idLabel.textContent = 'Teacher ID';
-      idInput.placeholder = 'Enter your teacher ID';
-      idInput.type = 'text';
+      currentRole = 'teacher';
+      idLabel.textContent = 'Email Address';
+      idInput.placeholder = 'Enter your email address';
+      idInput.type = 'email';
       submitBtn.textContent = 'Sign in as Teacher';
       studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      emailRow.classList.add('hidden');
     });
 
     tabAdmin.addEventListener('click', () => {
       setActive(tabAdmin);
+      currentRole = 'admin';
       idLabel.textContent = 'Username';
       idInput.placeholder = 'Enter your admin username';
       idInput.type = 'text';
       submitBtn.textContent = 'Sign in as Admin';
       studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      emailRow.classList.add('hidden');
     });
 
-    // default: Student active (show section)
     tabStudent.click();
 
-    // Password show/hide
     const passInput = document.getElementById('password-input');
     const togglePass = document.getElementById('toggle-pass');
     togglePass.addEventListener('click', ()=>{
@@ -361,11 +379,88 @@
       togglePass.innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
     });
 
-    // Register modal
     const regModal = document.getElementById('register-modal');
-    document.getElementById('open-register').addEventListener('click', ()=>regModal.classList.remove('hidden'));
-    document.getElementById('close-register').addEventListener('click', ()=>regModal.classList.add('hidden'));
+    const openRegister = document.getElementById('open-register');
+    const closeRegister = document.getElementById('close-register');
+    const roleView = document.getElementById('register-role');
+    const formWrap = document.getElementById('register-form-wrap');
+    const regTitle = document.getElementById('register-title');
+    const regSubtitle = document.getElementById('register-subtitle');
+    const chooseStudent = document.getElementById('choose-student');
+    const chooseTeacher = document.getElementById('choose-teacher');
+
+    const regStudentIdGroup = document.getElementById('reg-student-id-group');
+    const regStudentSectionGroup = document.getElementById('reg-student-section-group');
+
+    const toggleRegPass = document.getElementById('toggle-reg-pass');
+    const regPassword = document.getElementById('reg-password');
+
+    openRegister.addEventListener('click', () => {
+      regTitle.textContent = 'Create an Account';
+      regSubtitle.textContent = 'Choose your role to continue';
+      roleView.classList.remove('hidden');
+      formWrap.classList.add('hidden');
+      regModal.classList.remove('hidden');
+    });
+    closeRegister.addEventListener('click', () => regModal.classList.add('hidden'));
     regModal.addEventListener('click', (e)=>{ if(e.target === regModal) regModal.classList.add('hidden'); });
+
+    chooseStudent.addEventListener('click', ()=>{
+      regTitle.textContent = 'Register as Student';
+      regSubtitle.textContent = 'Fill out the information below';
+      roleView.classList.add('hidden');
+      formWrap.classList.remove('hidden');
+      regStudentIdGroup.classList.remove('hidden');
+      regStudentSectionGroup.classList.remove('hidden');
+    });
+
+    chooseTeacher.addEventListener('click', ()=>{
+      regTitle.textContent = 'Register as Teacher';
+      regSubtitle.textContent = 'Fill out the information below';
+      roleView.classList.add('hidden');
+      formWrap.classList.remove('hidden');
+      regStudentIdGroup.classList.add('hidden');
+      regStudentSectionGroup.classList.add('hidden');
+    });
+
+    toggleRegPass.addEventListener('click', ()=>{
+      const isPwd = regPassword.type === 'password';
+      regPassword.type = isPwd ? 'text' : 'password';
+      toggleRegPass.innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
+    });
+
+    document.getElementById('register-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      regModal.classList.add('hidden');
+      e.target.reset();
+    });
+
+    document.getElementById('login-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const password = document.getElementById('password-input').value.trim();
+      const idValue = idInput.value.trim();
+
+      if (currentRole === 'student') {
+        const fullname = document.getElementById('student-fullname').value.trim();
+        const email = document.getElementById('email-input').value.trim();
+        const section = document.getElementById('student-section').value;
+        if (!fullname || !idValue || !email || !password || !section) {
+          alert('Please complete all required fields for Student.');
+          return;
+        }
+      } else if (currentRole === 'teacher') {
+        if (!idValue || !password) {
+          alert('Please enter your email and password.');
+          return;
+        }
+      } else {
+        if (!idValue || !password) {
+          alert('Please enter your username and password.');
+          return;
+        }
+      }
+      window.location.href = 'index.html';
+    });
   </script>
 </body>
 </html>
