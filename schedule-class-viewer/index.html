@@ -17,14 +17,8 @@ tailwind.config = {
       keyframes: {
         fadeIn: { '0%':{opacity:0,transform:'translateY(6px)'}, '100%':{opacity:1,transform:'translateY(0)'} },
         fadeOut: { '0%':{opacity:1}, '100%':{opacity:0} },
-        slideSwap: {
-          '0%,45%':{opacity:1},
-          '55%,100%':{opacity:0}
-        },
-        slideSwapAlt: {
-          '0%,45%':{opacity:0},
-          '55%,100%':{opacity:1}
-        }
+        slideSwap: { '0%,45%':{opacity:1}, '55%,100%':{opacity:0} },
+        slideSwapAlt: { '0%,45%':{opacity:0}, '55%,100%':{opacity:1} }
       },
       animation: {
         'fade-in': 'fadeIn .25s ease-out both',
@@ -73,6 +67,30 @@ tailwind.config = {
           <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
           <i class="ri-user-star-line"></i><span>Teachers</span>
         </a>
+
+        <div id="profile-wrap" class="relative">
+          <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
+            <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
+          </a>
+          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
+            <a href="profile.html" class="flex items-center gap-3 hover:opacity-90">
+              <div id="acc-avatar" class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold overflow-hidden"></div>
+              <div class="min-w-0">
+                <div id="acc-name" class="font-semibold truncate"></div>
+                <div id="acc-role" class="text-xs text-gray-500 truncate"></div>
+              </div>
+            </a>
+            <div class="mt-3 space-y-1 text-sm">
+              <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span id="acc-email" class="truncate"></span></div>
+              <div class="flex items-center gap-2"><i class="ri-id-card-line"></i><span id="acc-id" class="truncate"></span></div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <a id="acc-cta" href="profile.html" class="px-3 py-2 rounded-button bg-primary text-white text-sm text-center active:scale-95 transition">View profile</a>
+              <button id="signout-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
+            </div>
+          </div>
+        </div>
+
       </div>
       <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10 active:scale-95 transition">
         <i class="ri-menu-line text-xl"></i>
@@ -85,6 +103,7 @@ tailwind.config = {
         <a href="schedules.html"class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
         <a href="students.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-line"></i><span>Students</span></a>
         <a href="teachers.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="profile.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-3-line"></i><span>Profile</span></a>
       </div>
     </div>
   </div>
@@ -271,8 +290,25 @@ tailwind.config = {
   </div>
 </footer>
 
+<div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+        <i class="ri-question-line"></i>
+      </div>
+      <div class="font-semibold text-gray-900">Sign out?</div>
+    </div>
+    <p class="mt-3 text-sm text-gray-600">Are you sure you want to sign out?</p>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button id="cancel-signout" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+      <button id="confirm-signout" class="px-4 py-2 rounded-button bg-primary text-white">Yes</button>
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/realtime-calendar.js"></script>
+<script src="assets/js/profile.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     ['home', 'about-merged'].forEach(function(id){
@@ -282,14 +318,16 @@ tailwind.config = {
       void el.offsetWidth;
       el.classList.add('animate-fade-in');
     });
+
     document.querySelectorAll('a.nav-link').forEach(function(a){
       a.addEventListener('click', function(){
         var href = a.getAttribute('href') || '';
+        if (a.id === 'profile-trigger') return;
         if(href.startsWith('#')) return;
         document.body.classList.add('animate-page-fade-out');
       });
     });
-  });
+});
 </script>
 </body>
 </html>
