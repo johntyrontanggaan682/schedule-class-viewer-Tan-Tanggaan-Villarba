@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SLSU Lucena — Login</title>
-
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -27,7 +27,6 @@
       }
     }
   </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -40,8 +39,6 @@
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-
- 
   <div id="toast" class="fixed left-1/2 -translate-x-1/2 top-5 z-[60] hidden">
     <div class="rounded-xl bg-white shadow-2xl border border-green-200 px-4 py-3 text-sm text-green-800 flex items-center gap-2">
       <i class="ri-check-double-line text-lg"></i>
@@ -83,7 +80,6 @@
             </div>
           </div>
 
-          <!-- Role tabs -->
           <div class="px-5 md:px-6 pt-5 md:pt-6">
             <div class="inline-flex bg-gray-100 p-1 rounded-full text-sm">
               <button id="tab-student" class="tab-btn px-4 py-2 rounded-full font-medium bg-white text-primary shadow-sm flex items-center gap-2 transition">
@@ -98,14 +94,13 @@
             </div>
           </div>
 
-          <!-- FORM -->
           <div class="px-5 md:px-6 py-5 md:py-6 max-h-[60vh] overflow-y-auto">
-            <form id="login-form" class="space-y-4">
+            <form id="login-form" class="space-y-4" autocomplete="off">
               <div id="student-name-row" class="hidden">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                 <div class="relative">
                   <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="student-fullname" type="text" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
+                  <input id="student-fullname" type="text" autocomplete="off" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
                 </div>
               </div>
 
@@ -113,7 +108,7 @@
                 <label id="id-label" class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
                 <div class="relative">
                   <i class="ri-id-card-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="id-input" type="text" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your student ID">
+                  <input id="id-input" type="text" autocomplete="off" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your student ID">
                 </div>
               </div>
 
@@ -121,7 +116,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                 <div class="relative">
                   <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="email-input" type="email" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email address">
+                  <input id="email-input" type="email" autocomplete="email" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email address">
                 </div>
               </div>
 
@@ -129,7 +124,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                 <div class="relative">
                   <i class="ri-lock-2-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="password-input" type="password" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your password">
+                  <input id="password-input" type="password" autocomplete="new-password" name="new-password" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your password" value="">
                   <button type="button" id="toggle-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     <i class="ri-eye-line"></i>
                   </button>
@@ -182,7 +177,6 @@
     </section>
   </main>
 
-  
   <div id="register-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
     <div class="min-h-full w-full flex items-center justify-center p-4">
       <div id="register-panel" class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl">
@@ -212,12 +206,12 @@
 
         <div id="register-form-wrap" class="hidden">
           <div class="max-h-[70vh] overflow-y-auto px-6 py-6">
-            <form id="register-form" class="space-y-4">
+            <form id="register-form" class="space-y-4" autocomplete="off">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                 <div class="relative">
                   <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="reg-fullname" type="text" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
+                  <input id="reg-fullname" type="text" autocomplete="off" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
                 </div>
               </div>
 
@@ -225,7 +219,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
                 <div class="relative">
                   <i class="ri-id-card-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="reg-student-id" type="text" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your student ID">
+                  <input id="reg-student-id" type="text" autocomplete="off" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your student ID">
                 </div>
               </div>
 
@@ -233,7 +227,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                 <div class="relative">
                   <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="reg-email" type="email" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email address">
+                  <input id="reg-email" type="email" autocomplete="email" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email address">
                 </div>
               </div>
 
@@ -241,7 +235,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                 <div class="relative">
                   <i class="ri-lock-2-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                  <input id="reg-password" type="password" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Create a password">
+                  <input id="reg-password" type="password" autocomplete="new-password" name="new-password" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Create a password" value="">
                   <button type="button" id="toggle-reg-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     <i class="ri-eye-line"></i>
                   </button>
@@ -258,6 +252,18 @@
                     <option>BIT 3A-B</option>
                     <option>BIT 3B-A</option>
                     <option>BIT 3B-B</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="reg-student-status-group">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <div class="relative">
+                  <i class="ri-award-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <select id="reg-status" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                    <option value="" disabled selected>Select status</option>
+                    <option value="regular">Regular</option>
+                    <option value="irregular">Irregular</option>
                   </select>
                 </div>
               </div>
@@ -302,18 +308,17 @@
     </div>
   </footer>
 
-  
   <script type="module" src="assets/js/firebase-config.js"></script>
   <script>
-  if (location.hostname === '127.0.0.1') {
-    location.replace(location.href.replace('127.0.0.1', 'localhost'));
-  }
-</script>
+    if (location.hostname === '127.0.0.1') { location.replace(location.href.replace('127.0.0.1', 'localhost')); }
+  </script>
 
   <script type="module">
     import {
-      createUserWithEmailAndPassword, signInWithEmailAndPassword,
-      updateProfile
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile,
+      fetchSignInMethodsForEmail
     } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
     import {
       doc, getDoc, setDoc, serverTimestamp
@@ -356,8 +361,12 @@
     const studentRow = document.getElementById('student-section-row');
     const studentNameRow = document.getElementById('student-name-row');
     const emailRow = document.getElementById('email-row');
+    const emailInput = document.getElementById('email-input');
     const loginCard = document.getElementById('login-card');
+    const passInput = document.getElementById('password-input');
     let currentRole = 'student';
+
+    const idGroup = idLabel.parentElement;
 
     const setActive = (tab)=>{
       [tabStudent, tabTeacher, tabAdmin].forEach(b=>{
@@ -368,16 +377,30 @@
       tab.classList.remove('text-gray-700');
     };
 
+    const errCls = ['border-red-500','ring-2','ring-red-400','focus:ring-red-500','focus:border-red-500'];
+    const clearErr = (el)=>{ el?.classList?.remove(...errCls); el?.removeAttribute?.('aria-invalid'); };
+    const setErr   = (el)=>{ el?.classList?.add(...errCls); el?.setAttribute?.('aria-invalid','true'); };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const getActiveEmailInput = ()=> currentRole==='student' ? emailInput : idInput;
+
+    [emailInput, idInput, passInput].forEach(el=>{
+      el.addEventListener('input', ()=> clearErr(el));
+      el.addEventListener('focus',  ()=> clearErr(el));
+    });
+
     tabStudent.addEventListener('click', () => {
       setActive(tabStudent);
       currentRole = 'student';
-      idLabel.textContent = 'Student ID';
-      idInput.placeholder = 'Enter your student ID';
-      idInput.type = 'text';
-      submitBtn.textContent = 'Sign in as Student';
-      studentRow.classList.remove('hidden');
-      studentNameRow.classList.remove('hidden');
+      idGroup.classList.add('hidden');
+      idInput.required = false;
+      idInput.disabled = true;
       emailRow.classList.remove('hidden');
+      emailInput.required = true;
+      studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Student';
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
     });
     tabTeacher.addEventListener('click', () => {
       setActive(tabTeacher);
@@ -385,10 +408,16 @@
       idLabel.textContent = 'Email Address';
       idInput.placeholder = 'Enter your email address';
       idInput.type = 'email';
-      submitBtn.textContent = 'Sign in as Teacher';
+      idGroup.classList.remove('hidden');
+      idInput.required = true;
+      idInput.disabled = false;
+      emailRow.classList.add('hidden');
+      emailInput.required = false;
       studentRow.classList.add('hidden');
       studentNameRow.classList.add('hidden');
-      emailRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Teacher';
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
     });
     tabAdmin.addEventListener('click', () => {
       setActive(tabAdmin);
@@ -396,105 +425,124 @@
       idLabel.textContent = 'Username (email)';
       idInput.placeholder = 'Enter your admin email';
       idInput.type = 'email';
-      submitBtn.textContent = 'Sign in as Admin';
+      idGroup.classList.remove('hidden');
+      idInput.required = true;
+      idInput.disabled = false;
+      emailRow.classList.add('hidden');
+      emailInput.required = false;
       studentRow.classList.add('hidden');
       studentNameRow.classList.add('hidden');
-      emailRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Admin';
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
     });
+
     tabStudent.click();
 
-  
-    const passInput = document.getElementById('password-input');
-    const togglePass = document.getElementById('toggle-pass');
-    togglePass.addEventListener('click', ()=>{
+    function applyRoleFromQuery() {
+      const q = new URLSearchParams(location.search);
+      const role = q.get('role');
+      const email = q.get('email');
+      if (role === 'teacher') {
+        tabTeacher.click();
+        if (email) idInput.value = email;
+      } else if (role === 'student') {
+        tabStudent.click();
+        if (email) emailInput.value = email;
+      }
+      if (role) history.replaceState({}, '', location.pathname);
+    }
+    applyRoleFromQuery();
+
+    document.getElementById('toggle-pass').addEventListener('click', ()=>{
       const isPwd = passInput.type === 'password';
       passInput.type = isPwd ? 'text' : 'password';
-      togglePass.innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
+      document.getElementById('toggle-pass').innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
     });
 
-  
     document.getElementById('login-form').addEventListener('submit', async (e)=>{
       e.preventDefault();
       if (!navigator.onLine) { toast('You are offline.'); return; }
 
       const password = passInput.value.trim();
       const idValue  = idInput.value.trim();
+      const emailVal = (currentRole==='student' ? emailInput.value.trim() : idValue);
+
+      clearErr(getActiveEmailInput()); clearErr(passInput);
+      if (!emailVal || !emailRegex.test(emailVal)) { setErr(getActiveEmailInput()); toast('Enter a valid email.'); return; }
+      if (!password) { setErr(passInput); toast('Enter your password.'); return; }
 
       try {
-        let email, displayName, section, studentId, role;
-
         if (currentRole === 'student') {
-          displayName = document.getElementById('student-fullname').value.trim();
-          email       = document.getElementById('email-input').value.trim();
-          section     = document.getElementById('student-section').value;
-          studentId   = idValue;
-          role        = 'student';
-
-          if (!displayName || !email || !studentId || !section || !password) {
-            toast('Please complete all student fields.');
-            return;
-          }
-
           try {
-            const { user } = await signInWithEmailAndPassword(auth, email, password);
-            await ensureUserDoc(user.uid, { name: displayName, email, role, section, studentId });
-            await updateProfile(user, { displayName });
+            const { user } = await signInWithEmailAndPassword(auth, emailVal, password);
+            const snap = await getDoc(doc(db, 'users', user.uid));
+            const data = snap.exists() ? snap.data() : {};
+            setSession({
+              auth_name: data.name || user.displayName || emailVal.split('@')[0],
+              auth_role: data.role || 'student',
+              auth_email: emailVal,
+              auth_id: data.studentId || '',
+              auth_section: data.section || '',
+              auth_status: data.status || ''
+            });
+            await ensureUserDoc(user.uid, {
+              name: data.name || user.displayName || emailVal.split('@')[0],
+              email: emailVal,
+              role: data.role || 'student',
+              studentId: data.studentId || null,
+              section: data.section || null,
+              status: data.status || null
+            });
+            window.location.href = 'index.html?welcome=1';
           } catch (err) {
-            if (err.code === 'auth/user-not-found') {
-              const { user } = await createUserWithEmailAndPassword(auth, email, password);
-              await updateProfile(user, { displayName });
-              await ensureUserDoc(user.uid, { name: displayName, email, role, section, studentId });
-            } else {
-              throw err;
-            }
+            await handleAuthErrorAccurate(err, emailVal);
           }
-
-          setSession({
-            auth_name: displayName,
-            auth_role: role,
-            auth_email: email,
-            auth_id: studentId,
-            auth_section: section
-          });
-
         } else {
-          email = idValue; 
-          role  = currentRole;
-          if (!email || !password) { toast('Enter your email & password.'); return; }
-          displayName = capWords(email.split('@')[0].replace(/\d+/g,'') || role);
-
+          const role  = currentRole;
           try {
-            const { user } = await signInWithEmailAndPassword(auth, email, password);
-            await ensureUserDoc(user.uid, { name: displayName, email, role });
+            const { user } = await signInWithEmailAndPassword(auth, emailVal, password);
+            const snap = await getDoc(doc(db,'users',user.uid));
+            const stored = snap.exists() ? snap.data() : {};
+            const nameFromStore = stored.name && String(stored.name).trim() ? stored.name : null;
+            const displayName = nameFromStore || capWords(emailVal.split('@')[0].replace(/\d+/g,'') || role);
+            await ensureUserDoc(user.uid, { name: displayName, email: emailVal, role });
             await updateProfile(user, { displayName });
+            setSession({
+              auth_name: displayName,
+              auth_role: role,
+              auth_email: emailVal,
+              auth_id: emailVal.split('@')[0],
+              auth_section: null,
+              auth_status: null
+            });
+            window.location.href = 'index.html?welcome=1';
           } catch (err) {
-            if (err.code === 'auth/user-not-found') {
-              const { user } = await createUserWithEmailAndPassword(auth, email, password);
-              await updateProfile(user, { displayName });
-              await ensureUserDoc(user.uid, { name: displayName, email, role });
-            } else {
-              throw err;
-            }
+            await handleAuthErrorAccurate(err, emailVal);
           }
-
-          setSession({
-            auth_name: displayName,
-            auth_role: role,
-            auth_email: email,
-            auth_id: email.split('@')[0],
-            auth_section: null
-          });
         }
-
-       
-        window.location.href = 'index.html?welcome=1';
       } catch (err) {
-        console.error(err);
         toast(err.message?.replace('Firebase: ', '') || 'Sign-in failed.');
       }
     });
 
- 
+    async function handleAuthErrorAccurate(err, emailVal){
+      const code = err?.code || '';
+      const emailEl = getActiveEmailInput();
+      if (code === 'auth/wrong-password') { setErr(passInput); toast('Incorrect password.'); return; }
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-email') { setErr(emailEl); toast(code==='auth/user-not-found' ? 'Account not found. Please register first.' : 'Enter a valid email address.'); return; }
+      if (code === 'auth/invalid-credential') {
+        try {
+          const methods = await fetchSignInMethodsForEmail(auth, emailVal);
+          if (methods && methods.length > 0) { setErr(passInput); toast('Incorrect password.'); }
+          else { setErr(emailEl); toast('Account not found. Please register first.'); }
+        } catch { setErr(passInput); toast('Email or password is incorrect.'); }
+        return;
+      }
+      setErr(passInput);
+      toast(err.message?.replace('Firebase: ','') || 'Sign-in failed.');
+    }
+
     const regModal = document.getElementById('register-modal');
     const registerPanel = document.getElementById('register-panel');
     const openRegister = document.getElementById('open-register');
@@ -507,6 +555,7 @@
     const chooseTeacher = document.getElementById('choose-teacher');
     const regStudentIdGroup = document.getElementById('reg-student-id-group');
     const regStudentSectionGroup = document.getElementById('reg-student-section-group');
+    const regStudentStatusGroup = document.getElementById('reg-student-status-group');
     const toggleRegPass = document.getElementById('toggle-reg-pass');
     const regPassword = document.getElementById('reg-password');
 
@@ -516,6 +565,7 @@
       roleView.classList.remove('hidden');
       formWrap.classList.add('hidden');
       regModal.classList.remove('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
     });
     const closeReg = ()=> regModal.classList.add('hidden');
     closeRegister.addEventListener('click', closeReg);
@@ -528,6 +578,8 @@
       formWrap.classList.remove('hidden');
       regStudentIdGroup.classList.remove('hidden');
       regStudentSectionGroup.classList.remove('hidden');
+      regStudentStatusGroup.classList.remove('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
     });
     chooseTeacher.addEventListener('click', ()=>{
       regTitle.textContent = 'Register as Teacher';
@@ -536,6 +588,8 @@
       formWrap.classList.remove('hidden');
       regStudentIdGroup.classList.add('hidden');
       regStudentSectionGroup.classList.add('hidden');
+      regStudentStatusGroup.classList.add('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
     });
 
     toggleRegPass.addEventListener('click', ()=>{
@@ -553,9 +607,11 @@
       const pass  = document.getElementById('reg-password').value.trim();
       const sidEl = document.getElementById('reg-student-id');
       const secEl = document.getElementById('reg-section');
+      const statEl = document.getElementById('reg-status');
 
       const sid   = sidEl && sidEl.value ? sidEl.value.trim() : '';
       const sec   = secEl && secEl.value ? secEl.value.trim() : '';
+      const stat  = statEl && statEl.value ? statEl.value.trim() : '';
       const role  = (sid && sec) ? 'student' : 'teacher';
 
       try {
@@ -564,26 +620,21 @@
         await ensureUserDoc(user.uid, {
           name: full || capWords(email.split('@')[0]),
           email, role,
-          studentId: sid || null, section: sec || null
+          studentId: sid || null,
+          section: sec || null,
+          status: role==='student' ? (stat || null) : null
         });
 
-      
         toast("You're now registered 🎉");
+        const qp = new URLSearchParams({ role, email }).toString();
         registerPanel.classList.add('animate-fade-out');
         setTimeout(()=>{
           regModal.classList.add('hidden');
           registerPanel.classList.remove('animate-fade-out');
-
-          
-          tabStudent.click();
-          document.getElementById('email-input').value = email; 
-          idInput.value = role==='student' ? (sid || '') : email;
-          loginCard.classList.add('animate-pulse-card');
-          setTimeout(()=> loginCard.classList.remove('animate-pulse-card'), 1600);
+          location.href = location.pathname + '?' + qp;
         }, 250);
 
       } catch (err) {
-        console.error(err);
         toast(err.message?.replace('Firebase: ', '') || 'Registration failed.');
       }
     });
