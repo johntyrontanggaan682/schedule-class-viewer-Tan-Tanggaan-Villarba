@@ -77,9 +77,7 @@ borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl'
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Master Schedule</h2>
             <p class="text-base text-gray-600">Complete overview of all classes, rooms, and faculty assignments</p>
           </div>
-          <button id="add-schedule-btn" class="bg-primary text-white px-5 py-2.5 rounded-button hover:bg-primary/90 transition-colors flex items-center space-x-2 text-sm !rounded-button whitespace-nowrap">
-            <i class="ri-add-line"></i><span>Add Schedule</span>
-          </button>
+          <!-- Add Schedule button removed -->
         </div>
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
           <div class="p-5 border-b border-gray-200">
@@ -114,17 +112,45 @@ borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl'
         <div id="single-table-container" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-xs">
-              <thead class="bg-primary text-white">
-                <tr class="divide-x divide-white/40">
-                  <th class="px-4 py-3 text-left font-semibold">Time</th>
-                  <th class="px-4 py-3 text-left font-semibold">Monday</th>
-                  <th class="px-4 py-3 text-left font-semibold">Tuesday</th>
-                  <th class="px-4 py-3 text-left font-semibold">Wednesday</th>
-                  <th class="px-4 py-3 text-left font-semibold">Thursday</th>
-                  <th class="px-4 py-3 text-left font-semibold">Friday</th>
+              <!-- HIGHLIGHTED HEADER -->
+              <thead class="bg-gradient-to-r from-primary to-secondary text-white sticky top-0 z-10">
+                <tr class="divide-x divide-white/20">
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Time
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Monday
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Tuesday
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Wednesday
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Thursday
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-left">
+                    <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                      Friday
+                    </div>
+                  </th>
                 </tr>
               </thead>
+
               <tbody id="schedule-table-body" class="divide-y divide-gray-200">
+
+                <!-- BIT 3B-B (existing) -->
                 <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-B" data-subject="Industrial Management (MGT03)" data-room="B102" data-day="Monday">
                   <td class="px-4 py-3 font-medium text-gray-800">7:30 AM – 9:00 AM</td>
                   <td class="px-4 py-3">
@@ -262,6 +288,161 @@ borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl'
                     </div>
                   </td>
                 </tr>
+
+                <!-- NEW: BIT 3B-A -->
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Industrial Management (MGT03)" data-room="B102" data-day="Monday">
+                  <td class="px-4 py-3 font-medium text-gray-800">7:30 AM – 9:00 AM</td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Industrial Management (MGT03)</div>
+                      <div class="text-gray-600">B102</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Specialized Technology 1 (CPT13)" data-room="CET Center" data-day="Monday">
+                  <td class="px-4 py-3 font-medium text-gray-800">10:00 AM – 12:00 PM</td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Specialized Technology 1 (CPT13)</div>
+                      <div class="text-gray-600">CET Center</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Advance Microcontroller (CPT09)" data-room="A304" data-day="Monday">
+                  <td class="px-4 py-3 font-medium text-gray-800">1:00 PM – 3:30 PM</td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Advance Microcontroller (CPT09)</div>
+                      <div class="text-gray-600">A304</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Basic Statistics (STA01)" data-room="A304" data-day="Monday">
+                  <td class="px-4 py-3 font-medium text-gray-800">3:30 PM – 5:30 PM</td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Basic Statistics (STA01)</div>
+                      <div class="text-gray-600">A304</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td><td></td>
+                </tr>
+
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Data Structure &amp; Algorithm (CPT10)" data-room="B204" data-day="Tuesday">
+                  <td class="px-4 py-3 font-medium text-gray-800">10:00 AM – 12:00 PM</td>
+                  <td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Data Structure &amp; Algorithm (CPT10)</div>
+                      <div class="text-gray-600">B204</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Web Development (CPT11)" data-room="CET Shop" data-day="Tuesday">
+                  <td class="px-4 py-3 font-medium text-gray-800">1:00 PM – 3:30 PM</td>
+                  <td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Web Development (CPT11)</div>
+                      <div class="text-gray-600">CET Shop</div>
+                    </div>
+                  </td>
+                  <td></td><td></td><td></td>
+                </tr>
+
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Industrial Management (MGT03)" data-room="B102" data-day="Wednesday">
+                  <td class="px-4 py-3 font-medium text-gray-800">7:30 AM – 9:00 AM</td>
+                  <td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Industrial Management (MGT03)</div>
+                      <div class="text-gray-600">B102</div>
+                    </div>
+                  </td>
+                  <td></td><td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Basic Statistics (STA01)" data-room="A304" data-day="Wednesday">
+                  <td class="px-4 py-3 font-medium text-gray-800">3:00 PM – 5:30 PM</td>
+                  <td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Basic Statistics (STA01)</div>
+                      <div class="text-gray-600">A304</div>
+                    </div>
+                  </td>
+                  <td></td><td></td>
+                </tr>
+
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Specialized Technology 1 (CPT13)" data-room="B204" data-day="Thursday">
+                  <td class="px-4 py-3 font-medium text-gray-800">10:00 AM – 12:00 PM</td>
+                  <td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Specialized Technology 1 (CPT13)</div>
+                      <div class="text-gray-600">B204</div>
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Advance Microcontroller (CPT09)" data-room="A304" data-day="Thursday">
+                  <td class="px-4 py-3 font-medium text-gray-800">1:00 PM – 3:30 PM</td>
+                  <td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Advance Microcontroller (CPT09)</div>
+                      <div class="text-gray-600">A304</div>
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Seminar in Information Trends and Specialized (CPT12)" data-room="A303" data-day="Thursday">
+                  <td class="px-4 py-3 font-medium text-gray-800">3:30 PM – 5:30 PM</td>
+                  <td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Seminar in Information Trends and Specialized (CPT12)</div>
+                      <div class="text-gray-600">A303</div>
+                    </div>
+                  </td>
+                  <td></td>
+                </tr>
+
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Seminar in Information Trends and Specialized (CPT12)" data-room="A303" data-day="Friday">
+                  <td class="px-4 py-3 font-medium text-gray-800">7:30 AM – 9:00 AM</td>
+                  <td></td><td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Seminar in Information Trends and Specialized (CPT12)</div>
+                      <div class="text-gray-600">A303</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Data Structure &amp; Algorithm (CPT10)" data-room="CET Center" data-day="Friday">
+                  <td class="px-4 py-3 font-medium text-gray-800">10:00 AM – 12:00 PM</td>
+                  <td></td><td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-primary/10 p-2.5 rounded">
+                      <div class="font-semibold text-primary">Data Structure &amp; Algorithm (CPT10)</div>
+                      <div class="text-gray-600">CET Center</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3B-A" data-subject="Web Development (CPT11)" data-room="A302" data-day="Friday">
+                  <td class="px-4 py-3 font-medium text-gray-800">1:00 PM – 3:30 PM</td>
+                  <td></td><td></td><td></td><td></td>
+                  <td class="px-4 py-3">
+                    <div class="bg-secondary/10 p-2.5 rounded">
+                      <div class="font-semibold text-secondary">Web Development (CPT11)</div>
+                      <div class="text-gray-600">A302</div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- BIT 3A-B (existing) -->
                 <tr class="schedule-row hover:bg-gray-50 divide-x divide-gray-200" data-section="BIT 3A-B" data-subject="Information Trends (CPT12)" data-room="A303" data-day="Monday">
                   <td class="px-4 py-3 font-medium text-gray-800">7:40 AM – 10:30 AM</td>
                   <td class="px-4 py-3">
@@ -399,6 +580,7 @@ borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl'
                     </div>
                   </td>
                 </tr>
+
               </tbody>
             </table>
           </div>
