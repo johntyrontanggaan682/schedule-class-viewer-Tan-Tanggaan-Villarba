@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sections • SLSU Lucena</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sections • SLSU Lucena BIT</title>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
   theme:{ extend:{ colors:{ primary:'#16a34a', secondary:'#22c55e' },
-  borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'} } }
+  borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'12px'} } }
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
   :where([class^="ri-"])::before{content:"\f3c2";}
-  .rounded-button{border-radius:8px}
-  label input[type="radio"]:checked + .relative .student-type-indicator { transform: scale(1); }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .rounded-button{border-radius:12px}
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px);} to { opacity:1; transform: translateY(0);} }
   .fade-in { animation: fadeIn .25s ease-out both; }
+  .soft-card{background:linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%);}
+  .pill{border-radius:9999px}
+  .choice{transition:background-color .15s, box-shadow .15s}
+  .choice-active{background:#ecfdf5; box-shadow:inset 0 0 0 1px #bbf7d0}
+  .modal-head{background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff}
+  .is-error{ outline:2px solid #ef4444; outline-offset:2px; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- Nav -->
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
   <div class="px-6 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
-        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+        <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full"/>
+        <h1 class="text-xl font-bold">SLSU Lucena BIT Class Schedule Viewer</h1>
       </div>
       <div class="hidden md:flex items-center space-x-2">
         <a href="index.html"     class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-home-line"></i><span>Home</span></a>
@@ -38,7 +43,6 @@ tailwind.config = {
         <a href="schedules.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
         <a href="students.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-line"></i><span>Students</span></a>
         <a href="teachers.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-
         <div id="profile-wrap" class="relative">
           <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
             <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
@@ -61,7 +65,6 @@ tailwind.config = {
             </div>
           </div>
         </div>
-
       </div>
       <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
     </div>
@@ -73,108 +76,74 @@ tailwind.config = {
         <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
         <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
         <a href="profile.html"   class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Profile</span></a>
+      </div>
     </div>
   </div>
 </nav>
 
 <main class="pt-20">
-  <!-- Sections Section -->
   <section id="sections" class="min-h-screen bg-gray-50">
     <div class="px-6 py-16">
       <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold text-gray-800 mb-4">Academic Sections</h2>
-          <p class="text-xl text-gray-600">Browse all available sections and access their schedules and student lists</p>
+        <div class="text-center mb-6">
+          <h2 class="text-4xl font-bold text-gray-800 mb-2">Academic Sections</h2>
+          <p class="text-base text-gray-600">Browse all available sections and access their schedules and student lists</p>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- BIT 3A-A -->
-          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-2xl font-bold text-primary">BIT 3A-A</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
-            </div>
-            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section A</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <span><span class="sec-stu" data-sec="BIT 3A-A">0</span> Students</span>
-              <span><span class="sec-subj" data-sec="BIT 3A-A">0</span> Subjects</span>
-            </div>
-          </div>
-
-          <!-- BIT 3A-B -->
-          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-2xl font-bold text-primary">BIT 3A-B</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
-            </div>
-            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section A</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <span><span class="sec-stu" data-sec="BIT 3A-B">0</span> Students</span>
-              <span><span class="sec-subj" data-sec="BIT 3A-B">0</span> Subjects</span>
-            </div>
-          </div>
-
-          <!-- BIT 3B-A -->
-          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-2xl font-bold text-primary">BIT 3B-A</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
-            </div>
-            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section B</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <span><span class="sec-stu" data-sec="BIT 3B-A">0</span> Students</span>
-              <span><span class="sec-subj" data-sec="BIT 3B-A">0</span> Subjects</span>
-            </div>
-          </div>
-
-          <!-- BIT 3B-B -->
-          <div class="section-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-2xl font-bold text-primary">BIT 3B-B</h3>
-              <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
-            </div>
-            <p class="text-gray-600 mb-3">Bachelor in Industrial Technology - 3rd Year Section B</p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <span><span class="sec-stu" data-sec="BIT 3B-B">0</span> Students</span>
-              <span><span class="sec-subj" data-sec="BIT 3B-B">0</span> Subjects</span>
+        <!-- Year dropdown -->
+        <div class="mb-8 flex justify-start">
+          <div class="w-full max-w-xs relative">
+            <button id="year-dropdown" class="w-full px-4 py-3 border border-gray-200 rounded-button bg-white text-sm flex items-center justify-between shadow-sm hover:shadow">
+              <span id="year-selected">3rd Year</span>
+              <span class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100"><i class="ri-arrow-down-s-line text-gray-500"></i></span>
+            </button>
+            <div id="year-options" class="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl p-2 hidden z-10">
+              <div class="year-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">1st Year</div>
+              <div class="year-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">2nd Year</div>
+              <div class="year-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">3rd Year</div>
+              <div class="year-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">4th Year</div>
             </div>
           </div>
         </div>
+
+        <div id="sections-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
     </div>
   </section>
 
-  <!-- Section Detail Modal -->
+  <!-- Section detail modal -->
   <div id="section-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b border-gray-200">
+    <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <div class="p-6 modal-head">
         <div class="flex items-center justify-between">
           <div>
-            <h3 id="section-detail-title" class="text-2xl font-bold text-gray-800">Section Details</h3>
-            <p id="section-detail-subtitle" class="text-gray-600">View students and schedules</p>
+            <h3 id="section-detail-title" class="text-2xl font-bold">Section Details</h3>
+            <p id="section-detail-subtitle" class="opacity-90 text-sm">View students and schedules</p>
           </div>
-          <div class="flex items-center space-x-4">
-            <button id="add-section-student-btn" class="bg-secondary text-white px-4 py-2 rounded-button hover:bg-secondary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
+          <div class="flex items-center space-x-2">
+            <button id="add-section-student-btn" class="bg-white/10 text-white px-4 py-2 rounded-button hover:bg-white/20 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-user-add-line"></i><span>Add Student</span>
             </button>
-            <button id="add-section-schedule-btn" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-primary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
+            <button id="add-section-schedule-btn" class="bg-white text-primary px-4 py-2 rounded-button hover:bg-gray-100 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-add-line"></i><span>Add Schedule</span>
             </button>
-            <button id="close-section-detail-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+            <button id="close-section-detail-btn" class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10">
               <i class="ri-close-line text-xl"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="p-6">
+      <div class="p-6 overflow-y-auto">
         <div class="grid lg:grid-cols-2 gap-8">
           <div>
             <h4 class="text-lg font-semibold text-gray-800 mb-4">Students</h4>
             <div id="section-students" class="space-y-3 max-h-96 overflow-y-auto"></div>
           </div>
           <div>
-            <h4 class="text-lg font-semibold text-gray-800 mb-4">Class Schedule</h4>
+            <div class="flex items-center mb-4">
+              <h4 class="text-lg font-semibold text-gray-800">Class Schedule</h4>
+            </div>
             <div id="section-schedule" class="space-y-3 max-h-96 overflow-y-auto"></div>
           </div>
         </div>
@@ -182,10 +151,10 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- Student Modal -->
+  <!-- Add Student modal -->
   <div id="student-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-md w-full">
-      <div class="p-6 border-b border-gray-200">
+    <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
+      <div class="p-6 border-b border-gray-100">
         <div class="flex items-center justify-between">
           <h3 id="student-modal-title" class="text-2xl font-bold text-gray-800">Add New Student</h3>
           <button id="close-student-modal-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
@@ -194,38 +163,28 @@ tailwind.config = {
         </div>
       </div>
       <form id="student-form" class="p-6 space-y-6">
-        <div>
+        <div class="soft-card border border-gray-200 rounded-xl p-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
           <input type="text" id="student-name" name="student-name" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter student's full name">
         </div>
-        <div>
+        <div class="soft-card border border-gray-200 rounded-xl p-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
           <input type="text" id="student-id" name="student-id" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="e.g. 2023-001234">
         </div>
-
-        <div>
+        <div class="soft-card border border-gray-200 rounded-xl p-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Student Type</label>
-          <div class="space-y-3">
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input type="radio" name="student-type" value="Regular" class="sr-only" checked>
-              <div class="relative">
-                <div class="w-5 h-5 border-2 border-gray-300 rounded-full bg-white student-type-radio"></div>
-                <div class="student-type-indicator absolute inset-0 w-5 h-5 bg-primary rounded-full scale-0 transition-transform"></div>
-              </div>
+          <div class="space-y-3" id="student-type-group">
+            <label class="choice flex items-center gap-3 cursor-pointer select-none rounded-xl px-3 py-2">
+              <input type="radio" name="student-type" value="Regular" checked class="w-5 h-5" style="accent-color:#16a34a">
               <span class="text-gray-700">Regular Student</span>
             </label>
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input type="radio" name="student-type" value="Irregular" class="sr-only">
-              <div class="relative">
-                <div class="w-5 h-5 border-2 border-gray-300 rounded-full bg-white student-type-radio"></div>
-                <div class="student-type-indicator absolute inset-0 w-5 h-5 bg-primary rounded-full scale-0 transition-transform"></div>
-              </div>
+            <label class="choice flex items-center gap-3 cursor-pointer select-none rounded-xl px-3 py-2">
+              <input type="radio" name="student-type" value="Irregular" class="w-5 h-5" style="accent-color:#16a34a">
               <span class="text-gray-700">Irregular Student</span>
             </label>
           </div>
         </div>
-
-        <div class="flex justify-end space-x-4 pt-6">
+        <div class="flex justify-end space-x-4 pt-2">
           <button type="button" id="cancel-student-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
           <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">Add Student</button>
         </div>
@@ -235,129 +194,134 @@ tailwind.config = {
 
   <button id="add-schedule-btn" type="button" class="hidden"></button>
 
-  <!-- Schedule Modal -->
+  <!-- Add Schedule modal -->
   <div id="schedule-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b border-gray-200">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <div class="p-6 modal-head">
         <div class="flex items-center justify-between">
-          <h3 id="modal-title" class="text-2xl font-bold text-gray-800">Add New Schedule</h3>
-          <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+          <h3 id="modal-title" class="text-2xl font-bold">Add New Schedule</h3>
+          <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10">
             <i class="ri-close-line text-xl"></i>
           </button>
         </div>
       </div>
 
-      <form id="schedule-form" class="p-6 space-y-6">
+      <form id="schedule-form" class="p-6 space-y-6 overflow-y-auto">
         <div class="grid md:grid-cols-2 gap-6">
-          <div>
+          <div class="soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
             <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter subject name">
           </div>
 
-          <div class="relative">
+          <div class="relative soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
-            <button type="button" id="section-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+            <button type="button" id="section-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="section-selected">Select section</span>
               <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
-            <div id="section-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
-              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3A-A">BIT 3A-A</div>
-              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3A-B">BIT 3A-B</div>
-              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3B-A">BIT 3B-A</div>
-              <div class="section-option p-3 hover:bg-gray-50 cursor-pointer" data-value="BIT 3B-B">BIT 3B-B</div>
-            </div>
+            <div id="section-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto"></div>
             <input type="hidden" id="section" name="section" required>
           </div>
 
-          <div class="relative">
+          <div class="relative soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Room</label>
-            <button type="button" id="room-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+            <button type="button" id="room-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="room-selected">Select room</span>
               <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
-            <div id="room-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A101">A101</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A102">A102</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A103">A103</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A104">A104</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A201">A201</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A202">A202</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A203">A203</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A204">A204</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A301">A301</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A302">A302</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A303">A303</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="A304">A304</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B101">B101</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B102">B102</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B103">B103</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B104">B104</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B201">B201</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B202">B202</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B203">B203</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B204">B204</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B301">B301</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B302">B302</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B303">B303</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="B304">B304</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Cet Center">Cet Center</div>
-              <div class="room-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Cet Shop">Cet Shop</div>
+            <div id="room-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A101">A101</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A102">A102</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A103">A103</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A104">A104</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A201">A201</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A202">A202</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A203">A203</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A204">A204</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A301">A301</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A302">A302</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A303">A303</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A304">A304</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B101">B101</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B102">B102</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B103">B103</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B104">B104</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B201">B201</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B202">B202</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B203">B203</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B204">B204</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B301">B301</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B302">B302</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B303">B303</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="B304">B304</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Cet Center">Cet Center</div>
+              <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Cet Shop">Cet Shop</div>
             </div>
             <input type="hidden" id="room" name="room" required>
           </div>
 
-          <div class="relative">
+          <div class="relative soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Teacher</label>
-            <button type="button" id="teacher-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
+            <button type="button" id="teacher-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="teacher-selected">Select teacher</span>
               <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
-            <div id="teacher-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Maria Santos">Prof. Maria Santos</div>
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. John Cruz">Prof. John Cruz</div>
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Anna Reyes">Prof. Anna Reyes</div>
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Robert Garcia">Prof. Robert Garcia</div>
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Prof. Lisa Mendoza">Prof. Lisa Mendoza</div>
-              <div class="teacher-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Engr. Carlos Dela Cruz">Engr. Carlos Dela Cruz</div>
+            <div id="teacher-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto">
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Maria Santos">Prof. Maria Santos</div>
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. John Cruz">Prof. John Cruz</div>
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Anna Reyes">Prof. Anna Reyes</div>
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Robert Garcia">Prof. Robert Garcia</div>
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Lisa Mendoza">Prof. Lisa Mendoza</div>
+              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Engr. Carlos Dela Cruz">Engr. Carlos Dela Cruz</div>
             </div>
             <input type="hidden" id="teacher" name="teacher" required>
           </div>
 
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Day</label>
-            <button type="button" id="day-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
-              <span id="day-selected">Select day</span>
-              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
-            </button>
-            <div id="day-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden">
-              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Monday">Monday</div>
-              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Tuesday">Tuesday</div>
-              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Wednesday">Wednesday</div>
-              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Thursday">Thursday</div>
-              <div class="day-option p-3 hover:bg-gray-50 cursor-pointer" data-value="Friday">Friday</div>
-            </div>
-            <input type="hidden" id="day" name="day" required>
-          </div>
+          <div class="relative soft-card border border-gray-200 rounded-xl p-4 md:col-span-2">
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="relative">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Day</label>
+                <button type="button" id="day-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
+                  <span id="day-selected">Select day</span>
+                  <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+                </button>
+                <div id="day-options" class="absolute left-0 right-0 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden">
+                  <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Monday">Monday</div>
+                  <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Tuesday">Tuesday</div>
+                  <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Wednesday">Wednesday</div>
+                  <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Thursday">Thursday</div>
+                  <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Friday">Friday</div>
+                </div>
+                <input type="hidden" id="day" name="day" required>
+              </div>
 
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
-            <button type="button" id="time-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between">
-              <span id="time-selected">Select time</span>
-              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
-            </button>
-            <div id="time-options" class="absolute left-0 right-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-button shadow-lg hidden max-h-60 overflow-y-auto">
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="7:30 AM – 9:00 AM">7:30 AM – 9:00 AM</div>
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="10:00 AM – 12:30 PM">10:00 AM – 12:30 PM</div>
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="1:00 PM – 3:30 PM">1:00 PM – 3:30 PM</div>
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="3:30 PM – 6:00 PM">3:30 PM – 6:00 PM</div>
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="4:00 PM – 5:30 PM">4:00 PM – 5:30 PM</div>
-              <div class="time-option p-3 hover:bg-gray-50 cursor-pointer" data-value="4:00 PM – 7:00 PM">4:00 PM – 7:00 PM</div>
+              <div class="flex md:justify-center">
+                <div class="w-full md:w-48">
+                  <label class="block text-sm font-medium text-gray-700 mb-2 text-center md:text-center">Start time</label>
+                  <input type="time" id="start-time" class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" required step="300">
+                </div>
+              </div>
+
+              <div class="flex md:justify-end">
+                <div class="w-full md:w-48">
+                  <label class="block text-sm font-medium text-gray-700 mb-2 text-right md:text-right">End time</label>
+                  <input type="time" id="end-time" class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" required step="300">
+                </div>
+              </div>
             </div>
+
             <input type="hidden" id="time" name="time" required>
+
+            
+            <div id="form-error" class="hidden mt-3 text-sm px-3 py-2 rounded-button bg-red-50 text-red-700"></div>
+
+            <div id="conflict" class="hidden mt-3 text-sm px-3 py-2 rounded-button bg-red-50 text-red-700">
+              Conflict: overlaps another schedule for this section and day.
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-4 pt-6">
+        <div class="flex justify-end space-x-3 pt-2">
           <button type="button" id="cancel-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
           <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
             <span id="submit-text">Add Schedule</span>
@@ -366,30 +330,8 @@ tailwind.config = {
       </form>
     </div>
   </div>
-
-  <!-- Confirmation Modal -->
-  <div id="confirm-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-md w-full">
-      <div class="p-6">
-        <div class="flex items-center space-x-4 mb-4">
-          <div class="w-12 h-12 flex items-center justify-center bg-red-100 rounded-full">
-            <i class="ri-delete-bin-line text-red-600 text-xl"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800">Delete Schedule</h3>
-            <p class="text-gray-600">Are you sure you want to delete this schedule? This action cannot be undone.</p>
-          </div>
-        </div>
-        <div class="flex justify-end space-x-4">
-          <button id="confirm-cancel-btn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
-          <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-button hover:bg-red-700 transition-colors !rounded-button whitespace-nowrap">Delete</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </main>
 
-<!-- Footer -->
 <footer class="bg-primary text-white py-12">
   <div class="px-6">
     <div class="max-w-6xl mx-auto">
@@ -425,6 +367,7 @@ tailwind.config = {
   </div>
 </footer>
 
+<!-- signout modal-->
 <div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
     <div class="flex items-center gap-3">
@@ -441,63 +384,87 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- Minimal interactivity -->
- <script src="assets/js/profile.js"></script>
+<!-- NEW: delete confirm modal -->
+<div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+        <i class="ri-delete-bin-6-line"></i>
+      </div>
+      <div class="font-semibold text-gray-900">Delete schedule?</div>
+    </div>
+    <p class="text-sm text-gray-600">Are you sure you want to delete it?</p>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button id="del-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+      <button id="del-yes" class="px-4 py-2 rounded-button bg-red-600 text-white">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/profile.js"></script>
 <script>
   document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>document.getElementById('mobile-menu')?.classList.toggle('hidden'));
 
-  const SECTIONS = ['BIT 3A-A','BIT 3A-B','BIT 3B-A','BIT 3B-B'];
+  const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
+  const YEAR_SECTIONS = {
+    '1st Year': ['BIT 1A-A','BIT 1A-B','BIT 1B-A','BIT 1B-B'],
+    '2nd Year': ['BIT 2A-A','BIT 2A-B','BIT 2B-A','BIT 2B-B'],
+    '3rd Year': ['BIT 3A-A','BIT 3A-B','BIT 3B-A','BIT 3B-B'],
+    '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
+  };
 
   const students = {
     'BIT 3A-A': [{name:'Alexandra Johnson', id:'2023-001234', type:'Regular'}],
-    'BIT 3A-B': [{name:'Joseph Umali', id:'2023-001235', type:'Regular'}, {name:'Steven Vistan', id:'2023-001235', type:'Regular'}, {name:'Marc Alex Glorioso', id:'2023-001235', type:'Regular'}, ],
+    'BIT 3A-B': [
+      {name:'Joseph Umali', id:'2023-001235', type:'Regular'},
+      {name:'Steven Vistan', id:'2023-001235', type:'Regular'},
+      {name:'Marc Alex Glorioso', id:'2023-001235', type:'Regular'}
+    ],
     'BIT 3B-A': [{name:'Sarah Williams', id:'2023-001236', type:'Regular'}],
-    'BIT 3B-B': [{name:'John Lloyd P. Babasa', id:'2023-001237', type:'Irregular'}, 
-    {name:'Tristan Venegas', id:'23-000059', type:'Regular'},
-    {name:'Tristan Millanes', id:'2023-001238', type:'Regular'}, 
-    {name:'Jon Carlo Malate', id:'2023-001238', type:'Regular'}, 
-    {name:'Joey Odnimer', id:'2023-001238', type:'Regular'},
-    {name:'Ericka Sarcilla', id:'2023-001238', type:'Regular'},
-    {name:'John Tyron TAnggaan', id:'23-000056', type:'Regular'},
-    {name:'Jhustine Garcia', id:'2023-001238', type:'Regular'}]
+    'BIT 3B-B': [
+      {name:'John Lloyd P. Babasa', id:'2023-001237', type:'Irregular'},
+      {name:'Tristan Venegas', id:'23-000059', type:'Regular'},
+      {name:'Tristan Millanes', id:'2023-001238', type:'Regular'},
+      {name:'Jon Carlo Malate', id:'2023-001238', type:'Regular'},
+      {name:'Joey Odnimer', id:'2023-001238', type:'Regular'},
+      {name:'Ericka Sarcilla', id:'2023-001238', type:'Regular'},
+      {name:'John Tyron TAnggaan', id:'23-000056', type:'Regular'},
+      {name:'Jhustine Garcia', id:'2023-001238', type:'Regular'}
+    ]
   };
 
   const schedules = {
-    'BIT 3A-A': [
-      {day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Computer Fundamentals', room:'A101', teacher:'Prof. Maria Santos'}
-    ],
+    'BIT 3A-A': [{day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Computer Fundamentals', room:'A101', teacher:'Prof. Maria Santos'}],
     'BIT 3A-B': [
-      {day:'Monday',    time:'7:40 AM – 10:30 AM', subject:'Seminar in Information Trends and Specialized (CPT12)',                 room:'A303',       teacher:'Prof. Maria Santos'},
-      {day:'Monday',    time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)',              room:'B102',       teacher:'Prof. Robert Garcia'},
-      {day:'Monday',    time:'1:00 PM – 2:30 PM',   subject:'Basic Statistics (STA01)',                   room:'B203',       teacher:'Prof. Anna Reyes'},
-      {day:'Tuesday',   time:'7:30 AM – 10:00 AM',  subject:'Web Development (CPT11)',                    room:'A304',       teacher:'Prof. John Cruz'},
-      {day:'Tuesday',   time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)',            room:'A304',       teacher:'Prof. John Cruz'},
-      {day:'Tuesday',   time:'1:00 PM – 4:30 PM',   subject:'Specialized Technology (CPT13)',             room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
-      {day:'Wednesday', time:'7:30 AM – 10:00 AM',  subject:'Data Structure and Algorithm(CPT10)',                    room:'CET Center', teacher:'Prof. Maria Santos'},
-      {day:'Wednesday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)',              room:'B102',       teacher:'Prof. Robert Garcia'},
-      {day:'Wednesday', time:'1:00 PM – 2:30 PM',   subject:'Basic Statistics (STA01)',                   room:'B203',       teacher:'Prof. Anna Reyes'},
-      {day:'Thursday',  time:'7:30 AM – 10:00 AM',  subject:'Web Development (CPT11)',                    room:'CET Center', teacher:'Prof. John Cruz'},
-      {day:'Friday',    time:'7:30 AM – 10:00 AM',  subject:'Data Structure and Algorithm(CPT10)',                    room:'B204',       teacher:'Prof. Maria Santos'},
-      {day:'Friday',    time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)',            room:'A304',       teacher:'Prof. John Cruz'},
-      {day:'Friday',    time:'1:00 PM – 4:30 PM',   subject:'Specialized Technology (CPT13)',             room:'B204',       teacher:'Prof. Lisa Mendoza'},
+      {day:'Monday', time:'7:40 AM – 10:30 AM', subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Prof. Maria Santos'},
+      {day:'Monday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Monday', time:'1:00 PM – 2:30 PM', subject:'Basic Statistics (STA01)', room:'B203', teacher:'Prof. Anna Reyes'},
+      {day:'Tuesday', time:'7:30 AM – 10:00 AM', subject:'Web Development (CPT11)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Tuesday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Tuesday', time:'1:00 PM – 4:30 PM', subject:'Specialized Technology (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
+      {day:'Wednesday', time:'7:30 AM – 10:00 AM', subject:'Data Structure and Algorithm(CPT10)', room:'CET Center', teacher:'Prof. Maria Santos'},
+      {day:'Wednesday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Wednesday', time:'1:00 PM – 2:30 PM', subject:'Basic Statistics (STA01)', room:'B203', teacher:'Prof. Anna Reyes'},
+      {day:'Thursday', time:'7:30 AM – 10:00 AM', subject:'Web Development (CPT11)', room:'CET Center', teacher:'Prof. John Cruz'},
+      {day:'Friday', time:'7:30 AM – 10:00 AM', subject:'Data Structure and Algorithm(CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
+      {day:'Friday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Friday', time:'1:00 PM – 4:30 PM', subject:'Specialized Technology (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'}
     ],
-    'BIT 3B-A': [
-      {day:'Wednesday', time:'3:30 PM – 6:00 PM', subject:'Programming 2', room:'A204', teacher:'Prof. Lisa Mendoza'}
-    ],
+    'BIT 3B-A': [{day:'Wednesday', time:'3:30 PM – 6:00 PM', subject:'Programming 2', room:'A204', teacher:'Prof. Lisa Mendoza'}],
     'BIT 3B-B': [
-      {day:'Monday', time:'7:30 AM – 9:00 AM',  subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Monday', time:'10:00 AM – 12:30 PM',subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Monday', time:'1:00 PM – 3:30 PM',  subject:'Specialized Technology 1 (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
-      {day:'Monday', time:'4:00 PM – 5:30 PM',  subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
-      {day:'Tuesday', time:'1:00 PM – 3:30 PM',  subject:'Data Structure and Algorithm (CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
-      {day:'Tuesday', time:'3:30 PM – 6:00 PM',  subject:'Web Development (CPT11)', room:'B203', teacher:'Prof. John Cruz'},
-      {day:'Wednesday', time:'7:30 AM – 9:00 AM',  subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Wednesday', time:'4:00 PM – 5:30 PM',  subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
+      {day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Monday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
+      {day:'Monday', time:'1:00 PM – 3:30 PM', subject:'Specialized Technology 1 (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
+      {day:'Monday', time:'4:00 PM – 5:30 PM', subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
+      {day:'Tuesday', time:'1:00 PM – 3:30 PM', subject:'Data Structure and Algorithm (CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
+      {day:'Tuesday', time:'3:30 PM – 6:00 PM', subject:'Web Development (CPT11)', room:'B203', teacher:'Prof. John Cruz'},
+      {day:'Wednesday', time:'7:30 AM – 9:00 AM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
+      {day:'Wednesday', time:'4:00 PM – 5:30 PM', subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
       {day:'Thursday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Thursday', time:'1:00 PM – 3:30 PM',  subject:'Specialized Technology 1 (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'},
-      {day:'Thursday', time:'4:00 PM – 7:00 PM',  subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Engr. Carlos Dela Cruz'},
-      {day:'Friday', time:'1:00 PM – 3:30 PM',   subject:'Data Structure and Algorithm (CPT10)', room:'Cet Center', teacher:'Prof. Maria Santos'},
-      {day:'Friday', time:'3:30 PM – 6:00 PM',   subject:'Web Development (CPT11)', room:'Cet Center', teacher:'Prof. John Cruz'},
+      {day:'Thursday', time:'1:00 PM – 3:30 PM', subject:'Specialized Technology 1 (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'},
+      {day:'Thursday', time:'4:00 PM – 7:00 PM', subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Engr. Carlos Dela Cruz'},
+      {day:'Friday', time:'1:00 PM – 3:30 PM', subject:'Data Structure and Algorithm (CPT10)', room:'Cet Center', teacher:'Prof. Maria Santos'},
+      {day:'Friday', time:'3:30 PM – 6:00 PM', subject:'Web Development (CPT11)', room:'Cet Center', teacher:'Prof. John Cruz'}
     ]
   };
 
@@ -505,18 +472,74 @@ tailwind.config = {
   const secTitle = document.getElementById('section-detail-title');
   const listStudents = document.getElementById('section-students');
   const listSchedule = document.getElementById('section-schedule');
+  const grid = document.getElementById('sections-grid');
+
+  const yearBtn = document.getElementById('year-dropdown');
+  const yearPanel = document.getElementById('year-options');
+  const yearLabel = document.getElementById('year-selected');
+  let currentYear = '3rd Year';
   let activeSection = null;
 
-  function fadeList(el){
-    if(!el) return;
-    el.classList.remove('fade-in');
-    void el.offsetWidth;
-    el.classList.add('fade-in');
+  yearBtn.addEventListener('click', ()=>yearPanel.classList.toggle('hidden'));
+  yearPanel.querySelectorAll('.year-option').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      currentYear = opt.textContent.trim();
+      yearLabel.textContent = currentYear;
+      yearPanel.classList.add('hidden');
+      resetScheduleForm();
+      renderSectionCards();
+      updateSectionCounts();
+      populateSectionOptions();
+    });
+  });
+  document.addEventListener('click', (e)=>{ if(!yearBtn.contains(e.target) && !yearPanel.contains(e.target)) yearPanel.classList.add('hidden'); });
+
+  function fadeList(el){ if(!el) return; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); }
+
+  function toOrdinal(n){
+    const s=String(n), last=s.slice(-1), last2=s.slice(-2);
+    if(last2==='11'||last2==='12'||last2==='13') return s+'th';
+    if(last==='1') return s+'st';
+    if(last==='2') return s+'nd';
+    if(last==='3') return s+'rd';
+    return s+'th';
+  }
+
+  function getDesc(code){
+    const m = code.match(/BIT\s+(\d)([A-Z])\-([A-Z])/i);
+    if(!m) return 'Bachelor in Industrial Technology';
+    const year = Number(m[1]), track = m[2].toUpperCase();
+    return `Bachelor in Industrial Technology - ${toOrdinal(year)} Year Section ${track}`;
+  }
+
+  function renderSectionCards(){
+    const secs = YEAR_SECTIONS[currentYear]||[];
+    grid.innerHTML = secs.map(sec=>{
+      const stu = (students[sec]||[]).length || 0;
+      const subj = uniqueSubjectCount(sec);
+      return `
+      <div class="section-card soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-bold text-primary">${sec}</h3>
+          <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+        </div>
+        <p class="text-gray-600 mb-3">${getDesc(sec)}</p>
+        <div class="flex items-center justify-between text-sm text-gray-500">
+          <span><span class="sec-stu" data-sec="${sec}">${stu}</span> Students</span>
+          <span><span class="sec-subj" data-sec="${sec}">${subj}</span> Subjects</span>
+        </div>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.section-card').forEach(card=>{
+      const name = card.getAttribute('data-sec');
+      card.addEventListener('click',()=>openSection(name));
+    });
   }
 
   function openSection(sectionName){
     activeSection = sectionName;
     secTitle.textContent = sectionName;
+    resetScheduleForm();
     renderStudents();
     renderSchedule();
     fadeList(listStudents);
@@ -526,111 +549,398 @@ tailwind.config = {
   function closeSection(){ sectionModal.classList.add('hidden'); }
   document.getElementById('close-section-detail-btn').onclick = closeSection;
 
-  document.querySelectorAll('.section-card').forEach(card=>{
-    const name = card.querySelector('h3')?.textContent.trim();
-    card.addEventListener('click',()=>openSection(name));
-  });
-
   function renderStudents(){
-    const rows = (students[activeSection]||[]).map(s=>`
+    const data = (students[activeSection]||[]).filter(s=>s.name);
+    const rows = data.map(s=>`
       <div class="p-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between">
         <div>
           <div class="font-semibold text-gray-800">${s.name}</div>
-          <div class="text-sm text-gray-500">ID: ${s.id}</div>
+          <div class="text-sm text-gray-500">ID: ${s.id||''}</div>
         </div>
-        <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type}</span>
+        <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type||'Regular'}</span>
       </div>
     `).join('');
     listStudents.innerHTML = rows || `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No students yet.</div>`;
   }
 
+  function toMinutes(hhmm){ const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
+  function to12h(hhmm){ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12; if(h===0) h=12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; }
+  function makeRange(startHHMM,endHHMM){ return `${to12h(startHHMM)} – ${to12h(endHHMM)}`; }
+  function parseRange(range){ const [a,b]=range.split('–').map(s=>s.trim()); return [to24Min(a),to24Min(b)]; }
+  function to24Min(str){
+    const m=str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0;
+    let h=+m[1], min=+m[2], ap=m[3].toUpperCase();
+    if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+min;
+  }
+  function startMinutesFromRange(range){ return parseRange(range)[0]; }
+
+  // ACCURATE CONFLICTS//
+  function overlaps(s1,e1,s2,e2){ return Math.max(s1,s2) < Math.min(e1,e2); }
+
+  // Section-level: same section + same day + time overlap (regardless of room)
+  function hasSectionConflict(section, day, startMin, endMin, excludeIdx = -1){
+    const arr = (schedules[section]||[]).filter(x=>x.day===day);
+    for(let i=0;i<arr.length;i++){
+      if(i===excludeIdx) continue;
+      const [s,e] = parseRange(arr[i].time);
+      if(overlaps(s,e,startMin,endMin)) return true;
+    }
+    return false;
+  }
+
+  // Room-level: any section + same room + same day + time overlap
+  function hasRoomConflict(room, day, startMin, endMin, currentSection, excludeIdx = -1){
+    for(const sec of Object.keys(schedules)){
+      const arr = schedules[sec]||[];
+      for(let i=0;i<arr.length;i++){
+        if(sec===currentSection && i===excludeIdx) continue;
+        const it = arr[i];
+        if(it.room===room && it.day===day){
+          const [s,e] = parseRange(it.time);
+          if(overlaps(s,e,startMin,endMin)) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  //HOVER-REVEAL EDIT/DELETE //
+  let pendingDeleteIdx = null; 
   function renderSchedule(){
-    const data = schedules[activeSection]||[];
-    if(!data.length){ listSchedule.innerHTML = `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No schedule yet.</div>`; return; }
-    const order = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-    const byDay = {};
-    data.forEach(i=>{ (byDay[i.day]=byDay[i.day]||[]).push(i); });
+    const data=(schedules[activeSection]||[]).filter(x=>x.day&&x.time&&x.subject);
+    if(!data.length){ listSchedule.innerHTML=`<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No schedule yet.</div>`; return; }
+    const order=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    const byDay={}; data.forEach((item, idx)=>{ (byDay[item.day]=byDay[item.day]||[]).push({item,idx}); });
+    const startMinutesFromRange=(range)=>{ const [a]=range.split('–').map(s=>s.trim()); const m=a.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0; let h=+m[1], mm=+m[2], ap=m[3].toUpperCase(); if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+mm; };
+    order.forEach(d=>{ if(byDay[d]) byDay[d].sort((A,B)=>startMinutesFromRange(A.item.time)-startMinutesFromRange(B.item.time)); });
+
     listSchedule.innerHTML = order.filter(d=>byDay[d]).map(day=>{
-      const items = byDay[day].map(it=>`
-        <div class="p-3 bg-primary/5 rounded border border-primary/10">
-          <div class="text-sm text-gray-700"><span class="font-medium">${it.time}</span></div>
-          <div class="text-gray-800 font-semibold">${it.subject}</div>
-          <div class="text-xs text-gray-600 mt-1">${it.room} • ${it.teacher}</div>
-        </div>`).join('');
+      const items = byDay[day].map(({item,idx})=>{
+        const [tStart,tEnd]=(item.time||'').split('–').map(s=>s.trim());
+        return `
+        <div class="group relative p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
+          <div class="pr-20">
+            <div class="text-sm font-semibold text-emerald-700">${item.subject}</div>
+            <div class="text-xs text-gray-600 mt-0.5">${item.day} • ${tStart} – ${tEnd}</div>
+            <div class="text-xs text-gray-600 mt-0.5">${item.room} - ${item.teacher}</div>
+          </div>
+          <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
+            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-idx="${idx}">
+              <i class="ri-pencil-line text-sm"></i>
+            </button>
+            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-idx="${idx}">
+              <i class="ri-delete-bin-6-line text-sm"></i>
+            </button>
+          </div>
+        </div>`;
+      }).join('');
       return `<div class="mb-4"><div class="text-primary font-semibold mb-2">${day}</div><div class="space-y-2">${items}</div></div>`;
     }).join('');
   }
 
-  function uniqueSubjectCount(sec){
-    const set = new Set();
-    (schedules[sec]||[]).forEach(x=>set.add(x.subject));
-    return set.size;
+  // Delete confirm modal wiring
+const delModal = document.getElementById('delete-confirm');
+function openDelModal() {
+  delModal.classList.remove('hidden');
+  delModal.style.display = 'flex';
+}
+function closeDelModal() {
+  pendingDeleteIdx = null;
+  delModal.style.display = 'none';
+  delModal.classList.add('hidden');
+}
+
+document.getElementById('del-cancel').onclick = closeDelModal;
+
+document.getElementById('del-yes').onclick = () => {
+  if (pendingDeleteIdx === null) return;
+  const arr = (schedules[activeSection] || []);
+  if (pendingDeleteIdx >= 0 && pendingDeleteIdx < arr.length) {
+    arr.splice(pendingDeleteIdx, 1);
+    renderSchedule();
+    updateSectionCounts();
   }
+  closeDelModal();
+};
+
+
+
+  // hover action handlers 
+  listSchedule.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('.sched-edit');
+    const delBtn  = e.target.closest('.sched-del');
+
+    if (editBtn) {
+      const idx = +editBtn.dataset.idx;
+      const arr = (schedules[activeSection] || []);
+      const it  = arr[idx];
+      if (!it) return;
+
+      // prefill modal
+      document.getElementById('subject').value = it.subject || '';
+      document.getElementById('section').value = activeSection;
+      document.getElementById('section-selected').textContent = activeSection;
+      document.getElementById('room').value = it.room || '';
+      document.getElementById('room-selected').textContent = it.room || 'Select room';
+      document.getElementById('teacher').value = it.teacher || '';
+      document.getElementById('teacher-selected').textContent = it.teacher || 'Select teacher';
+      document.getElementById('day').value = it.day || '';
+      document.getElementById('day-selected').textContent = it.day || 'Select day';
+
+      const to24Min=(str)=>{ const m=str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0; let h=+m[1], mm=+m[2], ap=m[3].toUpperCase(); if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+mm; };
+      const to24hhmm=(str)=>{ const mins=to24Min(str); const h=Math.floor(mins/60), m=mins%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; };
+      const [a,b]=(it.time||'').split('–').map(s=>s.trim());
+      document.getElementById('start-time').value = a ? to24hhmm(a) : '';
+      document.getElementById('end-time').value   = b ? to24hhmm(b) : '';
+
+      const formEl = document.getElementById('schedule-form');
+      formEl.dataset.editIdx = String(idx);
+      document.getElementById('submit-text').textContent = 'Save Changes';
+      document.getElementById('modal-title').textContent = 'Edit Schedule';
+
+      document.getElementById('form-error').classList.add('hidden');
+      document.getElementById('conflict').classList.add('hidden');
+      document.getElementById('schedule-modal').classList.remove('hidden');
+      return;
+    }
+
+   if (delBtn) {
+  pendingDeleteIdx = +delBtn.dataset.idx;
+  openDelModal();
+}
+
+  });
+
+  function uniqueSubjectCount(sec){ const set=new Set(); (schedules[sec]||[]).forEach(x=>set.add(x.subject)); return set.size; }
   function updateSectionCounts(){
-    document.querySelectorAll('.sec-stu').forEach(span=>{
-      const sec = span.getAttribute('data-sec');
-      span.textContent = (students[sec]||[]).length;
-    });
-    document.querySelectorAll('.sec-subj').forEach(span=>{
-      const sec = span.getAttribute('data-sec');
-      span.textContent = uniqueSubjectCount(sec);
-    });
+    document.querySelectorAll('.sec-stu').forEach(span=>{ const sec=span.getAttribute('data-sec'); span.textContent=(students[sec]||[]).length; });
+    document.querySelectorAll('.sec-subj').forEach(span=>{ const sec=span.getAttribute('data-sec'); span.textContent=uniqueSubjectCount(sec); });
   }
 
+  // student modal
   const studentModal = document.getElementById('student-modal');
-  document.getElementById('add-section-student-btn').onclick = ()=>{
-    studentModal.classList.remove('hidden');
-  };
+  document.getElementById('add-section-student-btn').onclick = ()=>{ studentModal.classList.remove('hidden'); };
   document.getElementById('close-student-modal-btn').onclick = ()=>studentModal.classList.add('hidden');
   document.getElementById('cancel-student-btn').onclick = ()=>studentModal.classList.add('hidden');
 
+  function refreshChoiceStyles(){
+    document.querySelectorAll('#student-type-group .choice').forEach(lbl=>lbl.classList.remove('choice-active'));
+    const checked=document.querySelector('#student-type-group input[name="student-type"]:checked');
+    if(checked) checked.closest('.choice')?.classList.add('choice-active');
+  }
+  document.querySelectorAll('#student-type-group input[name="student-type"]').forEach(r=>{ r.addEventListener('change',refreshChoiceStyles); });
+  refreshChoiceStyles();
+
   document.getElementById('student-form').addEventListener('submit', e=>{
     e.preventDefault();
-    const name = document.getElementById('student-name').value.trim();
-    const id = document.getElementById('student-id').value.trim();
-    const picked = [...document.querySelectorAll('input[name="student-type"]')].find(r=>r.checked);
-    const type = picked ? picked.value : 'Regular';
-    const sec  = activeSection;
-    if(!name || !id || !sec) return;
-    students[sec] = students[sec] || [];
+    const name=document.getElementById('student-name').value.trim();
+    const id=document.getElementById('student-id').value.trim();
+    const picked=[...document.querySelectorAll('input[name="student-type"]')].find(r=>r.checked);
+    const type=picked?picked.value:'Regular';
+    const sec=activeSection;
+    if(!name||!id||!sec) return;
+    students[sec]=students[sec]||[];
     students[sec].push({name,id,type});
     if(sec===activeSection) renderStudents();
     updateSectionCounts();
     fadeList(listStudents);
     studentModal.classList.add('hidden');
     e.target.reset();
+    refreshChoiceStyles();
   });
 
-  const scheduleModal = document.getElementById('schedule-modal');
-  document.getElementById('add-section-schedule-btn').onclick = ()=>{
-    document.getElementById('section').value = activeSection;
-    document.getElementById('section-selected').textContent = activeSection;
+  // schedule modal
+  const scheduleModal=document.getElementById('schedule-modal');
+  document.getElementById('add-section-schedule-btn').onclick=()=>{
+    resetScheduleForm();
+    delete document.getElementById('schedule-form').dataset.editIdx;
+    document.getElementById('section').value=activeSection;
+    document.getElementById('section-selected').textContent=activeSection;
+    document.getElementById('submit-text').textContent = 'Add Schedule';
+    document.getElementById('modal-title').textContent = 'Add New Schedule';
+    hideFormError();
+    document.getElementById('conflict').classList.add('hidden');
     scheduleModal.classList.remove('hidden');
   };
-  document.getElementById('close-modal-btn').onclick = ()=>scheduleModal.classList.add('hidden');
-  document.getElementById('cancel-btn').onclick = ()=>scheduleModal.classList.add('hidden');
+  document.getElementById('close-modal-btn').onclick=()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editIdx; };
+  document.getElementById('cancel-btn').onclick=()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editIdx; };
 
-  function wireDropdown(buttonId, panelId, hiddenId, optionClass, labelId){
-    const btn = document.getElementById(buttonId);
-    const panel = document.getElementById(panelId);
-    const hidden = document.getElementById(hiddenId);
-    const label = document.getElementById(labelId);
-    btn.addEventListener('click', ()=>panel.classList.toggle('hidden'));
-    panel.querySelectorAll('.'+optionClass).forEach(opt=>{
-      opt.addEventListener('click', ()=>{
-        const val = opt.dataset.value;
-        hidden.value = val;
-        if(label) label.textContent = val;
-        panel.classList.add('hidden');
-      });
-    });
-    document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden'); });
+  // generic dropdowns
+  function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
+    const btn=document.getElementById(buttonId);
+    const panel=document.getElementById(panelId);
+    const hidden=document.getElementById(hiddenId);
+    const label=document.getElementById(labelId);
+    const setVal=(val)=>{ hidden.value=val; if(label) label.textContent=val; panel.classList.add('hidden'); btn.classList.remove('is-error'); hideFormError(); };
+    btn.addEventListener('click',(e)=>{ e.stopPropagation(); panel.classList.toggle('hidden'); });
+    panel.addEventListener('mousedown',(e)=>{ const opt=e.target.closest('.'+optionClass); if(opt){ setVal(opt.dataset.value||opt.textContent.trim()); }});
+    document.addEventListener('click',(e)=>{ if(!btn.contains(e.target)&&!panel.contains(e.target)) panel.classList.add('hidden'); });
   }
-  wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
+
+  function populateSectionOptions(){
+    const panel=document.getElementById('section-options');
+    const list=YEAR_SECTIONS[currentYear]||[];
+    panel.innerHTML=list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
+    wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
+  }
+
   wireDropdown('room-dropdown','room-options','room','room-option','room-selected');
   wireDropdown('teacher-dropdown','teacher-options','teacher','teacher-option','teacher-selected');
-  wireDropdown('day-dropdown','day-options','day','day-option','day-selected');
-  wireDropdown('time-dropdown','time-options','time','time-selected');
+
+  document.getElementById('day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
+  function openDayPortal(){
+    const btn=document.getElementById('day-dropdown');
+    const hidden=document.getElementById('day');
+    const label=document.getElementById('day-selected');
+    const source=document.getElementById('day-options');
+
+    const rect=btn.getBoundingClientRect();
+    const portal=document.createElement('div');
+    portal.id='day-portal';
+    portal.className='fixed z-[9999] bg-white border border-gray-300 rounded-2xl shadow-2xl text-sm';
+    portal.style.left=rect.left+'px';
+    portal.style.top=(rect.bottom+6)+'px';
+    portal.style.minWidth=rect.width+'px';
+    portal.style.maxHeight='60vh';
+    portal.style.overflow='auto';
+    portal.innerHTML=source.innerHTML;
+    document.body.appendChild(portal);
+
+    const prevOverflow=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+
+    const close=()=>{ portal.remove(); document.body.style.overflow=prevOverflow; document.removeEventListener('mousedown',outside); window.removeEventListener('resize',close); window.removeEventListener('scroll',close,true); };
+    const outside=(ev)=>{ if(!portal.contains(ev.target)&&ev.target!==btn) close(); };
+
+    portal.addEventListener('mousedown',(ev)=>{
+      const opt=ev.target.closest('.day-option');
+      if(opt){
+        const val=opt.dataset.value||opt.textContent.trim();
+        hidden.value=val; label.textContent=val; btn.classList.remove('is-error'); hideFormError(); close();
+      }
+    });
+    document.addEventListener('mousedown',outside);
+    window.addEventListener('resize',close);
+    window.addEventListener('scroll',close,true);
+  }
+
+  function showFormError(msg){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=msg; el.classList.remove('hidden'); }
+  function hideFormError(){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=''; el.classList.add('hidden'); }
+
+  // conflict bar update 
+  function checkConflictInline(){
+    const section=document.getElementById('section').value.trim();
+    const day=document.getElementById('day').value.trim();
+    const room=document.getElementById('room').value.trim();
+    const s=document.getElementById('start-time').value;
+    const e=document.getElementById('end-time').value;
+    const bar=document.getElementById('conflict');
+
+    if(!section||!day||!s||!e){ bar.classList.add('hidden'); return false; }
+    const sm=toMinutes(s), em=toMinutes(e);
+    if(em<=sm){ bar.textContent='Invalid time: end must be after start.'; bar.classList.remove('hidden'); return true; }
+
+    const formEl = document.getElementById('schedule-form');
+    const editIdx = formEl.dataset.editIdx !== undefined ? +formEl.dataset.editIdx : -1;
+
+    if(hasSectionConflict(section,day,sm,em,editIdx)){
+      bar.textContent='Section conflict: this section already has a class at this time.';
+      bar.classList.remove('hidden'); return true;
+    }
+    if(room && hasRoomConflict(room,day,sm,em,section,editIdx)){
+      bar.textContent='Room conflict: this room is already booked at this time.';
+      bar.classList.remove('hidden'); return true;
+    }
+
+    bar.classList.add('hidden');
+    return false;
+  }
+  ['start-time','end-time','day','section','room'].forEach(id=>{ document.getElementById(id).addEventListener('change',checkConflictInline); });
+
+  function clearErrors(){
+    ['subject','section-dropdown','room-dropdown','teacher-dropdown','day-dropdown','start-time','end-time']
+      .forEach(id=>document.getElementById(id)?.classList.remove('is-error'));
+    hideFormError();
+  }
+  function markError(id){ document.getElementById(id)?.classList.add('is-error'); }
+
+  function validateScheduleForm(){
+    clearErrors();
+    const subject=document.getElementById('subject').value.trim();
+    const section=document.getElementById('section').value.trim();
+    const room=document.getElementById('room').value.trim();
+    const teacher=document.getElementById('teacher').value.trim();
+    const day=document.getElementById('day').value.trim();
+    const startHHMM=document.getElementById('start-time').value;
+    const endHHMM=document.getElementById('end-time').value;
+
+    let ok=true;
+    if(!subject){ markError('subject'); ok=false; }
+    if(!section){ markError('section-dropdown'); ok=false; }
+    if(!room){    markError('room-dropdown'); ok=false; }
+    if(!teacher){ markError('teacher-dropdown'); ok=false; }
+    if(!day){     markError('day-dropdown'); ok=false; }
+    if(!startHHMM){ markError('start-time'); ok=false; }
+    if(!endHHMM){   markError('end-time'); ok=false; }
+    if(!ok) showFormError('Please complete all required fields.');
+    return { ok, values:{subject,section,room,teacher,day,startHHMM,endHHMM} };
+  }
+
+  document.getElementById('schedule-form').addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const check=validateScheduleForm();
+    if(!check.ok) return;
+
+    const {subject,section,room,teacher,day,startHHMM,endHHMM}=check.values;
+    const sm=toMinutes(startHHMM), em=toMinutes(endHHMM);
+    if(em<=sm){ markError('end-time'); showFormError('End time must be after start time.'); return; }
+
+    const formEl = document.getElementById('schedule-form');
+    const editIdx = formEl.dataset.editIdx !== undefined ? +formEl.dataset.editIdx : -1;
+
+    //conflicts
+    if(hasSectionConflict(section,day,sm,em,editIdx)){ showFormError('Section conflict: this section already has a class at this time.'); return; }
+    if(hasRoomConflict(room,day,sm,em,section,editIdx)){ showFormError('Room conflict: this room is already booked at this time.'); return; }
+
+    const timeRange=makeRange(startHHMM,endHHMM);
+    document.getElementById('time').value=timeRange;
+
+    // add or update
+    if (editIdx >= 0 && (schedules[section]||[])[editIdx]) {
+      schedules[section][editIdx] = { day, time: timeRange, subject, room, teacher };
+      delete formEl.dataset.editIdx;
+      document.getElementById('submit-text').textContent = 'Add Schedule';
+      document.getElementById('modal-title').textContent = 'Add New Schedule';
+    } else {
+      schedules[section] = schedules[section] || [];
+      schedules[section].push({ day, time: timeRange, subject, room, teacher });
+    }
+
+    if(section===activeSection){ renderSchedule(); updateSectionCounts(); fadeList(listSchedule); }
+
+    resetScheduleForm();
+    scheduleModal.classList.add('hidden');
+  });
+
+  // reset helper
+  function resetScheduleForm(){
+    const form=document.getElementById('schedule-form'); if(form) form.reset();
+    hideFormError(); document.getElementById('conflict')?.classList.add('hidden');
+    ['section','room','teacher','day','time'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    const defaults={
+      'section-selected':(activeSection||'Select section'),
+      'room-selected':'Select room',
+      'teacher-selected':'Select teacher',
+      'day-selected':'Select day'
+    };
+    Object.entries(defaults).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.textContent=val; });
+    clearErrors();
+  }
+
+  // init
+  renderSectionCards();
+  updateSectionCounts();
+  populateSectionOptions();
 </script>
 </body>
 </html>
