@@ -55,8 +55,7 @@ tailwind.config = {
   .combo-has-text #room-selected,
   .combo-has-text #teacher-selected{ opacity:0; }
 
-  /* === the hover / zoom effect for the cards === */
-  .section-card{
+   .section-card{
     transition: transform .22s ease-out, box-shadow .22s ease-out;
     transform-origin: center;
     will-change: transform;
@@ -477,8 +476,6 @@ if (!window.__FB) {
   window.__FB = { app, db };
 }
 const { app, db } = window.__FB;
-
-/* ===== force-accurate role/section (prefers session, then local) ===== */
 const ssRole = sessionStorage.getItem('auth_role');
 const lsRole = localStorage.getItem('auth_role');
 let EFFECTIVE_ROLE = 'student';
