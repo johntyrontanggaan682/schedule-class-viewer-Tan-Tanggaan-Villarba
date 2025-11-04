@@ -26,6 +26,54 @@ tailwind.config = {
   .choice-active{background:#ecfdf5; box-shadow:inset 0 0 0 1px #bbf7d0}
   .modal-head{background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff}
   .is-error{ outline:2px solid #ef4444; outline-offset:2px; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn-loader{
+    width: 14px; height: 14px;
+    border-radius: 9999px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: spin .6s linear infinite;
+    display:inline-block;
+  }
+
+  .combo-wrap{ position:relative; }
+  .combo-input{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    padding:0.75rem 2rem 0.75rem 1rem;
+    background:transparent; border:0; outline:0;
+    font-size:.875rem;
+    z-index:1;
+  }
+  .combo-input::placeholder{ color:#9ca3af; }
+  .combo-chevron{
+    position:relative; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    width:1rem; height:1rem; cursor:pointer;
+  }
+  .combo-has-text #room-selected,
+  .combo-has-text #teacher-selected{ opacity:0; }
+
+  /* === the hover / zoom effect for the cards === */
+  .section-card{
+    transition: transform .22s ease-out, box-shadow .22s ease-out;
+    transform-origin: center;
+    will-change: transform;
+  }
+  .section-card:hover{
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 35px rgba(22,163,74,.12);
+  }
+  .section-card:active{
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  @media (max-width: 768px){
+    .section-card:hover{
+      transform: translateY(-3px) scale(1.01);
+    }
+  }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -40,11 +88,11 @@ tailwind.config = {
       <div class="hidden md:flex items-center space-x-2">
         <a href="index.html"     class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-home-line"></i><span>Home</span></a>
         <a href="sections.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition"><i class="ri-book-2-line"></i><span>Sections</span></a>
-        <a href="schedules.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-        <a href="students.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-line"></i><span>Students</span></a>
-        <a href="teachers.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="schedules.html" class="nav-link relative overflow-hidden flex items:center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+        <a href="students.html"  class="nav-link relative overflow-hidden flex items:center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-line"></i><span>Students</span></a>
+        <a href="teachers.html"  class="nav-link relative overflow-hidden flex items:center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
         <div id="profile-wrap" class="relative">
-          <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
+          <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items:center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
             <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
           </a>
           <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
@@ -61,7 +109,7 @@ tailwind.config = {
             </div>
             <div class="mt-4 grid grid-cols-2 gap-2">
               <a id="acc-cta" href="profile.html" class="px-3 py-2 rounded-button bg-primary text-white text-sm text-center active:scale-95 transition">View profile</a>
-              <button id="signout-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
+              <button id="signout-btn" class=" px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
             </div>
           </div>
         </div>
@@ -73,8 +121,8 @@ tailwind.config = {
         <a href="index.html"     class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
         <a href="sections.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-book-2-line"></i><span>Sections</span></a>
         <a href="schedules.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-        <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-line"></i><span>Students</span></a>
-        <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Students</span></a>
+        <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Teachers</span></a>
         <a href="profile.html"   class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Profile</span></a>
       </div>
     </div>
@@ -86,12 +134,11 @@ tailwind.config = {
     <div class="px-6 py-16">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-6">
-          <h2 class="text-4xl font-bold text-gray-800 mb-2">Academic Sections</h2>
-          <p class="text-base text-gray-600">Browse all available sections and access their schedules and student lists</p>
+          <h2 id="section-title" class="text-4xl font-bold text-gray-800 mb-2">Academic Sections</h2>
+          <p id="section-subtitle" class="text-base text-gray-600">Browse all available sections and access their schedules and student lists</p>
         </div>
-
-        <!-- Year dropdown -->
-        <div class="mb-8 flex justify-start">
+        
+        <div id="year-filter-wrap" class="mb-8 flex justify-start">
           <div class="w-full max-w-xs relative">
             <button id="year-dropdown" class="w-full px-4 py-3 border border-gray-200 rounded-button bg-white text-sm flex items-center justify-between shadow-sm hover:shadow">
               <span id="year-selected">3rd Year</span>
@@ -186,7 +233,10 @@ tailwind.config = {
         </div>
         <div class="flex justify-end space-x-4 pt-2">
           <button type="button" id="cancel-student-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
-          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">Add Student</button>
+          <button type="submit" id="student-submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap flex items-center justify-center gap-2">
+            <span id="student-loader" class="btn-loader hidden"></span>
+            <span id="student-submit-text">Add Student</span>
+          </button>
         </div>
       </form>
     </div>
@@ -206,11 +256,11 @@ tailwind.config = {
         </div>
       </div>
 
-      <form id="schedule-form" class="p-6 space-y-6 overflow-y-auto">
+      <form id="schedule-form" class="p-6 space-y-6 overflow-y-auto" novalidate>
         <div class="grid md:grid-cols-2 gap-6">
           <div class="soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-            <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter subject name">
+            <input type="text" id="subject" name="subject" required class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="e.g. Subject(Code)">
           </div>
 
           <div class="relative soft-card border border-gray-200 rounded-xl p-4">
@@ -220,14 +270,15 @@ tailwind.config = {
               <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
             <div id="section-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto"></div>
-            <input type="hidden" id="section" name="section" required>
+            <input type="hidden" id="section" name="section">
           </div>
 
           <div class="relative soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Room</label>
-            <button type="button" id="room-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
+            <button type="button" id="room-dropdown" class="combo-wrap w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="room-selected">Select room</span>
-              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+              <input id="room-combo" type="text" class="combo-input" placeholder="" autocomplete="off" />
+              <div id="room-chevron" class="combo-chevron"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
             <div id="room-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto">
               <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="A101">A101</div>
@@ -257,14 +308,15 @@ tailwind.config = {
               <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Cet Center">Cet Center</div>
               <div class="room-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Cet Shop">Cet Shop</div>
             </div>
-            <input type="hidden" id="room" name="room" required>
+            <input type="hidden" id="room" name="room">
           </div>
 
           <div class="relative soft-card border border-gray-200 rounded-xl p-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Teacher</label>
-            <button type="button" id="teacher-dropdown" class="w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
+            <button type="button" id="teacher-dropdown" class="combo-wrap w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="teacher-selected">Select teacher</span>
-              <div class="w-4 h-4 flex items-center justify-center"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
+              <input id="teacher-combo" type="text" class="combo-input" placeholder="" autocomplete="off" />
+              <div id="teacher-chevron" class="combo-chevron"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
             <div id="teacher-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto">
               <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Maria Santos">Prof. Maria Santos</div>
@@ -274,7 +326,7 @@ tailwind.config = {
               <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Lisa Mendoza">Prof. Lisa Mendoza</div>
               <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Engr. Carlos Dela Cruz">Engr. Carlos Dela Cruz</div>
             </div>
-            <input type="hidden" id="teacher" name="teacher" required>
+            <input type="hidden" id="teacher" name="teacher">
           </div>
 
           <div class="relative soft-card border border-gray-200 rounded-xl p-4 md:col-span-2">
@@ -292,7 +344,7 @@ tailwind.config = {
                   <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Thursday">Thursday</div>
                   <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Friday">Friday</div>
                 </div>
-                <input type="hidden" id="day" name="day" required>
+                <input type="hidden" id="day" name="day">
               </div>
 
               <div class="flex md:justify-center">
@@ -310,9 +362,8 @@ tailwind.config = {
               </div>
             </div>
 
-            <input type="hidden" id="time" name="time" required>
+            <input type="hidden" id="time" name="time">
 
-            
             <div id="form-error" class="hidden mt-3 text-sm px-3 py-2 rounded-button bg-red-50 text-red-700"></div>
 
             <div id="conflict" class="hidden mt-3 text-sm px-3 py-2 rounded-button bg-red-50 text-red-700">
@@ -323,7 +374,8 @@ tailwind.config = {
 
         <div class="flex justify-end space-x-3 pt-2">
           <button type="button" id="cancel-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-button hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap">Cancel</button>
-          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+          <button type="submit" id="schedule-submit" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap flex items-center justify-center gap-2">
+            <span id="schedule-loader" class="btn-loader hidden"></span>
             <span id="submit-text">Add Schedule</span>
           </button>
         </div>
@@ -367,7 +419,6 @@ tailwind.config = {
   </div>
 </footer>
 
-<!-- signout modal-->
 <div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
     <div class="flex items-center gap-3">
@@ -384,7 +435,6 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- NEW: delete confirm modal -->
 <div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
     <div class="flex items-center gap-3 mb-2">
@@ -402,492 +452,535 @@ tailwind.config = {
 </div>
 
 <script src="assets/js/profile.js"></script>
-<script>
-  document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>document.getElementById('mobile-menu')?.classList.toggle('hidden'));
+<script type="module" src="firebase-config.js"></script>
 
-  const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
-  const YEAR_SECTIONS = {
-    '1st Year': ['BIT 1A-A','BIT 1A-B','BIT 1B-A','BIT 1B-B'],
-    '2nd Year': ['BIT 2A-A','BIT 2A-B','BIT 2B-A','BIT 2B-B'],
-    '3rd Year': ['BIT 3A-A','BIT 3A-B','BIT 3B-A','BIT 3B-B'],
-    '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import {
+  doc, getDoc, setDoc, deleteDoc, updateDoc,
+  collection, addDoc, onSnapshot, query, where, getDocs,
+  collectionGroup, serverTimestamp, getCountFromServer, getFirestore
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+if (!window.__FB) {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZLXYqe3TaVzkHZh3i4h78VBwI0KckMpE",
+    authDomain: "log-in-cad70.firebaseapp.com",
+    projectId: "log-in-cad70",
+    storageBucket: "log-in-cad70.firebasestorage.app",
+    messagingSenderId: "538387168387",
+    appId: "1:538387168387:web:ef65e3ce36c5a405572fb6",
+    measurementId: "G-Q6KF6ST8XF"
   };
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  window.__FB = { app, db };
+}
+const { app, db } = window.__FB;
 
-  const students = {
-    'BIT 3A-A': [{name:'Alexandra Johnson', id:'2023-001234', type:'Regular'}],
-    'BIT 3A-B': [
-      {name:'Joseph Umali', id:'2023-001235', type:'Regular'},
-      {name:'Steven Vistan', id:'2023-001235', type:'Regular'},
-      {name:'Marc Alex Glorioso', id:'2023-001235', type:'Regular'}
-    ],
-    'BIT 3B-A': [{name:'Sarah Williams', id:'2023-001236', type:'Regular'}],
-    'BIT 3B-B': [
-      {name:'John Lloyd P. Babasa', id:'2023-001237', type:'Irregular'},
-      {name:'Tristan Venegas', id:'23-000059', type:'Regular'},
-      {name:'Tristan Millanes', id:'2023-001238', type:'Regular'},
-      {name:'Jon Carlo Malate', id:'2023-001238', type:'Regular'},
-      {name:'Joey Odnimer', id:'2023-001238', type:'Regular'},
-      {name:'Ericka Sarcilla', id:'2023-001238', type:'Regular'},
-      {name:'John Tyron TAnggaan', id:'23-000056', type:'Regular'},
-      {name:'Jhustine Garcia', id:'2023-001238', type:'Regular'}
-    ]
-  };
+/* ===== force-accurate role/section (prefers session, then local) ===== */
+const ssRole = sessionStorage.getItem('auth_role');
+const lsRole = localStorage.getItem('auth_role');
+let EFFECTIVE_ROLE = 'student';
+if (ssRole && ssRole !== 'null') {
+  EFFECTIVE_ROLE = ssRole;
+} else if (lsRole && lsRole !== 'null') {
+  EFFECTIVE_ROLE = lsRole;
+}
+sessionStorage.setItem('auth_role', EFFECTIVE_ROLE);
+localStorage.setItem('auth_role', EFFECTIVE_ROLE);
 
-  const schedules = {
-    'BIT 3A-A': [{day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Computer Fundamentals', room:'A101', teacher:'Prof. Maria Santos'}],
-    'BIT 3A-B': [
-      {day:'Monday', time:'7:40 AM – 10:30 AM', subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Prof. Maria Santos'},
-      {day:'Monday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Monday', time:'1:00 PM – 2:30 PM', subject:'Basic Statistics (STA01)', room:'B203', teacher:'Prof. Anna Reyes'},
-      {day:'Tuesday', time:'7:30 AM – 10:00 AM', subject:'Web Development (CPT11)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Tuesday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Tuesday', time:'1:00 PM – 4:30 PM', subject:'Specialized Technology (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
-      {day:'Wednesday', time:'7:30 AM – 10:00 AM', subject:'Data Structure and Algorithm(CPT10)', room:'CET Center', teacher:'Prof. Maria Santos'},
-      {day:'Wednesday', time:'10:30 AM – 12:00 PM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Wednesday', time:'1:00 PM – 2:30 PM', subject:'Basic Statistics (STA01)', room:'B203', teacher:'Prof. Anna Reyes'},
-      {day:'Thursday', time:'7:30 AM – 10:00 AM', subject:'Web Development (CPT11)', room:'CET Center', teacher:'Prof. John Cruz'},
-      {day:'Friday', time:'7:30 AM – 10:00 AM', subject:'Data Structure and Algorithm(CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
-      {day:'Friday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Friday', time:'1:00 PM – 4:30 PM', subject:'Specialized Technology (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'}
-    ],
-    'BIT 3B-A': [{day:'Wednesday', time:'3:30 PM – 6:00 PM', subject:'Programming 2', room:'A204', teacher:'Prof. Lisa Mendoza'}],
-    'BIT 3B-B': [
-      {day:'Monday', time:'7:30 AM – 9:00 AM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Monday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Monday', time:'1:00 PM – 3:30 PM', subject:'Specialized Technology 1 (CPT13)', room:'Cet Center', teacher:'Prof. Lisa Mendoza'},
-      {day:'Monday', time:'4:00 PM – 5:30 PM', subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
-      {day:'Tuesday', time:'1:00 PM – 3:30 PM', subject:'Data Structure and Algorithm (CPT10)', room:'B204', teacher:'Prof. Maria Santos'},
-      {day:'Tuesday', time:'3:30 PM – 6:00 PM', subject:'Web Development (CPT11)', room:'B203', teacher:'Prof. John Cruz'},
-      {day:'Wednesday', time:'7:30 AM – 9:00 AM', subject:'Industrial Management (MGT03)', room:'B102', teacher:'Prof. Robert Garcia'},
-      {day:'Wednesday', time:'4:00 PM – 5:30 PM', subject:'Basic Statistics (STA01)', room:'A204', teacher:'Prof. Anna Reyes'},
-      {day:'Thursday', time:'10:00 AM – 12:30 PM', subject:'Advance Microcontroller (CPT09)', room:'A304', teacher:'Prof. John Cruz'},
-      {day:'Thursday', time:'1:00 PM – 3:30 PM', subject:'Specialized Technology 1 (CPT13)', room:'B204', teacher:'Prof. Lisa Mendoza'},
-      {day:'Thursday', time:'4:00 PM – 7:00 PM', subject:'Seminar in Information Trends and Specialized (CPT12)', room:'A303', teacher:'Engr. Carlos Dela Cruz'},
-      {day:'Friday', time:'1:00 PM – 3:30 PM', subject:'Data Structure and Algorithm (CPT10)', room:'Cet Center', teacher:'Prof. Maria Santos'},
-      {day:'Friday', time:'3:30 PM – 6:00 PM', subject:'Web Development (CPT11)', room:'Cet Center', teacher:'Prof. John Cruz'}
-    ]
-  };
+const ssSec = sessionStorage.getItem('auth_section');
+const lsSec = localStorage.getItem('auth_section');
+let EFFECTIVE_SECTION = '';
+if (ssSec && ssSec !== 'null') {
+  EFFECTIVE_SECTION = ssSec;
+} else if (lsSec && lsSec !== 'null') {
+  EFFECTIVE_SECTION = lsSec;
+}
+sessionStorage.setItem('auth_section', EFFECTIVE_SECTION);
+localStorage.setItem('auth_section', EFFECTIVE_SECTION);
 
-  const sectionModal = document.getElementById('section-detail-modal');
-  const secTitle = document.getElementById('section-detail-title');
-  const listStudents = document.getElementById('section-students');
-  const listSchedule = document.getElementById('section-schedule');
-  const grid = document.getElementById('sections-grid');
+const isStudent = EFFECTIVE_ROLE === 'student';
+const isTeacher = EFFECTIVE_ROLE === 'teacher';
+const isAdmin   = EFFECTIVE_ROLE === 'admin';
 
-  const yearBtn = document.getElementById('year-dropdown');
-  const yearPanel = document.getElementById('year-options');
-  const yearLabel = document.getElementById('year-selected');
-  let currentYear = '3rd Year';
-  let activeSection = null;
+const $  = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const fadeList = (el)=>{ if(!el) return; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); };
+const toOrdinal = (n)=>{ const s=String(n), a=s.slice(-1), b=s.slice(-2); if(b==='11'||b==='12'||b==='13')return s+'th'; if(a==='1')return s+'st'; if(a==='2')return s+'nd'; if(a==='3')return s+'rd'; return s+'th'; };
+const toMinutes = (hhmm)=>{ const [h,m]=hhmm.split(':').map(Number); return h*60+m; };
+const to12h = (hhmm)=>{ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12; if(h===0) h=12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+const makeRange = (s,e)=>`${to12h(s)} – ${to12h(e)}`;
+const overlaps = (s1,e1,s2,e2)=> Math.max(s1,s2) < Math.min(e1,e2);
 
-  yearBtn.addEventListener('click', ()=>yearPanel.classList.toggle('hidden'));
-  yearPanel.querySelectorAll('.year-option').forEach(opt=>{
-    opt.addEventListener('click', ()=>{
-      currentYear = opt.textContent.trim();
-      yearLabel.textContent = currentYear;
-      yearPanel.classList.add('hidden');
-      resetScheduleForm();
-      renderSectionCards();
-      updateSectionCounts();
-      populateSectionOptions();
+const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
+const YEAR_SECTIONS = {
+  '1st Year': ['BIT 1A-A','BIT 1A-B','BIT 1B-A','BIT 1B-B'],
+  '2nd Year': ['BIT 2A-A','BIT 2A-B','BIT 2B-A','BIT 2B-B'],
+  '3rd Year': ['BIT 3A-A','BIT 3A-B','BIT 3B-A','BIT 3B-B'],
+  '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
+};
+
+let currentYear = '3rd Year';
+let activeSection = null;
+let studentsUnsub=null, schedulesUnsub=null, currentSchedules=[];
+
+async function requireAuth(){ return null; }
+
+async function ensureSectionDoc(sectionId){
+  const ref = doc(db, 'sections', sectionId);
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, { name: sectionId, meta: { studentCount: 0, subjectCount: 0 } });
+  }
+}
+async function refreshCounts(sectionId){
+  const secRef = doc(db, 'sections', sectionId);
+  const stuAgg = await getCountFromServer(collection(secRef, 'students'));
+  const studentCount = stuAgg.data().count || 0;
+
+  const schedSnap = await getDocs(collection(secRef, 'schedules'));
+  const subj = new Set();
+  schedSnap.forEach(d=>{ const s=d.data(); if(s.subject) subj.add(s.subject); });
+  const subjectCount = subj.size;
+
+  await setDoc(secRef, { meta: { studentCount, subjectCount } }, { merge: true });
+
+  $$('.sec-stu').forEach(span=>{ if(span.dataset.sec===sectionId) span.textContent = studentCount; });
+  $$('.sec-subj').forEach(span=>{ if(span.dataset.sec===sectionId) span.textContent = subjectCount; });
+}
+
+function getDesc(code){
+  const m = code.match(/BIT\s+(\d)([A-Z])\-([A-Z])/i);
+  if(!m) return 'Bachelor in Industrial Technology';
+  const year = Number(m[1]), track = m[2].toUpperCase();
+  return `Bachelor in Industrial Technology - ${toOrdinal(year)} Year Section ${track}`;
+}
+
+function renderSectionCards(){
+  const grid = $('#sections-grid');
+
+  if (isStudent) {
+    grid.className = 'flex justify-center';
+    const sec = EFFECTIVE_SECTION ? EFFECTIVE_SECTION.trim() : '';
+    if (!sec) {
+      grid.innerHTML = `
+        <div class="w-full max-w-md p-6 bg-white border border-dashed border-gray-200 rounded-2xl text-center text-gray-600 shadow-sm">
+          No section assigned to this student.
+        </div>
+      `;
+      return;
+    }
+    grid.innerHTML = `
+      <div class="section-card relative bg-gradient-to-br from-emerald-50 via-white to-emerald-100/50 rounded-2xl shadow-xl border border-emerald-100 p-8 w-full max-w-xl cursor-pointer overflow-hidden" data-sec="${sec}">
+        <div class="absolute -right-10 -top-10 w-44 h-44 bg-emerald-300/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <h3 class="text-3xl font-bold text-primary drop-shadow-sm">${sec}</h3>
+          <div class="w-10 h-10 flex items-center justify-center bg-white/70 rounded-full shadow"><i class="ri-arrow-right-line text-primary text-lg"></i></div>
+        </div>
+        <p class="text-gray-700 mb-4 font-medium">${getDesc(sec)}</p>
+        <div class="flex items-center justify-between text-sm text-gray-600 bg-white/60 rounded-xl px-4 py-3 backdrop-blur">
+          <span class="flex items-center gap-1"><i class="ri-team-line text-emerald-500"></i><span class="sec-stu font-semibold" data-sec="${sec}">—</span> Students</span>
+          <span class="flex items-center gap-1"><i class="ri-book-3-line text-emerald-500"></i><span class="sec-subj font-semibold" data-sec="${sec}">—</span> Subjects</span>
+        </div>
+      </div>
+    `;
+    const card = grid.querySelector('.section-card');
+    card?.addEventListener('click', ()=> openSection(sec));
+
+    (async ()=>{
+      await ensureSectionDoc(sec);
+      onSnapshot(doc(db,'sections',sec), snap=>{
+        const d=snap.data(); if(!d?.meta) return;
+        const s=$(`.sec-stu[data-sec="${sec}"]`);
+        const q=$(`.sec-subj[data-sec="${sec}"]`);
+        if(s) s.textContent = d.meta.studentCount ?? 0;
+        if(q) q.textContent = d.meta.subjectCount ?? 0;
+      });
+    })();
+    return;
+  }
+
+  grid.className = 'grid md:grid-cols-2 lg:grid-cols-3 gap-6';
+  const secs = YEAR_SECTIONS[currentYear] || [];
+  grid.innerHTML = secs.map(sec=>`
+    <div class="section-card soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-2xl font-bold text-primary">${sec}</h3>
+        <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+      </div>
+      <p class="text-gray-600 mb-3">${getDesc(sec)}</p>
+      <div class="flex items-center justify-between text-sm text-gray-500">
+        <span><span class="sec-stu" data-sec="${sec}">—</span> Students</span>
+        <span><span class="sec-subj" data-sec="${sec}">—</span> Subjects</span>
+      </div>
+    </div>`).join('');
+
+  $$('.section-card').forEach(card=>{
+    card.addEventListener('click', ()=> openSection(card.dataset.sec));
+  });
+
+  secs.forEach(async sec=>{
+    await ensureSectionDoc(sec);
+    onSnapshot(doc(db,'sections',sec), snap=>{
+      const d=snap.data(); if(!d?.meta) return;
+      const s=$(`.sec-stu[data-sec="${sec}"]`);
+      const q=$(`.sec-subj[data-sec="${sec}"]`);
+      if(s) s.textContent = d.meta.studentCount ?? 0;
+      if(q) q.textContent = d.meta.subjectCount ?? 0;
     });
   });
-  document.addEventListener('click', (e)=>{ if(!yearBtn.contains(e.target) && !yearPanel.contains(e.target)) yearPanel.classList.add('hidden'); });
+}
 
-  function fadeList(el){ if(!el) return; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); }
-
-  function toOrdinal(n){
-    const s=String(n), last=s.slice(-1), last2=s.slice(-2);
-    if(last2==='11'||last2==='12'||last2==='13') return s+'th';
-    if(last==='1') return s+'st';
-    if(last==='2') return s+'nd';
-    if(last==='3') return s+'rd';
-    return s+'th';
-  }
-
-  function getDesc(code){
-    const m = code.match(/BIT\s+(\d)([A-Z])\-([A-Z])/i);
-    if(!m) return 'Bachelor in Industrial Technology';
-    const year = Number(m[1]), track = m[2].toUpperCase();
-    return `Bachelor in Industrial Technology - ${toOrdinal(year)} Year Section ${track}`;
-  }
-
-  function renderSectionCards(){
-    const secs = YEAR_SECTIONS[currentYear]||[];
-    grid.innerHTML = secs.map(sec=>{
-      const stu = (students[sec]||[]).length || 0;
-      const subj = uniqueSubjectCount(sec);
-      return `
-      <div class="section-card soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-2xl font-bold text-primary">${sec}</h3>
-          <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
-        </div>
-        <p class="text-gray-600 mb-3">${getDesc(sec)}</p>
-        <div class="flex items-center justify-between text-sm text-gray-500">
-          <span><span class="sec-stu" data-sec="${sec}">${stu}</span> Students</span>
-          <span><span class="sec-subj" data-sec="${sec}">${subj}</span> Subjects</span>
-        </div>
-      </div>`;
-    }).join('');
-    grid.querySelectorAll('.section-card').forEach(card=>{
-      const name = card.getAttribute('data-sec');
-      card.addEventListener('click',()=>openSection(name));
-    });
-  }
-
-  function openSection(sectionName){
-    activeSection = sectionName;
-    secTitle.textContent = sectionName;
-    resetScheduleForm();
-    renderStudents();
-    renderSchedule();
-    fadeList(listStudents);
-    fadeList(listSchedule);
-    sectionModal.classList.remove('hidden');
-  }
-  function closeSection(){ sectionModal.classList.add('hidden'); }
-  document.getElementById('close-section-detail-btn').onclick = closeSection;
-
-  function renderStudents(){
-    const data = (students[activeSection]||[]).filter(s=>s.name);
-    const rows = data.map(s=>`
-      <div class="p-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between">
-        <div>
-          <div class="font-semibold text-gray-800">${s.name}</div>
-          <div class="text-sm text-gray-500">ID: ${s.id||''}</div>
-        </div>
-        <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type||'Regular'}</span>
+function renderStudentsList(data){
+  const listStudents = $('#section-students');
+  listStudents.innerHTML = (data||[]).map(s=>`
+    <div class="p-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between">
+      <div>
+        <div class="font-semibold text-gray-800">${s.name}</div>
+        <div class="text-sm text-gray-500">ID: ${s.id||''}</div>
       </div>
-    `).join('');
-    listStudents.innerHTML = rows || `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No students yet.</div>`;
+      <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type||'Regular'}</span>
+    </div>`).join('') || `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No students yet.</div>`;
+}
+
+function renderScheduleList(data){
+  const listSchedule = $('#section-schedule');
+  if(!data.length){
+    listSchedule.innerHTML = `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No schedule yet.</div>`;
+    return;
   }
-
-  function toMinutes(hhmm){ const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
-  function to12h(hhmm){ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12; if(h===0) h=12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; }
-  function makeRange(startHHMM,endHHMM){ return `${to12h(startHHMM)} – ${to12h(endHHMM)}`; }
-  function parseRange(range){ const [a,b]=range.split('–').map(s=>s.trim()); return [to24Min(a),to24Min(b)]; }
-  function to24Min(str){
-    const m=str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0;
-    let h=+m[1], min=+m[2], ap=m[3].toUpperCase();
-    if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+min;
-  }
-  function startMinutesFromRange(range){ return parseRange(range)[0]; }
-
-  // ACCURATE CONFLICTS//
-  function overlaps(s1,e1,s2,e2){ return Math.max(s1,s2) < Math.min(e1,e2); }
-
-  // Section-level: same section + same day + time overlap (regardless of room)
-  function hasSectionConflict(section, day, startMin, endMin, excludeIdx = -1){
-    const arr = (schedules[section]||[]).filter(x=>x.day===day);
-    for(let i=0;i<arr.length;i++){
-      if(i===excludeIdx) continue;
-      const [s,e] = parseRange(arr[i].time);
-      if(overlaps(s,e,startMin,endMin)) return true;
-    }
-    return false;
-  }
-
-  // Room-level: any section + same room + same day + time overlap
-  function hasRoomConflict(room, day, startMin, endMin, currentSection, excludeIdx = -1){
-    for(const sec of Object.keys(schedules)){
-      const arr = schedules[sec]||[];
-      for(let i=0;i<arr.length;i++){
-        if(sec===currentSection && i===excludeIdx) continue;
-        const it = arr[i];
-        if(it.room===room && it.day===day){
-          const [s,e] = parseRange(it.time);
-          if(overlaps(s,e,startMin,endMin)) return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  //HOVER-REVEAL EDIT/DELETE //
-  let pendingDeleteIdx = null; 
-  function renderSchedule(){
-    const data=(schedules[activeSection]||[]).filter(x=>x.day&&x.time&&x.subject);
-    if(!data.length){ listSchedule.innerHTML=`<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No schedule yet.</div>`; return; }
-    const order=['Monday','Tuesday','Wednesday','Thursday','Friday'];
-    const byDay={}; data.forEach((item, idx)=>{ (byDay[item.day]=byDay[item.day]||[]).push({item,idx}); });
-    const startMinutesFromRange=(range)=>{ const [a]=range.split('–').map(s=>s.trim()); const m=a.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0; let h=+m[1], mm=+m[2], ap=m[3].toUpperCase(); if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+mm; };
-    order.forEach(d=>{ if(byDay[d]) byDay[d].sort((A,B)=>startMinutesFromRange(A.item.time)-startMinutesFromRange(B.item.time)); });
-
-    listSchedule.innerHTML = order.filter(d=>byDay[d]).map(day=>{
-      const items = byDay[day].map(({item,idx})=>{
-        const [tStart,tEnd]=(item.time||'').split('–').map(s=>s.trim());
-        return `
-        <div class="group relative p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
-          <div class="pr-20">
-            <div class="text-sm font-semibold text-emerald-700">${item.subject}</div>
-            <div class="text-xs text-gray-600 mt-0.5">${item.day} • ${tStart} – ${tEnd}</div>
-            <div class="text-xs text-gray-600 mt-0.5">${item.room} - ${item.teacher}</div>
-          </div>
+  const order = currentYear==='1st Year' ? ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] : ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const byDay={};
+  data.forEach(it=>{ (byDay[it.day]=byDay[it.day]||[]).push(it); });
+  order.forEach(d=>byDay[d]?.sort((a,b)=>a.startMin-b.startMin));
+  listSchedule.innerHTML = order.filter(d=>byDay[d]).map(day=>{
+    const items = byDay[day].map(it=>{
+      const actionBtns = isAdmin
+        ? `
           <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
-            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-idx="${idx}">
+            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}">
               <i class="ri-pencil-line text-sm"></i>
             </button>
-            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-idx="${idx}">
+            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${it.id}">
               <i class="ri-delete-bin-6-line text-sm"></i>
             </button>
           </div>
-        </div>`;
-      }).join('');
-      return `<div class="mb-4"><div class="text-primary font-semibold mb-2">${day}</div><div class="space-y-2">${items}</div></div>`;
+        `
+        : '';
+      return `
+      <div class="group relative p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
+        <div class="pr-20">
+          <div class="text-sm font-semibold text-emerald-700">${it.subject}</div>
+          <div class="text-xs text-gray-600 mt-0.5">${it.day} • ${it.timeDisplay}</div>
+          <div class="text-xs text-gray-600 mt-0.5">${it.room} - ${it.teacher}</div>
+        </div>
+        ${actionBtns}
+      </div>`;
     }).join('');
-  }
-
-  // Delete confirm modal wiring
-const delModal = document.getElementById('delete-confirm');
-function openDelModal() {
-  delModal.classList.remove('hidden');
-  delModal.style.display = 'flex';
-}
-function closeDelModal() {
-  pendingDeleteIdx = null;
-  delModal.style.display = 'none';
-  delModal.classList.add('hidden');
+    return `<div class="mb-4"><div class="text-primary font-semibold mb-2">${day}</div><div class="space-y-2">${items}</div></div>`;
+  }).join('');
 }
 
-document.getElementById('del-cancel').onclick = closeDelModal;
+function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
+  const btn    = document.getElementById(buttonId);
+  const panel  = document.getElementById(panelId);
+  const hidden = document.getElementById(hiddenId);
+  const label  = document.getElementById(labelId);
+  const setVal = (val)=>{ hidden.value=val; if(label) label.textContent=val; panel.classList.add('hidden'); btn.classList.remove('is-error'); hideFormError(); };
+  btn?.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    panel.classList.toggle('hidden');
+  });
+  panel?.addEventListener('mousedown', (e)=>{
+    const opt=e.target.closest('.'+optionClass);
+    if(opt){ setVal(opt.dataset.value || opt.textContent.trim()); }
+  });
+  document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden'); });
+}
+function populateSectionOptions(){
+  const panel = $('#section-options');
+  const list = YEAR_SECTIONS[currentYear] || [];
+  panel.innerHTML = list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
+  wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
+}
 
-document.getElementById('del-yes').onclick = () => {
-  if (pendingDeleteIdx === null) return;
-  const arr = (schedules[activeSection] || []);
-  if (pendingDeleteIdx >= 0 && pendingDeleteIdx < arr.length) {
-    arr.splice(pendingDeleteIdx, 1);
-    renderSchedule();
-    updateSectionCounts();
+const __combos = [];
+function closeAllCombos(exceptId=null){
+  __combos.forEach(c=>{
+    if(c.id!==exceptId){ c.close(); }
+  });
+}
+function wireComboSearch(cfg){
+  const { btnId, inputId, panelId, hiddenId, optionClass, labelId, chevronId } = cfg;
+  const btn    = document.getElementById(btnId);
+  const input  = document.getElementById(inputId);
+  const panel  = document.getElementById(panelId);
+  const hidden = document.getElementById(hiddenId);
+  const label  = document.getElementById(labelId);
+  const chev   = document.getElementById(chevronId);
+
+  const opts = ()=> Array.from(panel.querySelectorAll('.'+optionClass));
+  const open = ()=>{ closeAllCombos(btnId); panel.classList.remove('hidden'); btn.classList.add('combo-has-text'); };
+  const close = ()=>{ panel.classList.add('hidden'); if(!input.value) btn.classList.remove('combo-has-text'); };
+  const apply = (val)=>{ hidden.value=val; if(label) label.textContent=val; input.value=''; input.blur(); close(); hidden.dispatchEvent(new Event('change',{bubbles:true})); };
+
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); open(); input.focus(); });
+  if (chev){
+    chev.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      if(panel.classList.contains('hidden')){ closeAllCombos(btnId); panel.classList.remove('hidden'); btn.classList.add('combo-has-text'); }
+      else{ close(); }
+    });
   }
-  closeDelModal();
-};
-
-
-
-  // hover action handlers 
-  listSchedule.addEventListener('click', (e) => {
-    const editBtn = e.target.closest('.sched-edit');
-    const delBtn  = e.target.closest('.sched-del');
-
-    if (editBtn) {
-      const idx = +editBtn.dataset.idx;
-      const arr = (schedules[activeSection] || []);
-      const it  = arr[idx];
-      if (!it) return;
-
-      // prefill modal
-      document.getElementById('subject').value = it.subject || '';
-      document.getElementById('section').value = activeSection;
-      document.getElementById('section-selected').textContent = activeSection;
-      document.getElementById('room').value = it.room || '';
-      document.getElementById('room-selected').textContent = it.room || 'Select room';
-      document.getElementById('teacher').value = it.teacher || '';
-      document.getElementById('teacher-selected').textContent = it.teacher || 'Select teacher';
-      document.getElementById('day').value = it.day || '';
-      document.getElementById('day-selected').textContent = it.day || 'Select day';
-
-      const to24Min=(str)=>{ const m=str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if(!m) return 0; let h=+m[1], mm=+m[2], ap=m[3].toUpperCase(); if(ap==='PM'&&h!==12) h+=12; if(ap==='AM'&&h===12) h=0; return h*60+mm; };
-      const to24hhmm=(str)=>{ const mins=to24Min(str); const h=Math.floor(mins/60), m=mins%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; };
-      const [a,b]=(it.time||'').split('–').map(s=>s.trim());
-      document.getElementById('start-time').value = a ? to24hhmm(a) : '';
-      document.getElementById('end-time').value   = b ? to24hhmm(b) : '';
-
-      const formEl = document.getElementById('schedule-form');
-      formEl.dataset.editIdx = String(idx);
-      document.getElementById('submit-text').textContent = 'Save Changes';
-      document.getElementById('modal-title').textContent = 'Edit Schedule';
-
-      document.getElementById('form-error').classList.add('hidden');
-      document.getElementById('conflict').classList.add('hidden');
-      document.getElementById('schedule-modal').classList.remove('hidden');
-      return;
+  input.addEventListener('input', ()=>{
+    const q=input.value.trim().toLowerCase();
+    if(q) btn.classList.add('combo-has-text'); else btn.classList.remove('combo-has-text');
+    opts().forEach(op=>{
+      const t=(op.dataset.value || op.textContent).toLowerCase();
+      const show=t.includes(q);
+      op.style.display = show ? '' : 'none';
+    });
+    panel.classList.remove('hidden');
+  });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      const first = opts().find(op => op.style.display !== 'none');
+      if(first) apply(first.dataset.value || first.textContent.trim());
     }
+    if(e.key==='Escape'){ e.preventDefault(); close(); }
+  });
+  panel.addEventListener('mousedown', (e)=>{
+    const op=e.target.closest('.'+optionClass);
+    if(op){ apply(op.dataset.value || op.textContent.trim()); }
+  });
+  document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) close(); });
 
-   if (delBtn) {
-  pendingDeleteIdx = +delBtn.dataset.idx;
-  openDelModal();
+  __combos.push({ id: btnId, close });
 }
 
+async function openSection(sectionName){
+  activeSection = sectionName;
+  $('#section-detail-title').textContent = sectionName;
+  $('#section-detail-modal').classList.remove('hidden');
+  await ensureSectionDoc(sectionName);
+
+  const addStudentBtn = $('#add-section-student-btn');
+  const addScheduleBtn = $('#add-section-schedule-btn');
+  if (!isAdmin) {
+    addStudentBtn.classList.add('hidden');
+    addScheduleBtn.classList.add('hidden');
+  } else {
+    addStudentBtn.classList.remove('hidden');
+    addScheduleBtn.classList.remove('hidden');
+  }
+
+  if(studentsUnsub) studentsUnsub();
+  studentsUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'students'), snap=>{
+    const data=[]; snap.forEach(d=>data.push(d.data()));
+    renderStudentsList(data); refreshCounts(sectionName);
   });
 
-  function uniqueSubjectCount(sec){ const set=new Set(); (schedules[sec]||[]).forEach(x=>set.add(x.subject)); return set.size; }
-  function updateSectionCounts(){
-    document.querySelectorAll('.sec-stu').forEach(span=>{ const sec=span.getAttribute('data-sec'); span.textContent=(students[sec]||[]).length; });
-    document.querySelectorAll('.sec-subj').forEach(span=>{ const sec=span.getAttribute('data-sec'); span.textContent=uniqueSubjectCount(sec); });
+  if(schedulesUnsub) schedulesUnsub();
+  schedulesUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'schedules'), snap=>{
+    const data=[]; snap.forEach(d=>data.push({id:d.id,...d.data()}));
+    currentSchedules = data; renderScheduleList(data); refreshCounts(sectionName);
+  });
+
+  fadeList($('#section-students')); fadeList($('#section-schedule'));
+}
+
+const delModal = $('#delete-confirm');
+let pendingDeleteId = null;
+const openDelModal = ()=>{ delModal.classList.remove('hidden'); delModal.style.display='flex'; };
+const closeDelModal = ()=>{ pendingDeleteId=null; delModal.style.display='none'; delModal.classList.add('hidden'); };
+$('#del-cancel').onclick = closeDelModal;
+$('#del-yes').onclick = async ()=>{
+  if(!pendingDeleteId || !activeSection) return;
+  await requireAuth();
+  await deleteDoc(doc(db, 'sections', activeSection, 'schedules', pendingDeleteId));
+  closeDelModal();
+};
+$('#section-schedule').addEventListener('click', (e)=>{
+  if (!isAdmin) return;
+  const editBtn = e.target.closest('.sched-edit');
+  const delBtn  = e.target.closest('.sched-del');
+  if (editBtn){
+    const it = currentSchedules.find(s => s.id === editBtn.dataset.id);
+    if (!it) return;
+    $('#subject').value = it.subject || '';
+    $('#section').value = activeSection; $('#section-selected').textContent = activeSection;
+    $('#room').value = it.room || '';    $('#room-selected').textContent   = it.room || 'Select room';
+    $('#teacher').value = it.teacher || ''; $('#teacher-selected').textContent = it.teacher || 'Select teacher';
+    $('#day').value = it.day || ''; $('#day-selected').textContent = it.day || 'Select day';
+    const toHHMM = (m)=> `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+    $('#start-time').value = toHHMM(it.startMin);
+    $('#end-time').value   = toHHMM(it.endMin);
+    const formEl = $('#schedule-form');
+    formEl.dataset.editId = it.id;
+    $('#submit-text').textContent = 'Save Changes';
+    $('#modal-title').textContent = 'Edit Schedule';
+    $('#form-error').classList.add('hidden');
+    $('#conflict').classList.add('hidden');
+    $('#schedule-modal').classList.remove('hidden');
   }
+  if (delBtn){ pendingDeleteId = delBtn.dataset.id; openDelModal(); }
+});
 
-  // student modal
-  const studentModal = document.getElementById('student-modal');
-  document.getElementById('add-section-student-btn').onclick = ()=>{ studentModal.classList.remove('hidden'); };
-  document.getElementById('close-student-modal-btn').onclick = ()=>studentModal.classList.add('hidden');
-  document.getElementById('cancel-student-btn').onclick = ()=>studentModal.classList.add('hidden');
+const studentModal = $('#student-modal');
+$('#add-section-student-btn').onclick = async ()=>{ await requireAuth(); studentModal.classList.remove('hidden'); };
+$('#close-student-modal-btn').onclick = ()=> studentModal.classList.add('hidden');
+$('#cancel-student-btn').onclick = ()=> studentModal.classList.add('hidden');
+function refreshChoiceStyles(){
+  $$('#student-type-group .choice').forEach(lbl=>lbl.classList.remove('choice-active'));
+  const checked=$('#student-type-group input[name="student-type"]:checked');
+  checked?.closest('.choice')?.classList.add('choice-active');
+}
+$$('#student-type-group input[name="student-type"]').forEach(r=> r.addEventListener('change',refreshChoiceStyles));
+refreshChoiceStyles();
+$('#student-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  await requireAuth();
 
-  function refreshChoiceStyles(){
-    document.querySelectorAll('#student-type-group .choice').forEach(lbl=>lbl.classList.remove('choice-active'));
-    const checked=document.querySelector('#student-type-group input[name="student-type"]:checked');
-    if(checked) checked.closest('.choice')?.classList.add('choice-active');
-  }
-  document.querySelectorAll('#student-type-group input[name="student-type"]').forEach(r=>{ r.addEventListener('change',refreshChoiceStyles); });
-  refreshChoiceStyles();
+  const sBtn   = document.getElementById('student-submit');
+  const sText  = document.getElementById('student-submit-text');
+  const sSpin  = document.getElementById('student-loader');
+  sBtn.disabled = true; sSpin.classList.remove('hidden'); sText.textContent = 'Adding Student...'; sBtn.classList.add('opacity-90','cursor-not-allowed');
 
-  document.getElementById('student-form').addEventListener('submit', e=>{
-    e.preventDefault();
-    const name=document.getElementById('student-name').value.trim();
-    const id=document.getElementById('student-id').value.trim();
-    const picked=[...document.querySelectorAll('input[name="student-type"]')].find(r=>r.checked);
+  try{
+    const name=$('#student-name').value.trim();
+    const id=$('#student-id').value.trim();
+    const picked=$$('#student-type-group input[name="student-type"]').find(r=>r.checked);
     const type=picked?picked.value:'Regular';
     const sec=activeSection;
-    if(!name||!id||!sec) return;
-    students[sec]=students[sec]||[];
-    students[sec].push({name,id,type});
-    if(sec===activeSection) renderStudents();
-    updateSectionCounts();
-    fadeList(listStudents);
+    if(!name||!id||!sec) throw new Error('Please complete all required fields.');
+    await ensureSectionDoc(sec);
+    await addDoc(collection(doc(db,'sections',sec),'students'), { name, id, type, createdAt: serverTimestamp() });
+    await refreshCounts(sec);
     studentModal.classList.add('hidden');
     e.target.reset();
     refreshChoiceStyles();
+  }catch(err){
+    alert(err?.message || 'Failed to add student.');
+  }finally{
+    sBtn.disabled = false; sSpin.classList.add('hidden'); sText.textContent = 'Add Student'; sBtn.classList.remove('opacity-90','cursor-not-allowed');
+  }
+});
+
+wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
+
+wireComboSearch({
+  btnId:'room-dropdown', inputId:'room-combo', panelId:'room-options',
+  hiddenId:'room', optionClass:'room-option', labelId:'room-selected', chevronId:'room-chevron'
+});
+wireComboSearch({
+  btnId:'teacher-dropdown', inputId:'teacher-combo', panelId:'teacher-options',
+  hiddenId:'teacher', optionClass:'teacher-option', labelId:'teacher-selected', chevronId:'teacher-chevron'
+});
+
+$('#day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
+function openDayPortal(){
+  const btn    = $('#day-dropdown');
+  const hidden = $('#day');
+  const label  = $('#day-selected');
+  const source = $('#day-options');
+  const portal = document.createElement('div');
+  portal.id = 'day-portal';
+  portal.className = 'fixed z-[9999] bg-white border border-gray-300 rounded-2xl shadow-2xl';
+  portal.style.minWidth = btn.getBoundingClientRect().width + 'px';
+  if (currentYear === '1st Year'){ portal.style.maxHeight='220px'; portal.style.overflowY='auto'; portal.style.padding='4px'; portal.style.fontSize='13px'; portal.style.lineHeight='1.2'; }
+  portal.innerHTML = source.innerHTML; document.body.appendChild(portal);
+  const updatePos = ()=>{ const r=btn.getBoundingClientRect(); portal.style.left=r.left+'px'; portal.style.top=(r.bottom+6)+'px'; portal.style.minWidth=r.width+'px'; };
+  updatePos();
+  const prevOverflow=document.body.style.overflow; document.body.style.overflow='hidden';
+  const close = ()=>{ portal.remove(); document.body.style.overflow=prevOverflow; document.removeEventListener('mousedown', outside); window.removeEventListener('resize', updatePos); window.removeEventListener('scroll', updatePos, true); };
+  const outside = (ev)=>{ if(!portal.contains(ev.target) && ev.target!==btn) close(); };
+  portal.addEventListener('mousedown', (ev)=>{
+    const opt = ev.target.closest('.day-option');
+    if (opt){ const val = opt.dataset.value || opt.textContent.trim(); hidden.value = val; label.textContent = val; btn.classList.remove('is-error'); hideFormError(); close(); }
   });
+  window.addEventListener('resize', updatePos);
+  window.addEventListener('scroll', updatePos, true);
+  document.addEventListener('mousedown', outside);
+}
 
-  // schedule modal
-  const scheduleModal=document.getElementById('schedule-modal');
-  document.getElementById('add-section-schedule-btn').onclick=()=>{
-    resetScheduleForm();
-    delete document.getElementById('schedule-form').dataset.editIdx;
-    document.getElementById('section').value=activeSection;
-    document.getElementById('section-selected').textContent=activeSection;
-    document.getElementById('submit-text').textContent = 'Add Schedule';
-    document.getElementById('modal-title').textContent = 'Add New Schedule';
-    hideFormError();
-    document.getElementById('conflict').classList.add('hidden');
-    scheduleModal.classList.remove('hidden');
-  };
-  document.getElementById('close-modal-btn').onclick=()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editIdx; };
-  document.getElementById('cancel-btn').onclick=()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editIdx; };
+function showFormError(msg){ const el=$('#form-error'); if(!el) return; el.textContent=msg; el.classList.remove('hidden'); }
+function hideFormError(){ const el=$('#form-error'); if(!el) return; el.textContent=''; el.classList.add('hidden'); }
+function clearErrors(){ ['subject','section-dropdown','room-dropdown','teacher-dropdown','day-dropdown','start-time','end-time'].forEach(id=>document.getElementById(id)?.classList.remove('is-error')); hideFormError(); }
+function markError(id){ document.getElementById(id)?.classList.add('is-error'); }
+function validateScheduleForm(){
+  clearErrors();
+  const subject=$('#subject').value.trim();
+  const section=$('#section').value.trim();
+  const room=$('#room').value.trim();
+  const teacher=$('#teacher').value.trim();
+  const day=$('#day').value.trim();
+  const startHHMM=$('#start-time').value;
+  const endHHMM=$('#end-time').value;
+  let ok=true;
+  if(!subject){ markError('subject'); ok=false; }
+  if(!section){ markError('section-dropdown'); ok=false; }
+  if(!room){    markError('room-dropdown'); ok=false; }
+  if(!teacher){ markError('teacher-dropdown'); ok=false; }
+  if(!day){     markError('day-dropdown'); ok=false; }
+  if(!startHHMM){ markError('start-time'); ok=false; }
+  if(!endHHMM){   markError('end-time'); ok=false; }
+  if(!ok) showFormError('Please complete all required fields.');
+  return { ok, values:{subject,section,room,teacher,day,startHHMM,endHHMM} };
+}
+function checkConflictInline(){
+  const section=$('#section').value.trim();
+  const day=$('#day').value.trim();
+  const s=$('#start-time').value;
+  const e=$('#end-time').value;
+  const bar=$('#conflict');
+  if(!section||!day||!s||!e){ bar.classList.add('hidden'); return false; }
+  const sm=toMinutes(s), em=toMinutes(e);
+  if(em<=sm){ bar.textContent='Invalid time: end must be after start.'; bar.classList.remove('hidden'); return true; }
+  const secSameDay = currentSchedules.filter(x=>x.day===day);
+  for(const it of secSameDay){ if(overlaps(it.startMin, it.endMin, sm, em)){ bar.textContent='Section conflict: this section already has a class at this time.'; bar.classList.remove('hidden'); return true; } }
+  bar.classList.add('hidden'); return false;
+}
+;['start-time','end-time','day','section','room'].forEach(id=> document.getElementById(id).addEventListener('change',checkConflictInline));
 
-  // generic dropdowns
-  function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
-    const btn=document.getElementById(buttonId);
-    const panel=document.getElementById(panelId);
-    const hidden=document.getElementById(hiddenId);
-    const label=document.getElementById(labelId);
-    const setVal=(val)=>{ hidden.value=val; if(label) label.textContent=val; panel.classList.add('hidden'); btn.classList.remove('is-error'); hideFormError(); };
-    btn.addEventListener('click',(e)=>{ e.stopPropagation(); panel.classList.toggle('hidden'); });
-    panel.addEventListener('mousedown',(e)=>{ const opt=e.target.closest('.'+optionClass); if(opt){ setVal(opt.dataset.value||opt.textContent.trim()); }});
-    document.addEventListener('click',(e)=>{ if(!btn.contains(e.target)&&!panel.contains(e.target)) panel.classList.add('hidden'); });
+async function hasRoomConflictAllSections(day, room, startMin, endMin, skipSectionId=null, skipScheduleId=null){
+  const qRoom = query(collectionGroup(db,'schedules'), where('room','==', room));
+  const snap = await getDocs(qRoom);
+  for(const docu of snap.docs){
+    const d = docu.data();
+    if(d.day !== day) continue;
+    const secId = docu.ref.parent.parent.id;
+    if(skipSectionId && secId===skipSectionId && skipScheduleId && docu.id===skipScheduleId) continue;
+    if(overlaps(d.startMin, d.endMin, startMin, endMin)) return true;
   }
+  return false;
+}
 
-  function populateSectionOptions(){
-    const panel=document.getElementById('section-options');
-    const list=YEAR_SECTIONS[currentYear]||[];
-    panel.innerHTML=list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
-    wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
-  }
+const scheduleModal = $('#schedule-modal');
+$('#add-section-schedule-btn').onclick = async ()=>{
+  if (!isAdmin) return;
+  await requireAuth();
+  resetScheduleForm();
+  delete $('#schedule-form').dataset.editId;
+  $('#section').value=activeSection;
+  $('#section-selected').textContent=activeSection;
+  $('#submit-text').textContent = 'Add Schedule';
+  $('#modal-title').textContent = 'Add New Schedule';
+  hideFormError(); $('#conflict').classList.add('hidden');
+  scheduleModal.classList.remove('hidden');
+  closeAllCombos();
+};
+$('#close-section-detail-btn').onclick = ()=> $('#section-detail-modal').classList.add('hidden');
+$('#close-modal-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete $('#schedule-form').dataset.editId; };
+$('#cancel-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete $('#schedule-form').dataset.editId; };
 
-  wireDropdown('room-dropdown','room-options','room','room-option','room-selected');
-  wireDropdown('teacher-dropdown','teacher-options','teacher','teacher-option','teacher-selected');
-
-  document.getElementById('day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
-  function openDayPortal(){
-    const btn=document.getElementById('day-dropdown');
-    const hidden=document.getElementById('day');
-    const label=document.getElementById('day-selected');
-    const source=document.getElementById('day-options');
-
-    const rect=btn.getBoundingClientRect();
-    const portal=document.createElement('div');
-    portal.id='day-portal';
-    portal.className='fixed z-[9999] bg-white border border-gray-300 rounded-2xl shadow-2xl text-sm';
-    portal.style.left=rect.left+'px';
-    portal.style.top=(rect.bottom+6)+'px';
-    portal.style.minWidth=rect.width+'px';
-    portal.style.maxHeight='60vh';
-    portal.style.overflow='auto';
-    portal.innerHTML=source.innerHTML;
-    document.body.appendChild(portal);
-
-    const prevOverflow=document.body.style.overflow;
-    document.body.style.overflow='hidden';
-
-    const close=()=>{ portal.remove(); document.body.style.overflow=prevOverflow; document.removeEventListener('mousedown',outside); window.removeEventListener('resize',close); window.removeEventListener('scroll',close,true); };
-    const outside=(ev)=>{ if(!portal.contains(ev.target)&&ev.target!==btn) close(); };
-
-    portal.addEventListener('mousedown',(ev)=>{
-      const opt=ev.target.closest('.day-option');
-      if(opt){
-        const val=opt.dataset.value||opt.textContent.trim();
-        hidden.value=val; label.textContent=val; btn.classList.remove('is-error'); hideFormError(); close();
-      }
-    });
-    document.addEventListener('mousedown',outside);
-    window.addEventListener('resize',close);
-    window.addEventListener('scroll',close,true);
-  }
-
-  function showFormError(msg){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=msg; el.classList.remove('hidden'); }
-  function hideFormError(){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=''; el.classList.add('hidden'); }
-
-  // conflict bar update 
-  function checkConflictInline(){
-    const section=document.getElementById('section').value.trim();
-    const day=document.getElementById('day').value.trim();
-    const room=document.getElementById('room').value.trim();
-    const s=document.getElementById('start-time').value;
-    const e=document.getElementById('end-time').value;
-    const bar=document.getElementById('conflict');
-
-    if(!section||!day||!s||!e){ bar.classList.add('hidden'); return false; }
-    const sm=toMinutes(s), em=toMinutes(e);
-    if(em<=sm){ bar.textContent='Invalid time: end must be after start.'; bar.classList.remove('hidden'); return true; }
-
-    const formEl = document.getElementById('schedule-form');
-    const editIdx = formEl.dataset.editIdx !== undefined ? +formEl.dataset.editIdx : -1;
-
-    if(hasSectionConflict(section,day,sm,em,editIdx)){
-      bar.textContent='Section conflict: this section already has a class at this time.';
-      bar.classList.remove('hidden'); return true;
-    }
-    if(room && hasRoomConflict(room,day,sm,em,section,editIdx)){
-      bar.textContent='Room conflict: this room is already booked at this time.';
-      bar.classList.remove('hidden'); return true;
-    }
-
-    bar.classList.add('hidden');
-    return false;
-  }
-  ['start-time','end-time','day','section','room'].forEach(id=>{ document.getElementById(id).addEventListener('change',checkConflictInline); });
-
-  function clearErrors(){
-    ['subject','section-dropdown','room-dropdown','teacher-dropdown','day-dropdown','start-time','end-time']
-      .forEach(id=>document.getElementById(id)?.classList.remove('is-error'));
-    hideFormError();
-  }
-  function markError(id){ document.getElementById(id)?.classList.add('is-error'); }
-
-  function validateScheduleForm(){
-    clearErrors();
-    const subject=document.getElementById('subject').value.trim();
-    const section=document.getElementById('section').value.trim();
-    const room=document.getElementById('room').value.trim();
-    const teacher=document.getElementById('teacher').value.trim();
-    const day=document.getElementById('day').value.trim();
-    const startHHMM=document.getElementById('start-time').value;
-    const endHHMM=document.getElementById('end-time').value;
-
-    let ok=true;
-    if(!subject){ markError('subject'); ok=false; }
-    if(!section){ markError('section-dropdown'); ok=false; }
-    if(!room){    markError('room-dropdown'); ok=false; }
-    if(!teacher){ markError('teacher-dropdown'); ok=false; }
-    if(!day){     markError('day-dropdown'); ok=false; }
-    if(!startHHMM){ markError('start-time'); ok=false; }
-    if(!endHHMM){   markError('end-time'); ok=false; }
-    if(!ok) showFormError('Please complete all required fields.');
-    return { ok, values:{subject,section,room,teacher,day,startHHMM,endHHMM} };
-  }
-
-  document.getElementById('schedule-form').addEventListener('submit',(e)=>{
-    e.preventDefault();
+$('#schedule-form').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if (!isAdmin) return;
+  try{
+    await requireAuth();
     const check=validateScheduleForm();
     if(!check.ok) return;
 
@@ -895,52 +988,140 @@ document.getElementById('del-yes').onclick = () => {
     const sm=toMinutes(startHHMM), em=toMinutes(endHHMM);
     if(em<=sm){ markError('end-time'); showFormError('End time must be after start time.'); return; }
 
-    const formEl = document.getElementById('schedule-form');
-    const editIdx = formEl.dataset.editIdx !== undefined ? +formEl.dataset.editIdx : -1;
+    const editId = $('#schedule-form').dataset.editId;
+    const secSameDay = currentSchedules.filter(x=>x.day===day && (!editId || x.id!==editId));
+    for(const it of secSameDay){ if(overlaps(it.startMin, it.endMin, sm, em)){ showFormError('Section conflict: this section already has a class at this time.'); return; } }
 
-    //conflicts
-    if(hasSectionConflict(section,day,sm,em,editIdx)){ showFormError('Section conflict: this section already has a class at this time.'); return; }
-    if(hasRoomConflict(room,day,sm,em,section,editIdx)){ showFormError('Room conflict: this room is already booked at this time.'); return; }
+    const roomConflict = await hasRoomConflictAllSections(day, room, sm, em, section, editId || null);
+    if(roomConflict){ showFormError('Room conflict: this room is already booked at this time.'); return; }
+
+    const aBtn  = document.getElementById('schedule-submit');
+    const aText = document.getElementById('submit-text');
+    const aSpin = document.getElementById('schedule-loader');
+    aBtn.disabled = true; aSpin.classList.remove('hidden'); aText.textContent = editId ? 'Saving Changes...' : 'Adding Schedule...'; aBtn.classList.add('opacity-90','cursor-not-allowed');
 
     const timeRange=makeRange(startHHMM,endHHMM);
-    document.getElementById('time').value=timeRange;
+    const payload = { day, subject, room, teacher, startMin: sm, endMin: em, timeDisplay: timeRange, createdAt: serverTimestamp() };
+    const secRef = doc(db,'sections',section);
+    await ensureSectionDoc(section);
+    if (editId) await updateDoc(doc(secRef,'schedules',editId), payload);
+    else        await addDoc(collection(secRef,'schedules'), payload);
 
-    // add or update
-    if (editIdx >= 0 && (schedules[section]||[])[editIdx]) {
-      schedules[section][editIdx] = { day, time: timeRange, subject, room, teacher };
-      delete formEl.dataset.editIdx;
-      document.getElementById('submit-text').textContent = 'Add Schedule';
-      document.getElementById('modal-title').textContent = 'Add New Schedule';
-    } else {
-      schedules[section] = schedules[section] || [];
-      schedules[section].push({ day, time: timeRange, subject, room, teacher });
-    }
-
-    if(section===activeSection){ renderSchedule(); updateSectionCounts(); fadeList(listSchedule); }
-
+    await refreshCounts(section);
     resetScheduleForm();
     scheduleModal.classList.add('hidden');
-  });
 
-  // reset helper
-  function resetScheduleForm(){
-    const form=document.getElementById('schedule-form'); if(form) form.reset();
-    hideFormError(); document.getElementById('conflict')?.classList.add('hidden');
-    ['section','room','teacher','day','time'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-    const defaults={
-      'section-selected':(activeSection||'Select section'),
-      'room-selected':'Select room',
-      'teacher-selected':'Select teacher',
-      'day-selected':'Select day'
-    };
-    Object.entries(defaults).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.textContent=val; });
-    clearErrors();
+    aBtn.disabled = false; aSpin.classList.add('hidden'); aText.textContent = 'Add Schedule'; aBtn.classList.remove('opacity-90','cursor-not-allowed');
+  }catch(err){
+    console.error(err);
+    showFormError(err?.message || 'Something went wrong while saving the schedule.');
+    const aBtn  = document.getElementById('schedule-submit');
+    const aText = document.getElementById('submit-text');
+    const aSpin = document.getElementById('schedule-loader');
+    aBtn.disabled = false; aSpin.classList.add('hidden'); aText.textContent = 'Add Schedule'; aBtn.classList.remove('opacity-90','cursor-not-allowed');
+  }
+});
+
+function resetScheduleForm(){
+  const form=$('#schedule-form'); if(form) form.reset();
+  hideFormError(); $('#conflict')?.classList.add('hidden');
+  ['section','room','teacher','day','time'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const defaults={ 'section-selected':(activeSection||'Select section'), 'room-selected':'Select room', 'teacher-selected':'Select teacher', 'day-selected':'Select day' };
+  Object.entries(defaults).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.textContent=val; });
+  clearErrors();
+  document.getElementById('room-combo').value='';
+  document.getElementById('teacher-combo').value='';
+  document.getElementById('room-dropdown').classList.remove('combo-has-text');
+  document.getElementById('teacher-dropdown').classList.remove('combo-has-text');
+  const aBtn  = document.getElementById('schedule-submit');
+  const aText = document.getElementById('submit-text');
+  const aSpin = document.getElementById('schedule-loader');
+  aBtn.disabled = false; aSpin.classList.add('hidden'); aText.textContent = 'Add Schedule'; aBtn.classList.remove('opacity-90','cursor-not-allowed');
+  closeAllCombos();
+}
+
+function setDayOptionsForYear(){
+  const panel = $('#day-options');
+  if(!panel) return;
+  const exists = panel.querySelector('.day-option[data-value="Saturday"]');
+  if(currentYear === '1st Year'){
+    if(!exists){
+      const div = document.createElement('div');
+      div.className = 'day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer';
+      div.dataset.value='Saturday';
+      div.textContent = 'Saturday';
+      panel.appendChild(div);
+    }
+  } else if (exists){ exists.remove(); }
+}
+function setupYearDropdown(){
+  const yearBtn   = $('#year-dropdown');
+  const yearPanel = $('#year-options');
+  const yearLabel = $('#year-selected');
+  yearBtn.addEventListener('click', ()=> yearPanel.classList.toggle('hidden'));
+  $$('.year-option', yearPanel).forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      currentYear = opt.textContent.trim();
+      yearLabel.textContent = currentYear;
+      yearPanel.classList.add('hidden');
+      resetScheduleForm();
+      renderSectionCards();
+      populateSectionOptions();
+      setDayOptionsForYear();
+    });
+  });
+  document.addEventListener('click', (e)=>{ if(!yearBtn.contains(e.target) && !yearPanel.contains(e.target)) yearPanel.classList.add('hidden'); });
+}
+
+const signoutBtn = document.getElementById('signout-btn');
+const signoutModal = document.getElementById('signout-modal');
+const cancelSignout = document.getElementById('cancel-signout');
+const confirmSignout = document.getElementById('confirm-signout');
+if(signoutBtn && signoutModal){
+  signoutBtn.addEventListener('click', ()=>{ signoutModal.classList.remove('hidden'); signoutModal.style.display='flex'; });
+  cancelSignout.addEventListener('click', ()=>{ signoutModal.classList.add('hidden'); signoutModal.style.display='none'; });
+  confirmSignout.addEventListener('click', ()=>{
+    signoutModal.classList.add('hidden'); signoutModal.style.display='none';
+  });
+}
+
+function applyRoleUI(){
+  const yearWrap = $('#year-filter-wrap');
+  const headTitle = $('#section-title');
+  const headSubtitle = $('#section-subtitle');
+  const addStuBtn = $('#add-section-student-btn');
+  const addSchedBtn = $('#add-section-schedule-btn');
+
+  if (isStudent) {
+    if (yearWrap) yearWrap.classList.add('hidden');
+    if (headTitle) headTitle.textContent = 'Your Section';
+    if (headSubtitle) headSubtitle.textContent = 'View your section schedule and student list';
+    if (addStuBtn) addStuBtn.classList.add('hidden');
+    if (addSchedBtn) addSchedBtn.classList.add('hidden');
   }
 
-  // init
+  if (isTeacher) {
+    if (yearWrap) yearWrap.classList.remove('hidden');
+    if (addStuBtn) addStuBtn.classList.add('hidden');
+    if (addSchedBtn) addSchedBtn.classList.add('hidden');
+  }
+
+  if (isAdmin) {
+    if (yearWrap) yearWrap.classList.remove('hidden');
+    if (addStuBtn) addStuBtn.classList.remove('hidden');
+    if (addSchedBtn) addSchedBtn.classList.remove('hidden');
+  }
+}
+
+function init(){
+  document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>document.getElementById('mobile-menu')?.classList.toggle('hidden'));
+  setupYearDropdown();
+  applyRoleUI();
   renderSectionCards();
-  updateSectionCounts();
   populateSectionOptions();
+  setDayOptionsForYear();
+}
+init();
 </script>
 </body>
 </html>
