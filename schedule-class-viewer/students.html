@@ -696,7 +696,7 @@
     (function(){
       const role = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
       if (role === 'student') {
-        // Show notice
+        
         const notice = document.getElementById('studentNotice');
         if (notice) notice.classList.remove('hidden');
 
