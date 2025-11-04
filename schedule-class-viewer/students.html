@@ -37,7 +37,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
-          <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+          <h1 class="text-xl font-bold">SLSU Lucena BIT Class Schedule Viewer</h1>
         </div>
         <div class="hidden md:flex items-center space-x-8">
           <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
@@ -93,28 +93,75 @@
             <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Student Directory</h2>
             <p class="text-sm md:text-base text-gray-600">Select a section or search for students</p>
           </div>
+
+          <div id="studentNotice" class="hidden mb-4 border border-amber-200 bg-amber-50 text-amber-800 rounded-xl p-4">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex h-5 w-5 items-center justify-center flex-shrink-0">
+                <i class="ri-information-line text-[18px] leading-none"></i>
+              </span>
+              <p class="text-sm leading-5">
+                Directory search and section selection are available only to Teachers and Administrators.
+              </p>
+            </div>
+          </div>
+
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4 mb-4">
             <div class="flex flex-col md:flex-row gap-3 md:gap-4">
               <div class="relative w-full md:w-64">
                 <select id="sectionSelect"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm appearance-none">
+                        class="absolute inset-0 opacity-0 pointer-events-none"
+                        aria-hidden="true" tabindex="-1">
                   <option value="">Select Section</option>
+                  <option value="BIT 1A-A">BIT 1A-A</option>
+                  <option value="BIT 1A-B">BIT 1A-B</option>
+                  <option value="BIT 1B-A">BIT 1B-A</option>
+                  <option value="BIT 1B-B">BIT 1B-B</option>
+                  <option value="BIT 2A-A">BIT 2A-A</option>
+                  <option value="BIT 2A-B">BIT 2A-B</option>
+                  <option value="BIT 2B-A">BIT 2B-A</option>
+                  <option value="BIT 2B-B">BIT 2B-B</option>
                   <option value="BIT 3A-A">BIT 3A-A</option>
                   <option value="BIT 3A-B">BIT 3A-B</option>
                   <option value="BIT 3B-A">BIT 3B-A</option>
                   <option value="BIT 3B-B">BIT 3B-B</option>
+                  <option value="BIT 4A-A">BIT 4A-A</option>
+                  <option value="BIT 4A-B">BIT 4A-B</option>
+                  <option value="BIT 4B-A">BIT 4B-A</option>
+                  <option value="BIT 4B-B">BIT 4B-B</option>
                 </select>
-                <i class="ri-arrow-down-s-line absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+
+                <div id="combo" class="relative">
+                  <input id="combo-input" type="text" autocomplete="off"
+                         placeholder="Select Section"
+                         class="w-full px-4 py-2.5 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm pr-9"
+                         role="combobox" aria-expanded="false" aria-controls="combo-list" aria-autocomplete="list" />
+                  <button id="combo-toggle" type="button"
+                          class="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100 focus:outline-none"
+                          aria-label="Toggle sections">
+                    <i class="ri-arrow-down-s-line text-gray-500"></i>
+                  </button>
+                  <ul id="combo-list"
+                      class="hidden absolute z-20 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-lg shadow-lg text-sm"
+                      role="listbox"></ul>
+
+                  
+                  <div id="combo-overlay" class="hidden absolute inset-0 rounded-button bg-white/60 cursor-not-allowed"></div>
+                </div>
               </div>
+
               <div class="relative flex-1">
                 <input id="searchInput"
                        type="text"
                        placeholder="Search by name, ID, or section..."
                        class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"/>
-                <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-primary"></i>
+
+                
+                <div id="search-overlay" class="hidden absolute inset-0 rounded-button bg-white/60 cursor-not-allowed"></div>
               </div>
             </div>
           </div>
+
           <div id="statsWrap" class="hidden mb-6">
             <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
               <div class="bg-white border border-gray-200 rounded-xl p-6">
@@ -141,7 +188,7 @@
               </div>
               <div class="bg-white border border-gray-200 rounded-xl p-6">
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items=center justify-center">
                     <i class="ri-alert-line text-lg text-orange-600"></i>
                   </div>
                   <div>
@@ -163,14 +210,26 @@
               </div>
             </div>
           </div>
-          <div id="emptyState" class="text-center py-16">
+
+          
+          <div id="emptyState" class="text-center py-6">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
               <i class="ri-search-line text-2xl text-gray-400"></i>
             </div>
-            <h3 class="mt-6 text-gray-800 font-semibold">Search or Select a Section</h3>
-            <p class="mt-2 text-sm text-gray-500">Use the search box to find students by name, ID, or section — or pick a section to browse.</p>
+            <h3 class="mt-3 text-gray-800 font-semibold">Search or Select a Section</h3>
+            <p class="mt-1 text-sm text-gray-500">Use the search box to find students by name, ID, or section or pick a section to browse.</p>
           </div>
+
+          <div id="noStudents" class="hidden text-center py-16">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+              <i class="ri-user-unfollow-line text-2xl text-gray-400"></i>
+            </div>
+            <h3 class="mt-6 text-gray-800 font-semibold">No students yet</h3>
+            <p class="mt-2 text-sm text-gray-500">This section doesn’t have students yet.</p>
+          </div>
+
           <div id="grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
           <div id="noResults" class="hidden text-center py-16">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
               <i class="ri-information-line text-2xl text-gray-400"></i>
@@ -245,31 +304,50 @@
       document.getElementById('mobile-menu')?.classList.toggle('hidden');
     });
   </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      collection,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-  <script>
-    const STUDENTS = [
-      { id:'2023-001234', name:'John Lloyd P. Babasa', section:'BIT 3B-B', year:'3rd Year', type:'Irregular',   status:'Active' },
-      { id:'2023-001235', name:'Tristan Venegas',       section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001236', name:'Tristan Millanes',     section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001237', name:'Jhon Carlo Malate',    section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001238', name:'John Tyron Tanggaan',      section:'BIT 3B-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001239', name:'Joseph Umali',     section:'BIT 3A-B', year:'3rd Year', type:'Regular', status:'Active' },
-      { id:'2023-001240', name:'Steven Vistan',       section:'BIT 3A-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001241', name:'Marc Alex Glorioso',          section:'BIT 3A-B', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001242', name:'Anna Reyes',         section:'BIT 3A-A', year:'3rd Year', type:'Regular',   status:'Active' },
-      { id:'2023-001243', name:'Robert Garcia',      section:'BIT 3B-A', year:'3rd Year', type:'Irregular', status:'Active' },
-    ];
+    if (!window.__FB) {
+      const firebaseConfig = {
+        apiKey: "AIzaSyAZLXYqe3TaVzkHZh3i4h78VBwI0KckMpE",
+        authDomain: "log-in-cad70.firebaseapp.com",
+        projectId: "log-in-cad70",
+        storageBucket: "log-in-cad70.firebasestorage.app",
+        messagingSenderId: "538387168387",
+        appId: "1:538387168387:web:ef65e3ce36c5a405572fb6",
+        measurementId: "G-Q6KF6ST8XF"
+      };
+      const app = initializeApp(firebaseConfig);
+      const db  = getFirestore(app);
+      window.__FB = { app, db };
+    }
+    const { db } = window.__FB;
 
     const sectionSelect = document.getElementById('sectionSelect');
-    const searchInput   = document.getElementById('searchInput');
+     const searchInput   = document.getElementById('searchInput');
     const grid          = document.getElementById('grid');
     const emptyState    = document.getElementById('emptyState');
     const noResults     = document.getElementById('noResults');
+    const noStudents    = document.getElementById('noStudents');
     const statsWrap     = document.getElementById('statsWrap');
     const statTotal     = document.getElementById('statTotal');
     const statRegular   = document.getElementById('statRegular');
     const statIrregular = document.getElementById('statIrregular');
     const statActive    = document.getElementById('statActive');
+
+    let ALL_STUDENTS = [];
+    let SECTION_STUDENTS = [];
+    const SECTION_MAP = {};
+    const SECTION_STU_UNSUB = {};
+    let SECTIONS_UNSUB = null;
+
+    let USER_INTERACTED = false;
 
     function renderCards(list){
       grid.innerHTML = '';
@@ -283,81 +361,391 @@
             </div>
             <div>
               <h3 class="font-semibold text-gray-800">${s.name}</h3>
-              <p class="text-sm text-gray-600">Student ID: ${s.id}</p>
+              <p class="text-sm text-gray-600">Student ID: ${s.id||''}</p>
             </div>
           </div>
           <div class="space-y-2 text-sm">
-            <div class="flex justify-between"><span class="text-gray-600">Section:</span><span class="font-medium text-primary">${s.section}</span></div>
-            <div class="flex justify-between"><span class="text-gray-600">Year Level:</span><span class="text-gray-800">${s.year}</span></div>
+            <div class="flex justify-between"><span class="text-gray-600">Section:</span><span class="font-medium text-primary">${s.section||''}</span></div>
+            <div class="flex justify-between"><span class="text-gray-600">Year Level:</span><span class="text-gray-800">${s.year||''}</span></div>
             <div class="flex justify-between"><span class="text-gray-600">Type:</span>
-              <span class="text-xs px-2 py-1 ${s.type==='Regular' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'} rounded">${s.type}</span>
+              <span class="text-xs px-2 py-1 ${s.type==='Irregular' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'} rounded">${s.type || 'Regular'}</span>
             </div>
-            <div class="flex justify-between"><span class="text-gray-600">Status:</span><span class="text-green-600 font-medium">${s.status}</span></div>
+            <div class="flex justify-between"><span class="text-gray-600">Status:</span><span class="text-green-600 font-medium">${s.status || 'Active'}</span></div>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    function fillStats(results, sec){
-      const sectionTotal = sec ? STUDENTS.filter(s => s.section === sec).length : 0;
-      const regular = results.filter(s=>s.type==='Regular').length;
-      const irregular = results.filter(s=>s.type==='Irregular').length;
-      const active = results.filter(s=>s.status==='Active').length;
-
-      statTotal.textContent = sectionTotal;
-      statRegular.textContent = regular;
+    function fillStats(results, selectedSection){
+      const sectionTotal = selectedSection ? SECTION_STUDENTS.length : 0;
+      const regular   = results.filter(s=> (s.type||'Regular') === 'Regular').length;
+      const irregular = results.filter(s=> s.type === 'Irregular').length;
+      const active    = results.filter(s=> (s.status||'Active') === 'Active').length;
+      statTotal.textContent     = sectionTotal;
+      statRegular.textContent   = regular;
       statIrregular.textContent = irregular;
-      statActive.textContent = active;
+      statActive.textContent    = active;
+    }
+
+    function rebuildAllFromMap(){
+      const list = [];
+      Object.keys(SECTION_MAP).forEach(secId => {
+        SECTION_MAP[secId].forEach(s => list.push(s));
+      });
+      ALL_STUDENTS = list;
     }
 
     function updateView(){
       const q   = searchInput.value.trim().toLowerCase();
       const sec = sectionSelect.value;
 
-      let results = [];
-
-      if(q.length){
-        results = STUDENTS.filter(s =>
-          s.name.toLowerCase().includes(q) ||
-          s.id.toLowerCase().includes(q) ||
-          s.section.toLowerCase().includes(q)
-        );
-      } else if(sec){
-        results = STUDENTS.filter(s => s.section === sec);
+      if (q || sec) {
+        emptyState.classList.add('hidden');
       } else {
-        grid.innerHTML = '';
         emptyState.classList.remove('hidden');
+      }
+
+      if (!USER_INTERACTED) {
+        grid.innerHTML = '';
         noResults.classList.add('hidden');
+        noStudents.classList.add('hidden');
         statsWrap.classList.add('hidden');
         return;
       }
 
-      emptyState.classList.add('hidden');
-
-      if(results.length === 0){
+      if (!q && !sec) {
         grid.innerHTML = '';
-        noResults.classList.remove('hidden');
+        noResults.classList.add('hidden');
+        noStudents.classList.add('hidden');
         statsWrap.classList.add('hidden');
+        return;
+      }
+
+      let base;
+      if (q) {
+        base = ALL_STUDENTS; 
+      } else {
+        base = sec ? SECTION_STUDENTS : ALL_STUDENTS;
+      }
+
+      let results = base;
+      if (q){
+        results = base.filter(s => {
+          const name    = (s.name||'').toLowerCase();
+          const id      = (s.id||'').toLowerCase();
+          const section = (s.section||'').toLowerCase();
+          return name.includes(q) || id.includes(q) || section.includes(q);
+        });
+      }
+
+      if (results.length === 0){
+        grid.innerHTML = '';
+        if (!q && sec && SECTION_STUDENTS.length === 0){
+          noStudents.classList.remove('hidden');
+          noResults.classList.add('hidden');
+          statsWrap.classList.remove('hidden');
+          fillStats([], sec);
+        } else {
+          noResults.classList.remove('hidden');
+          noStudents.classList.add('hidden');
+          if (!q && sec){
+            statsWrap.classList.remove('hidden');
+            fillStats([], sec);
+          } else {
+            statsWrap.classList.add('hidden');
+          }
+        }
         return;
       }
 
       noResults.classList.add('hidden');
+      noStudents.classList.add('hidden');
       renderCards(results);
 
-      if (sec) {
-        fillStats(results, sec);
+      if (sec && !q){
         statsWrap.classList.remove('hidden');
+        fillStats(results, sec);
       } else {
         statsWrap.classList.add('hidden');
       }
     }
 
-    sectionSelect.addEventListener('change', updateView);
-    searchInput.addEventListener('input', updateView);
+    function subscribeAllStudents(){
+      if (SECTIONS_UNSUB) {
+        SECTIONS_UNSUB();
+        SECTIONS_UNSUB = null;
+      }
+      SECTIONS_UNSUB = onSnapshot(collection(db, 'sections'), (snap)=>{
+        const currentSections = new Set();
+        snap.forEach(secDoc => {
+          const secId = secDoc.id;
+          currentSections.add(secId);
+
+          if (!SECTION_STU_UNSUB[secId]) {
+            const stuRef = collection(doc(db, 'sections', secId), 'students');
+            const unsub = onSnapshot(stuRef, (stuSnap)=>{
+              const arr = [];
+              stuSnap.forEach(sDoc=>{
+                const data = sDoc.data() || {};
+                const studentObj = {
+                  id: data.id || data.studentId || data.studId || '',
+                  name: data.name || data.fullname || data.studentName || '',
+                  section: secId,
+                  year: data.year || data.yearLevel || '',
+                  type: data.type || 'Regular',
+                  status: data.status || 'Active'
+                };
+                arr.push(studentObj);
+              });
+              SECTION_MAP[secId] = arr;
+              rebuildAllFromMap();
+              if (sectionSelect.value === secId){
+                SECTION_STUDENTS = arr.slice();
+              }
+              updateView();
+            });
+            SECTION_STU_UNSUB[secId] = unsub;
+          }
+        });
+
+        Object.keys(SECTION_STU_UNSUB).forEach(secId=>{
+          if (!currentSections.has(secId)) {
+            SECTION_STU_UNSUB[secId]();
+            delete SECTION_STU_UNSUB[secId];
+            delete SECTION_MAP[secId];
+          }
+        });
+
+        rebuildAllFromMap();
+        updateView();
+      });
+    }
+
+    function unsubscribeSection(){
+      SECTION_STUDENTS = [];
+    }
+
+    function subscribeSection(sectionId){
+      const arr = SECTION_MAP[sectionId] || [];
+      SECTION_STUDENTS = arr.slice();
+      updateView();
+    }
+
+    sectionSelect.addEventListener('change', ()=>{
+      USER_INTERACTED = true;
+      const sec = sectionSelect.value;
+      if (sec){
+        subscribeSection(sec);
+      } else {
+        unsubscribeSection();
+        updateView();
+      }
+    });
+    searchInput.addEventListener('input', ()=>{
+      USER_INTERACTED = true;
+      updateView();
+    });
+
+    subscribeAllStudents();
     updateView();
   </script>
 
-   <script src="assets/js/profile.js"></script>
+  <script>
+    (function(){
+      const selectEl = document.getElementById('sectionSelect');
+      const combo = document.getElementById('combo');
+      const input = document.getElementById('combo-input');
+      const list  = document.getElementById('combo-list');
+      const toggleBtn = document.getElementById('combo-toggle');
+
+      const options = Array.from(selectEl.options).map(o => ({ value: o.value, label: o.textContent }));
+      const realOptions = options.filter(o => o.value !== '');
+
+      let open = false;
+      let activeIndex = -1;
+      let filtered = realOptions.slice();
+
+      function renderList(items){
+        list.innerHTML = '';
+        if(items.length === 0){
+          list.innerHTML = '<li class="px-3 py-2 text-gray-500">No matches</li>';
+          return;
+        }
+        items.forEach((opt, idx) => {
+          const li = document.createElement('li');
+          li.role = 'option';
+          li.id = `combo-opt-${idx}`;
+          li.tabIndex = -1;
+          li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+          li.textContent = opt.label;
+          li.dataset.value = opt.value;
+          li.dataset.index = String(idx);
+          li.addEventListener('mousedown', (e) => {
+            selectValue(opt);
+            e.preventDefault();
+          });
+          list.appendChild(li);
+        });
+      }
+
+      function openList(){
+        if(open) return;
+        list.classList.remove('hidden');
+        combo.classList.add('z-30');
+        input.setAttribute('aria-expanded', 'true');
+        open = true;
+        highlight(-1);
+      }
+
+      function closeList(){
+        if(!open) return;
+        list.classList.add('hidden');
+        combo.classList.remove('z-30');
+        input.setAttribute('aria-expanded', 'false');
+        open = false;
+        highlight(-1);
+      }
+
+      function highlight(index){
+        activeIndex = index;
+        const children = Array.from(list.children);
+        children.forEach((el, i) => {
+          if(i === index){
+            el.classList.add('bg-gray-100');
+            el.setAttribute('aria-selected', 'true');
+            el.scrollIntoView({ block:'nearest' });
+          } else {
+            el.classList.remove('bg-gray-100');
+            el.removeAttribute('aria-selected');
+          }
+        });
+      }
+
+      function filterList(query){
+        const q = query.trim().toLowerCase();
+        filtered = !q ? realOptions.slice()
+                      : realOptions.filter(o =>
+                          o.label.toLowerCase().includes(q) ||
+                          o.value.toLowerCase().includes(q)
+                        );
+        renderList(filtered);
+        highlight(-1);
+      }
+
+      function selectValue(opt){
+        input.value = opt.label;
+        selectEl.value = opt.value;
+        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        closeList();
+      }
+
+      (function initFromSelect(){
+        const selected = options.find(o => o.value === selectEl.value);
+        input.value = selected && selected.value ? selected.label : '';
+      })();
+
+      renderList(filtered);
+
+      input.addEventListener('focus', () => openList());
+      input.addEventListener('input', () => {
+        filterList(input.value);
+        openList();
+        if(input.value.trim() === ''){
+          selectEl.value = '';
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        const max = filtered.length - 1;
+        if(e.key === 'ArrowDown'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.min(max, activeIndex + 1));
+        } else if(e.key === 'ArrowUp'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.max(0, activeIndex - 1));
+        } else if(e.key === 'Enter'){
+          if(open && activeIndex >= 0){
+            e.preventDefault();
+            selectValue(filtered[activeIndex]);
+          }
+        } else if(e.key === 'Escape'){
+          closeList();
+        }
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        if(open){ closeList(); } else { openList(); input.focus(); }
+      });
+
+      selectEl.addEventListener('change', () => {
+        const sel = options.find(o => o.value === selectEl.value);
+        input.value = sel && sel.value ? sel.label : '';
+      });
+
+      document.addEventListener('click', (e) => {
+        if(!combo.contains(e.target)) closeList();
+      });
+    })();
+  </script>
+
+  <!-- Role gating: disable controls for students -->
+  <script>
+    (function(){
+      const role = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
+      if (role === 'student') {
+        // Show notice
+        const notice = document.getElementById('studentNotice');
+        if (notice) notice.classList.remove('hidden');
+
+        // Block combobox
+        const comboInput = document.getElementById('combo-input');
+        const comboToggle = document.getElementById('combo-toggle');
+        const comboList = document.getElementById('combo-list');
+        const comboOverlay = document.getElementById('combo-overlay');
+        const selectEl = document.getElementById('sectionSelect');
+
+        if (comboInput) {
+          comboInput.value = '';
+          comboInput.placeholder = 'Section selection is restricted';
+          comboInput.readOnly = true;
+          comboInput.classList.add('cursor-not-allowed','bg-gray-50');
+          comboInput.addEventListener('focus', e => { e.target.blur(); });
+          ['keydown','keypress','keyup','mousedown','mouseup','click','input'].forEach(evt =>
+            comboInput.addEventListener(evt, e => e.preventDefault(), { passive:false })
+          );
+        }
+        if (comboToggle) {
+          comboToggle.disabled = true;
+          comboToggle.classList.add('opacity-50','cursor-not-allowed');
+          ['click','mousedown','mouseup'].forEach(evt =>
+            comboToggle.addEventListener(evt, e => e.preventDefault(), { passive:false })
+          );
+        }
+        if (comboList) comboList.classList.add('hidden');
+        if (comboOverlay) comboOverlay.classList.remove('hidden');
+        if (selectEl) selectEl.value = '';
+
+        // Block search
+        const searchInput = document.getElementById('searchInput');
+        const searchOverlay = document.getElementById('search-overlay');
+        if (searchInput) {
+          searchInput.value = '';
+          searchInput.placeholder = 'Search is restricted to teachers/admin';
+          searchInput.readOnly = true;
+          searchInput.classList.add('cursor-not-allowed','bg-gray-50');
+          searchInput.addEventListener('focus', e => { e.target.blur(); });
+          ['keydown','keypress','keyup','mousedown','mouseup','click','input','paste'].forEach(evt =>
+            searchInput.addEventListener(evt, e => e.preventDefault(), { passive:false })
+          );
+        }
+        if (searchOverlay) searchOverlay.classList.remove('hidden');
+      }
+    })();
+  </script>
+
+  <script src="assets/js/profile.js"></script>
 </body>
 </html>
