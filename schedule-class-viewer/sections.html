@@ -7,10 +7,13 @@
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
-  theme:{ extend:{ colors:{ primary:'#16a34a', secondary:'#22c55e' },
-  borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'12px'} } }
+  theme:{ extend:{ 
+    colors:{ primary:'#0A4B2D', secondary:'#0A4B2D' },
+    borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'12px'} 
+  } }
 }
 </script>
+<link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -23,8 +26,9 @@ tailwind.config = {
   .soft-card{background:linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%);}
   .pill{border-radius:9999px}
   .choice{transition:background-color .15s, box-shadow .15s}
-  .choice-active{background:#ecfdf5; box-shadow:inset 0 0 0 1px #bbf7d0}
-  .modal-head{background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff}
+
+  .choice-active{background:rgba(10,75,45,.06); box-shadow:inset 0 0 0 1px rgba(10,75,45,.18)}
+  .modal-head{background:linear-gradient(135deg,#0A4B2D,#0D5C38); color:#fff}
   .is-error{ outline:2px solid #ef4444; outline-offset:2px; }
 
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -55,27 +59,69 @@ tailwind.config = {
   .combo-has-text #room-selected,
   .combo-has-text #teacher-selected{ opacity:0; }
 
-   .section-card{
+  .section-card{
     transition: transform .22s ease-out, box-shadow .22s ease-out;
     transform-origin: center;
     will-change: transform;
   }
   .section-card:hover{
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 20px 35px rgba(22,163,74,.12);
+    box-shadow: 0 20px 35px rgba(10,75,45,.12);
   }
-  .section-card:active{
-    transform: translateY(-2px) scale(1.01);
-  }
+  .section-card:active{ transform: translateY(-2px) scale(1.01); }
+  #teacher-dropdown{ height:48px; }
+  #teacher-combo{ height:48px; font-size:16px; }
 
   @media (max-width: 768px){
-    .section-card:hover{
-      transform: translateY(-3px) scale(1.01);
-    }
+    .section-card:hover{ transform: translateY(-3px) scale(1.01); }
+  }
+
+  .from-emerald-50        { --tw-gradient-from: rgba(10,75,45,.06) var(--tw-gradient-from-position); --tw-gradient-to: rgba(255,255,255,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-emerald-100\/50     { --tw-gradient-to: rgba(10,75,45,.12) var(--tw-gradient-to-position); }
+  .border-emerald-100     { border-color: rgba(10,75,45,.18) !important; }
+  .bg-emerald-50\/50      { background-color: rgba(10,75,45,.06) !important; }
+  .text-emerald-700       { color:#083B24 !important; }
+  .text-emerald-500       { color:#0A4B2D !important; }
+  .bg-emerald-100         { background-color: rgba(10,75,45,.12) !important; }
+  .ring-emerald-100       { --tw-ring-color: rgba(10,75,45,.18) !important; }
+  .border-emerald-100, .bg-emerald-50\/50 { border-color: rgba(10,75,45,.18) !important; }
+
+  .role-student #sections-grid{ margin-top: 14px; }
+  .role-student .section-card{ margin-top: 10px; }
+
+  .role-student .section-card{
+    position: relative;
+    border-color: rgba(10,75,45,.22) !important;
+    box-shadow: 0 18px 44px rgba(10,75,45,.14);
+    background: linear-gradient(135deg, rgba(10,75,45,.05), #ffffff 72%);
+  }
+  .role-student .section-card::before{
+    content:"";
+    position:absolute; left:0; right:0; top:0; height:6px;
+    background: linear-gradient(90deg,#0A4B2D,#0D5C38);
+    border-top-left-radius: inherit; border-top-right-radius: inherit;
+  }
+  .role-student .section-card::after{
+    content:"";
+    position:absolute; inset:-16px -16px auto;
+    height:120px;
+    background: radial-gradient(220px 90px at 12% -18%, rgba(10,75,45,.18), transparent 60%),
+                radial-gradient(260px 120px at 110% -20%, rgba(10,75,45,.12), transparent 62%);
+    filter: blur(18px);
+    pointer-events:none;
+    z-index:0;
   }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+
+<!-- add role class to body so the student-specific styles apply -->
+<script>
+(function(){
+  const r = (sessionStorage.getItem('auth_role') || localStorage.getItem('auth_role') || 'guest').toLowerCase();
+  document.body.classList.add('role-' + r);
+})();
+</script>
 
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
   <div class="px-6 py-4">
@@ -157,7 +203,6 @@ tailwind.config = {
     </div>
   </section>
 
-  <!-- Section detail modal -->
   <div id="section-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
       <div class="p-6 modal-head">
@@ -197,7 +242,6 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- Add Student modal -->
   <div id="student-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
       <div class="p-6 border-b border-gray-100">
@@ -221,11 +265,11 @@ tailwind.config = {
           <label class="block text-sm font-medium text-gray-700 mb-2">Student Type</label>
           <div class="space-y-3" id="student-type-group">
             <label class="choice flex items-center gap-3 cursor-pointer select-none rounded-xl px-3 py-2">
-              <input type="radio" name="student-type" value="Regular" checked class="w-5 h-5" style="accent-color:#16a34a">
+              <input type="radio" name="student-type" value="Regular" checked class="w-5 h-5" style="accent-color:#0A4B2D">
               <span class="text-gray-700">Regular Student</span>
             </label>
             <label class="choice flex items-center gap-3 cursor-pointer select-none rounded-xl px-3 py-2">
-              <input type="radio" name="student-type" value="Irregular" class="w-5 h-5" style="accent-color:#16a34a">
+              <input type="radio" name="student-type" value="Irregular" class="w-5 h-5" style="accent-color:#0A4B2D">
               <span class="text-gray-700">Irregular Student</span>
             </label>
           </div>
@@ -243,7 +287,6 @@ tailwind.config = {
 
   <button id="add-schedule-btn" type="button" class="hidden"></button>
 
-  <!-- Add Schedule modal -->
   <div id="schedule-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
       <div class="p-6 modal-head">
@@ -315,16 +358,8 @@ tailwind.config = {
             <button type="button" id="teacher-dropdown" class="combo-wrap w-full px-4 py-3 border border-gray-300 rounded-button bg-white text-left text-sm flex items-center justify-between hover:shadow-sm">
               <span id="teacher-selected">Select teacher</span>
               <input id="teacher-combo" type="text" class="combo-input" placeholder="" autocomplete="off" />
-              <div id="teacher-chevron" class="combo-chevron"><i class="ri-arrow-down-s-line text-gray-400"></i></div>
             </button>
-            <div id="teacher-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto">
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Maria Santos">Prof. Maria Santos</div>
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. John Cruz">Prof. John Cruz</div>
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Anna Reyes">Prof. Anna Reyes</div>
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Robert Garcia">Prof. Robert Garcia</div>
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Prof. Lisa Mendoza">Prof. Lisa Mendoza</div>
-              <div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Engr. Carlos Dela Cruz">Engr. Carlos Dela Cruz</div>
-            </div>
+            <div id="teacher-options" class="absolute left-4 right-4 z-50 mt-1 bg-white border border-gray-300 rounded-2xl shadow-lg hidden max-h-60 overflow-y-auto"></div>
             <input type="hidden" id="teacher" name="teacher">
           </div>
 
@@ -383,40 +418,35 @@ tailwind.config = {
   </div>
 </main>
 
-<footer class="bg-primary text-white py-12 mt-20">
+<footer class="bg-primary text-white py-6 mt-12 text-sm">
   <div class="px-6">
     <div class="max-w-6xl mx-auto">
-      <div class="grid md:grid-cols-3 gap-8">
+      <div class="grid md:grid-cols-3 gap-6">
         <div>
-          <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
-          <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
-          <div class="flex items-center space-x-4">
-            <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
-              <i class="ri-facebook-line text-xl"></i>
-            </a>
+          <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
+          <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Contact Information</h3>
+          <div class="space-y-1 text-white/80">
+            <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
+            <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
+            <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
           </div>
         </div>
         <div>
-          <h3 class="text-xl font-bold mb-4">Contact Information</h3>
-          <div class="space-y-3 text-white/80">
-            <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
-            <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
-            <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
-          </div>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-          <div class="space-y-2">
-            <a href="index.html"     class="block text-white/80 hover:text-white">Home</a>
-            <a href="sections.html"  class="block text-white/80 hover:text-white">Sections</a>
-            <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
-            <a href="students.html"  class="block text-white/80 hover:text-white">Students</a>
-            <a href="teachers.html"  class="block text-white/80 hover:text-white">Teachers</a>
-            <a href="profile.html"  class="block text-white/80 hover:text-white">Profile</a>
+          <h3 class="font-bold mb-2">Quick Links</h3>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
+            <a href="index.html"     class="hover:text-white">Home</a>
+            <a href="sections.html"  class="hover:text-white">Sections</a>
+            <a href="schedules.html" class="hover:text-white">Schedules</a>
+            <a href="students.html"  class="hover:text-white">Students</a>
+            <a href="teachers.html"  class="hover:text-white">Teachers</a>
+            <a href="profile.html"   class="hover:text-white">Profile</a>
           </div>
         </div>
       </div>
-      <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
+      <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
         <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
       </div>
     </div>
@@ -445,9 +475,9 @@ tailwind.config = {
       <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
         <i class="ri-delete-bin-6-line"></i>
       </div>
-      <div class="font-semibold text-gray-900">Delete schedule?</div>
+      <div id="delete-title" class="font-semibold text-gray-900">Delete item?</div>
     </div>
-    <p class="text-sm text-gray-600">Are you sure you want to delete it?</p>
+    <p id="delete-desc" class="text-sm text-gray-600">Are you sure you want to delete it?</p>
     <div class="mt-6 flex items-center justify-end gap-2">
       <button id="del-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
       <button id="del-yes" class="px-4 py-2 rounded-button bg-red-600 text-white">Delete</button>
@@ -481,6 +511,7 @@ if (!window.__FB) {
   window.__FB = { app, db };
 }
 const { app, db } = window.__FB;
+
 const ssRole = sessionStorage.getItem('auth_role');
 const lsRole = localStorage.getItem('auth_role');
 let EFFECTIVE_ROLE = 'student';
@@ -503,6 +534,8 @@ if (ssSec && ssSec !== 'null') {
 sessionStorage.setItem('auth_section', EFFECTIVE_SECTION);
 localStorage.setItem('auth_section', EFFECTIVE_SECTION);
 
+const CURRENT_USER_ID = (sessionStorage.getItem('auth_id') || sessionStorage.getItem('auth_email') || '').trim();
+
 const isStudent = EFFECTIVE_ROLE === 'student';
 const isTeacher = EFFECTIVE_ROLE === 'teacher';
 const isAdmin   = EFFECTIVE_ROLE === 'admin';
@@ -516,6 +549,10 @@ const to12h = (hhmm)=>{ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'P
 const makeRange = (s,e)=>`${to12h(s)} – ${to12h(e)}`;
 const overlaps = (s1,e1,s2,e2)=> Math.max(s1,s2) < Math.min(e1,e2);
 
+/* 🔎 subject normalization used for “merged class” logic */
+const normSubj = (s)=> (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); // CPT 11 == CPT11, removes spaces/(-) etc.
+const sameTeacher = (a,b)=> (a||'').trim().toLowerCase() === (b||'').trim().toLowerCase();
+
 const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
 const YEAR_SECTIONS = {
   '1st Year': ['BIT 1A-A','BIT 1A-B','BIT 1B-A','BIT 1B-B'],
@@ -527,6 +564,27 @@ const YEAR_SECTIONS = {
 let currentYear = '3rd Year';
 let activeSection = null;
 let studentsUnsub=null, schedulesUnsub=null, currentSchedules=[];
+let studentHasOwn=false;
+
+let LIVE_TEACHERS = [];
+function buildTeacherDisplay(t){
+  const title = (t.title || 'Sir').replace(/\.$/,'');
+  const name  = t.name || '';
+  return `${title}. ${name}`.trim();
+}
+function idxText(s){ return (s||'').toLowerCase(); }
+onSnapshot(collection(db,'teachers'), (snap)=>{
+  const arr=[];
+  snap.forEach(d=>{
+    const data=d.data()||{};
+    const display = buildTeacherDisplay(data);
+    arr.push({ id:d.id, display, idx:idxText(display) });
+  });
+  LIVE_TEACHERS = arr.sort((a,b)=> a.display.localeCompare(b.display));
+  if (!$('#teacher-options').classList.contains('hidden')) {
+    filterTeacherSuggestions($('#teacher-combo').value.trim());
+  }
+});
 
 async function requireAuth(){ return null; }
 
@@ -635,18 +693,49 @@ function renderSectionCards(){
   });
 }
 
+/* ===== STUDENTS ===== */
+function studentActionHtml(stu){
+  if (isAdmin) {
+    return `
+      <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
+        <button class="stu-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${stu.__id}">
+          <i class="ri-pencil-line text-sm"></i>
+        </button>
+        <button class="stu-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${stu.__id}">
+          <i class="ri-delete-bin-6-line text-sm"></i>
+        </button>
+      </div>
+    `;
+  }
+  if (isTeacher) return '';
+  if (isStudent && CURRENT_USER_ID && stu.ownerId === CURRENT_USER_ID) {
+    return `
+      <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
+        <button class="stu-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${stu.__id}">
+          <i class="ri-pencil-line text-sm"></i>
+        </button>
+      </div>
+    `;
+  }
+  return '';
+}
+
 function renderStudentsList(data){
   const listStudents = $('#section-students');
   listStudents.innerHTML = (data||[]).map(s=>`
-    <div class="p-4 bg-white border border-gray-200 rounded-xl flex items-center justify-between">
-      <div>
+    <div class="group relative p-4 bg-white border border-gray-200 rounded-xl">
+      <div class="pr-20">
         <div class="font-semibold text-gray-800">${s.name}</div>
         <div class="text-sm text-gray-500">ID: ${s.id||''}</div>
+        <div class="mt-1">
+          <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type||'Regular'}</span>
+        </div>
       </div>
-      <span class="text-xs px-2 py-1 rounded ${s.type==='Regular'?'bg-blue-100 text-blue-700':'bg-orange-100 text-orange-700'}">${s.type||'Regular'}</span>
+      ${studentActionHtml(s)}
     </div>`).join('') || `<div class="p-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-sm">No students yet.</div>`;
 }
 
+/* ===== SCHEDULE LIST ===== */
 function renderScheduleList(data){
   const listSchedule = $('#section-schedule');
   if(!data.length){
@@ -662,15 +751,10 @@ function renderScheduleList(data){
       const actionBtns = isAdmin
         ? `
           <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
-            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}">
-              <i class="ri-pencil-line text-sm"></i>
-            </button>
-            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${it.id}">
-              <i class="ri-delete-bin-6-line text-sm"></i>
-            </button>
+            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}"><i class="ri-pencil-line text-sm"></i></button>
+            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${it.id}"><i class="ri-delete-bin-6-line text-sm"></i></button>
           </div>
-        `
-        : '';
+        ` : '';
       return `
       <div class="group relative p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
         <div class="pr-20">
@@ -685,35 +769,26 @@ function renderScheduleList(data){
   }).join('');
 }
 
+/* ===== Generic dropdown / combo wiring ===== */
 function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
   const btn    = document.getElementById(buttonId);
   const panel  = document.getElementById(panelId);
   const hidden = document.getElementById(hiddenId);
   const label  = document.getElementById(labelId);
   const setVal = (val)=>{ hidden.value=val; if(label) label.textContent=val; panel.classList.add('hidden'); btn.classList.remove('is-error'); hideFormError(); };
-  btn?.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    panel.classList.toggle('hidden');
-  });
-  panel?.addEventListener('mousedown', (e)=>{
-    const opt=e.target.closest('.'+optionClass);
-    if(opt){ setVal(opt.dataset.value || opt.textContent.trim()); }
-  });
+  btn?.addEventListener('click', (e)=>{ e.stopPropagation(); panel.classList.toggle('hidden'); });
+  panel?.addEventListener('mousedown', (e)=>{ const opt=e.target.closest('.'+optionClass); if(opt){ setVal(opt.dataset.value || opt.textContent.trim()); } });
   document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden'); });
 }
 function populateSectionOptions(){
-  const panel = $('#section-options');
+  const panel = document.getElementById('section-options');
   const list = YEAR_SECTIONS[currentYear] || [];
   panel.innerHTML = list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
   wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
 }
 
 const __combos = [];
-function closeAllCombos(exceptId=null){
-  __combos.forEach(c=>{
-    if(c.id!==exceptId){ c.close(); }
-  });
-}
+function closeAllCombos(exceptId=null){ __combos.forEach(c=>{ if(c.id!==exceptId){ c.close(); } }); }
 function wireComboSearch(cfg){
   const { btnId, inputId, panelId, hiddenId, optionClass, labelId, chevronId } = cfg;
   const btn    = document.getElementById(btnId);
@@ -721,7 +796,7 @@ function wireComboSearch(cfg){
   const panel  = document.getElementById(panelId);
   const hidden = document.getElementById(hiddenId);
   const label  = document.getElementById(labelId);
-  const chev   = document.getElementById(chevronId);
+  const chev   = chevronId ? document.getElementById(chevronId) : null;
 
   const opts = ()=> Array.from(panel.querySelectorAll('.'+optionClass));
   const open = ()=>{ closeAllCombos(btnId); panel.classList.remove('hidden'); btn.classList.add('combo-has-text'); };
@@ -729,60 +804,44 @@ function wireComboSearch(cfg){
   const apply = (val)=>{ hidden.value=val; if(label) label.textContent=val; input.value=''; input.blur(); close(); hidden.dispatchEvent(new Event('change',{bubbles:true})); };
 
   btn.addEventListener('click', (e)=>{ e.stopPropagation(); open(); input.focus(); });
-  if (chev){
-    chev.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      if(panel.classList.contains('hidden')){ closeAllCombos(btnId); panel.classList.remove('hidden'); btn.classList.add('combo-has-text'); }
-      else{ close(); }
-    });
-  }
-  input.addEventListener('input', ()=>{
-    const q=input.value.trim().toLowerCase();
-    if(q) btn.classList.add('combo-has-text'); else btn.classList.remove('combo-has-text');
-    opts().forEach(op=>{
-      const t=(op.dataset.value || op.textContent).toLowerCase();
-      const show=t.includes(q);
-      op.style.display = show ? '' : 'none';
-    });
-    panel.classList.remove('hidden');
-  });
-  input.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter'){
-      e.preventDefault();
-      const first = opts().find(op => op.style.display !== 'none');
-      if(first) apply(first.dataset.value || first.textContent.trim());
-    }
-    if(e.key==='Escape'){ e.preventDefault(); close(); }
-  });
-  panel.addEventListener('mousedown', (e)=>{
-    const op=e.target.closest('.'+optionClass);
-    if(op){ apply(op.dataset.value || op.textContent.trim()); }
-  });
+  if (chev){ chev.addEventListener('click', (e)=>{ e.stopPropagation(); if(panel.classList.contains('hidden')){ closeAllCombos(btnId); panel.classList.remove('hidden'); btn.classList.add('combo-has-text'); } else{ close(); } }); }
+  input.addEventListener('input', ()=>{ const q=input.value.trim().toLowerCase(); if(q) btn.classList.add('combo-has-text'); else btn.classList.remove('combo-has-text'); opts().forEach(op=>{ const t=(op.dataset.value || op.textContent).toLowerCase(); const show=t.includes(q); op.style.display = show ? '' : 'none'; }); panel.classList.remove('hidden'); });
+  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); const first = opts().find(op => op.style.display !== 'none'); if(first) apply(first.dataset.value || first.textContent.trim()); } if(e.key==='Escape'){ e.preventDefault(); close(); } });
+  panel.addEventListener('mousedown', (e)=>{ const op=e.target.closest('.'+optionClass); if(op){ apply(op.dataset.value || op.textContent.trim()); } });
   document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) close(); });
 
   __combos.push({ id: btnId, close });
 }
 
+/* ===== Open Section & snapshots ===== */
 async function openSection(sectionName){
   activeSection = sectionName;
-  $('#section-detail-title').textContent = sectionName;
-  $('#section-detail-modal').classList.remove('hidden');
+  document.getElementById('section-detail-title').textContent = sectionName;
+  document.getElementById('section-detail-modal').classList.remove('hidden');
   await ensureSectionDoc(sectionName);
 
-  const addStudentBtn = $('#add-section-student-btn');
-  const addScheduleBtn = $('#add-section-schedule-btn');
-  if (!isAdmin) {
-    addStudentBtn.classList.add('hidden');
-    addScheduleBtn.classList.add('hidden');
-  } else {
-    addStudentBtn.classList.remove('hidden');
-    addScheduleBtn.classList.remove('hidden');
-  }
+  const addStudentBtn = document.getElementById('add-section-student-btn');
+  const addScheduleBtn = document.getElementById('add-section-schedule-btn');
+
+  addScheduleBtn.classList.toggle('hidden', !isAdmin);
+  if (isAdmin) addStudentBtn.classList.remove('hidden');
+  if (isTeacher) addStudentBtn.classList.add('hidden');
 
   if(studentsUnsub) studentsUnsub();
   studentsUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'students'), snap=>{
-    const data=[]; snap.forEach(d=>data.push(d.data()));
-    renderStudentsList(data); refreshCounts(sectionName);
+    const data=[]; 
+    let hasOwn=false;
+    snap.forEach(d=>{
+      const obj = d.data()||{};
+      obj.__id = d.id;
+      obj.ownerId = obj.ownerId || '';
+      data.push(obj);
+      if (isStudent && CURRENT_USER_ID && obj.ownerId === CURRENT_USER_ID) hasOwn = true;
+    });
+    studentHasOwn = hasOwn;
+    if (isStudent) addStudentBtn.classList.toggle('hidden', studentHasOwn);
+    renderStudentsList(data);
+    refreshCounts(sectionName);
   });
 
   if(schedulesUnsub) schedulesUnsub();
@@ -791,103 +850,225 @@ async function openSection(sectionName){
     currentSchedules = data; renderScheduleList(data); refreshCounts(sectionName);
   });
 
-  fadeList($('#section-students')); fadeList($('#section-schedule'));
+  fadeList(document.getElementById('section-students')); fadeList(document.getElementById('section-schedule'));
 }
 
-const delModal = $('#delete-confirm');
+/* ===== Delete modal (reuse) ===== */
+const delModal = document.getElementById('delete-confirm');
 let pendingDeleteId = null;
-const openDelModal = ()=>{ delModal.classList.remove('hidden'); delModal.style.display='flex'; };
-const closeDelModal = ()=>{ pendingDeleteId=null; delModal.style.display='none'; delModal.classList.add('hidden'); };
-$('#del-cancel').onclick = closeDelModal;
-$('#del-yes').onclick = async ()=>{
+let deleteMode = null;
+const openDelModal = (mode)=>{ deleteMode = mode; document.getElementById('delete-title').textContent = mode==='student' ? 'Delete student?' : 'Delete schedule?'; document.getElementById('delete-desc').textContent = mode==='student' ? 'Are you sure you want to delete this student record?' : 'Are you sure you want to delete it?'; delModal.classList.remove('hidden'); delModal.style.display='flex'; };
+const closeDelModal = ()=>{ pendingDeleteId=null; deleteMode=null; delModal.style.display='none'; delModal.classList.add('hidden'); };
+document.getElementById('del-cancel').onclick = closeDelModal;
+document.getElementById('del-yes').onclick = async ()=>{
   if(!pendingDeleteId || !activeSection) return;
   await requireAuth();
-  await deleteDoc(doc(db, 'sections', activeSection, 'schedules', pendingDeleteId));
+  if (deleteMode === 'schedule') {
+    await deleteDoc(doc(db, 'sections', activeSection, 'schedules', pendingDeleteId));
+  } else if (deleteMode === 'student') {
+    if (!isAdmin) { closeDelModal(); return; }
+    await deleteDoc(doc(db, 'sections', activeSection, 'students', pendingDeleteId));
+  }
   closeDelModal();
 };
-$('#section-schedule').addEventListener('click', (e)=>{
+
+/* ===== Schedule card actions ===== */
+document.getElementById('section-schedule').addEventListener('click', (e)=>{
   if (!isAdmin) return;
   const editBtn = e.target.closest('.sched-edit');
   const delBtn  = e.target.closest('.sched-del');
   if (editBtn){
     const it = currentSchedules.find(s => s.id === editBtn.dataset.id);
     if (!it) return;
-    $('#subject').value = it.subject || '';
-    $('#section').value = activeSection; $('#section-selected').textContent = activeSection;
-    $('#room').value = it.room || '';    $('#room-selected').textContent   = it.room || 'Select room';
-    $('#teacher').value = it.teacher || ''; $('#teacher-selected').textContent = it.teacher || 'Select teacher';
-    $('#day').value = it.day || ''; $('#day-selected').textContent = it.day || 'Select day';
+    document.getElementById('subject').value = it.subject || '';
+    document.getElementById('section').value = activeSection; document.getElementById('section-selected').textContent = activeSection;
+    document.getElementById('room').value = it.room || '';    document.getElementById('room-selected').textContent   = it.room || 'Select room';
+    document.getElementById('teacher').value = it.teacher || ''; document.getElementById('teacher-selected').textContent = it.teacher || 'Select teacher';
+    document.getElementById('day').value = it.day || ''; document.getElementById('day-selected').textContent = it.day || 'Select day';
     const toHHMM = (m)=> `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
-    $('#start-time').value = toHHMM(it.startMin);
-    $('#end-time').value   = toHHMM(it.endMin);
-    const formEl = $('#schedule-form');
+    document.getElementById('start-time').value = toHHMM(it.startMin);
+    document.getElementById('end-time').value   = toHHMM(it.endMin);
+    const formEl = document.getElementById('schedule-form');
     formEl.dataset.editId = it.id;
-    $('#submit-text').textContent = 'Save Changes';
-    $('#modal-title').textContent = 'Edit Schedule';
-    $('#form-error').classList.add('hidden');
-    $('#conflict').classList.add('hidden');
-    $('#schedule-modal').classList.remove('hidden');
+    document.getElementById('submit-text').textContent = 'Save Changes';
+    document.getElementById('modal-title').textContent = 'Edit Schedule';
+    document.getElementById('form-error').classList.add('hidden');
+    document.getElementById('conflict').classList.add('hidden');
+    document.getElementById('schedule-modal').classList.remove('hidden');
   }
-  if (delBtn){ pendingDeleteId = delBtn.dataset.id; openDelModal(); }
+  if (delBtn){ pendingDeleteId = delBtn.dataset.id; openDelModal('schedule'); }
 });
 
-const studentModal = $('#student-modal');
-$('#add-section-student-btn').onclick = async ()=>{ await requireAuth(); studentModal.classList.remove('hidden'); };
-$('#close-student-modal-btn').onclick = ()=> studentModal.classList.add('hidden');
-$('#cancel-student-btn').onclick = ()=> studentModal.classList.add('hidden');
+/* ===== Student list actions ===== */
+document.getElementById('section-students').addEventListener('click', async (e)=>{
+  const editBtn = e.target.closest('.stu-edit');
+  const delBtn  = e.target.closest('.stu-del');
+  if (!editBtn && !delBtn) return;
+
+  const id = editBtn?.dataset.id || delBtn?.dataset.id || null;
+  if (!id) return;
+
+  if (delBtn) {
+    if (!isAdmin) return;
+    pendingDeleteId = id;
+    openDelModal('student');
+    return;
+  }
+
+  if (editBtn) {
+    const stuRef = doc(db,'sections',activeSection,'students',id);
+    const snap = await getDoc(stuRef);
+    if(!snap.exists()) return;
+    const data = snap.data() || {};
+    if (isStudent && (!CURRENT_USER_ID || data.ownerId !== CURRENT_USER_ID)) return;
+
+    document.getElementById('student-modal-title').textContent = 'Edit Student';
+    document.getElementById('student-name').value = data.name || '';
+    document.getElementById('student-id').value   = data.id || '';
+    const typeVal = (data.type || 'Regular');
+    Array.from(document.querySelectorAll('#student-type-group input[name="student-type"]')).forEach(r=> r.checked = (r.value===typeVal));
+    refreshChoiceStyles();
+
+    const form = document.getElementById('student-form');
+    form.dataset.editId = id;
+
+    document.getElementById('student-submit-text').textContent = 'Save Changes';
+    document.getElementById('student-modal').classList.remove('hidden');
+  }
+});
+
+/* ===== Student modal open/submit ===== */
+const studentModal = document.getElementById('student-modal');
+document.getElementById('add-section-student-btn').onclick = async ()=>{
+  await requireAuth();
+  if (isTeacher) return;
+  if (isStudent && studentHasOwn) return;
+  const form = document.getElementById('student-form');
+  form.reset();
+  delete form.dataset.editId;
+  refreshChoiceStyles();
+  document.getElementById('student-modal-title').textContent = 'Add New Student';
+  document.getElementById('student-submit-text').textContent = 'Add Student';
+  studentModal.classList.remove('hidden');
+};
+document.getElementById('close-student-modal-btn').onclick = ()=> studentModal.classList.add('hidden');
+document.getElementById('cancel-student-btn').onclick = ()=> studentModal.classList.add('hidden');
+
 function refreshChoiceStyles(){
-  $$('#student-type-group .choice').forEach(lbl=>lbl.classList.remove('choice-active'));
-  const checked=$('#student-type-group input[name="student-type"]:checked');
+  Array.from(document.querySelectorAll('#student-type-group .choice')).forEach(lbl=>lbl.classList.remove('choice-active'));
+  const checked=document.querySelector('#student-type-group input[name="student-type"]:checked');
   checked?.closest('.choice')?.classList.add('choice-active');
 }
-$$('#student-type-group input[name="student-type"]').forEach(r=> r.addEventListener('change',refreshChoiceStyles));
+Array.from(document.querySelectorAll('#student-type-group input[name="student-type"]')).forEach(r=> r.addEventListener('change',refreshChoiceStyles));
 refreshChoiceStyles();
-$('#student-form').addEventListener('submit', async e=>{
+
+document.getElementById('student-form').addEventListener('submit', async e=>{
   e.preventDefault();
   await requireAuth();
 
   const sBtn   = document.getElementById('student-submit');
   const sText  = document.getElementById('student-submit-text');
   const sSpin  = document.getElementById('student-loader');
-  sBtn.disabled = true; sSpin.classList.remove('hidden'); sText.textContent = 'Adding Student...'; sBtn.classList.add('opacity-90','cursor-not-allowed');
+  sBtn.disabled = true; sSpin.classList.remove('hidden'); sText.textContent = (e.target.dataset.editId ? 'Saving Changes...' : 'Adding Student...'); sBtn.classList.add('opacity-90','cursor-not-allowed');
 
   try{
-    const name=$('#student-name').value.trim();
-    const id=$('#student-id').value.trim();
-    const picked=$$('#student-type-group input[name="student-type"]').find(r=>r.checked);
+    const name=document.getElementById('student-name').value.trim();
+    const id=document.getElementById('student-id').value.trim();
+    const picked=Array.from(document.querySelectorAll('#student-type-group input[name="student-type"]')).find(r=>r.checked);
     const type=picked?picked.value:'Regular';
     const sec=activeSection;
     if(!name||!id||!sec) throw new Error('Please complete all required fields.');
+
+    if (isStudent && studentHasOwn && !e.target.dataset.editId) {
+      throw new Error('You can only add once.');
+    }
+
     await ensureSectionDoc(sec);
-    await addDoc(collection(doc(db,'sections',sec),'students'), { name, id, type, createdAt: serverTimestamp() });
+    const payload = { name, id, type, updatedAt: serverTimestamp() };
+
+    const editingId = e.target.dataset.editId;
+    if (editingId) {
+      if (isStudent) {
+        const snap = await getDoc(doc(db,'sections',sec,'students',editingId));
+        const data = snap.exists() ? (snap.data()||{}) : {};
+        if (!CURRENT_USER_ID || data.ownerId !== CURRENT_USER_ID) throw new Error('Not allowed.');
+      }
+      await updateDoc(doc(db,'sections',sec,'students',editingId), payload);
+    } else {
+      await addDoc(collection(doc(db,'sections',sec),'students'), {
+        ...payload,
+        ownerId: CURRENT_USER_ID || '',
+        createdAt: serverTimestamp()
+      });
+    }
+
     await refreshCounts(sec);
     studentModal.classList.add('hidden');
     e.target.reset();
+    delete e.target.dataset.editId;
     refreshChoiceStyles();
   }catch(err){
-    alert(err?.message || 'Failed to add student.');
+    alert(err?.message || 'Failed to save student.');
   }finally{
     sBtn.disabled = false; sSpin.classList.add('hidden'); sText.textContent = 'Add Student'; sBtn.classList.remove('opacity-90','cursor-not-allowed');
   }
 });
 
+/* ===== Wire combos ===== */
 wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
 
 wireComboSearch({
   btnId:'room-dropdown', inputId:'room-combo', panelId:'room-options',
   hiddenId:'room', optionClass:'room-option', labelId:'room-selected', chevronId:'room-chevron'
 });
-wireComboSearch({
-  btnId:'teacher-dropdown', inputId:'teacher-combo', panelId:'teacher-options',
-  hiddenId:'teacher', optionClass:'teacher-option', labelId:'teacher-selected', chevronId:'teacher-chevron'
-});
 
-$('#day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
+const teacherBtn     = document.getElementById('teacher-dropdown');
+const teacherInput   = document.getElementById('teacher-combo');
+const teacherPanel   = document.getElementById('teacher-options');
+const teacherHidden  = document.getElementById('teacher');
+const teacherLabel   = document.getElementById('teacher-selected');
+
+function applyTeacher(val){
+  teacherHidden.value = val;
+  teacherLabel.textContent = val || 'Select teacher';
+  teacherInput.value = '';
+  teacherBtn.classList.remove('combo-has-text');
+  teacherPanel.classList.add('hidden');
+  teacherHidden.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function renderTeacherOptions(list){
+  teacherPanel.innerHTML = list.length
+    ? list.map(t=>`<div class="teacher-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${t.display.replace(/"/g,'&quot;')}">${t.display}</div>`).join('')
+    : `<div class="p-3 text-sm text-gray-500">No matches</div>`;
+}
+function filterTeacherSuggestions(qRaw){
+  const q = (qRaw||'').trim().toLowerCase();
+  if (!q) { teacherPanel.classList.add('hidden'); renderTeacherOptions([]); return; }
+  const starts = LIVE_TEACHERS.filter(t=> t.idx.startsWith(q));
+  const contains = LIVE_TEACHERS.filter(t=> !t.idx.startsWith(q) && t.idx.includes(q));
+  const merged = [...starts, ...contains].slice(0, 3);
+  renderTeacherOptions(merged);
+  teacherPanel.classList.toggle('hidden', merged.length===0);
+}
+function clearTeacherSelection(){
+  if (teacherHidden.value || teacherLabel.textContent) { teacherHidden.value = ''; teacherLabel.textContent = ''; }
+  teacherBtn.classList.add('combo-has-text');
+}
+teacherInput.addEventListener('focus', clearTeacherSelection);
+teacherInput.addEventListener('click', clearTeacherSelection);
+teacherBtn.addEventListener('click', (e)=>{ e.stopPropagation(); teacherInput.focus(); if (teacherInput.value.trim()) { filterTeacherSuggestions(teacherInput.value); } });
+teacherInput.addEventListener('input', ()=>{ teacherBtn.classList.toggle('combo-has-text', !!teacherInput.value.trim()); filterTeacherSuggestions(teacherInput.value); });
+teacherInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); const first = teacherPanel.querySelector('.teacher-option'); if(first) applyTeacher(first.dataset.value || first.textContent.trim()); } if(e.key==='Escape'){ teacherPanel.classList.add('hidden'); } });
+teacherPanel.addEventListener('mousedown', (e)=>{ const op=e.target.closest('.teacher-option'); if(op){ applyTeacher(op.dataset.value || op.textContent.trim()); } });
+document.addEventListener('click', (e)=>{ if(!teacherBtn.contains(e.target) && !teacherPanel.contains(e.target)) teacherPanel.classList.add('hidden'); });
+
+/* ===== Day portal & inline (same-section) conflict ===== */
+document.getElementById('day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
 function openDayPortal(){
-  const btn    = $('#day-dropdown');
-  const hidden = $('#day');
-  const label  = $('#day-selected');
-  const source = $('#day-options');
+  const btn    = document.getElementById('day-dropdown');
+  const hidden = document.getElementById('day');
+  const label  = document.getElementById('day-selected');
+  const source = document.getElementById('day-options');
   const portal = document.createElement('div');
   portal.id = 'day-portal';
   portal.className = 'fixed z-[9999] bg-white border border-gray-300 rounded-2xl shadow-2xl';
@@ -899,28 +1080,24 @@ function openDayPortal(){
   const prevOverflow=document.body.style.overflow; document.body.style.overflow='hidden';
   const close = ()=>{ portal.remove(); document.body.style.overflow=prevOverflow; document.removeEventListener('mousedown', outside); window.removeEventListener('resize', updatePos); window.removeEventListener('scroll', updatePos, true); };
   const outside = (ev)=>{ if(!portal.contains(ev.target) && ev.target!==btn) close(); };
-  portal.addEventListener('mousedown', (ev)=>{
-    const opt = ev.target.closest('.day-option');
-    if (opt){ const val = opt.dataset.value || opt.textContent.trim(); hidden.value = val; label.textContent = val; btn.classList.remove('is-error'); hideFormError(); close(); }
-  });
+  portal.addEventListener('mousedown', (ev)=>{ const opt = ev.target.closest('.day-option'); if (opt){ const val = opt.dataset.value || opt.textContent.trim(); hidden.value = val; label.textContent = val; btn.classList.remove('is-error'); hideFormError(); close(); } });
   window.addEventListener('resize', updatePos);
   window.addEventListener('scroll', updatePos, true);
   document.addEventListener('mousedown', outside);
 }
-
-function showFormError(msg){ const el=$('#form-error'); if(!el) return; el.textContent=msg; el.classList.remove('hidden'); }
-function hideFormError(){ const el=$('#form-error'); if(!el) return; el.textContent=''; el.classList.add('hidden'); }
+function showFormError(msg){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=msg; el.classList.remove('hidden'); }
+function hideFormError(){ const el=document.getElementById('form-error'); if(!el) return; el.textContent=''; el.classList.add('hidden'); }
 function clearErrors(){ ['subject','section-dropdown','room-dropdown','teacher-dropdown','day-dropdown','start-time','end-time'].forEach(id=>document.getElementById(id)?.classList.remove('is-error')); hideFormError(); }
 function markError(id){ document.getElementById(id)?.classList.add('is-error'); }
 function validateScheduleForm(){
   clearErrors();
-  const subject=$('#subject').value.trim();
-  const section=$('#section').value.trim();
-  const room=$('#room').value.trim();
-  const teacher=$('#teacher').value.trim();
-  const day=$('#day').value.trim();
-  const startHHMM=$('#start-time').value;
-  const endHHMM=$('#end-time').value;
+  const subject=document.getElementById('subject').value.trim();
+  const section=document.getElementById('section').value.trim();
+  const room=document.getElementById('room').value.trim();
+  const teacher=document.getElementById('teacher').value.trim();
+  const day=document.getElementById('day').value.trim();
+  const startHHMM=document.getElementById('start-time').value;
+  const endHHMM=document.getElementById('end-time').value;
   let ok=true;
   if(!subject){ markError('subject'); ok=false; }
   if(!section){ markError('section-dropdown'); ok=false; }
@@ -933,52 +1110,82 @@ function validateScheduleForm(){
   return { ok, values:{subject,section,room,teacher,day,startHHMM,endHHMM} };
 }
 function checkConflictInline(){
-  const section=$('#section').value.trim();
-  const day=$('#day').value.trim();
-  const s=$('#start-time').value;
-  const e=$('#end-time').value;
-  const bar=$('#conflict');
+  const section=document.getElementById('section').value.trim();
+  const day=document.getElementById('day').value.trim();
+  const s=document.getElementById('start-time').value;
+  const e=document.getElementById('end-time').value;
+  const bar=document.getElementById('conflict');
   if(!section||!day||!s||!e){ bar.classList.add('hidden'); return false; }
   const sm=toMinutes(s), em=toMinutes(e);
   if(em<=sm){ bar.textContent='Invalid time: end must be after start.'; bar.classList.remove('hidden'); return true; }
   const secSameDay = currentSchedules.filter(x=>x.day===day);
-  for(const it of secSameDay){ if(overlaps(it.startMin, it.endMin, sm, em)){ bar.textContent='Section conflict: this section already has a class at this time.'; bar.classList.remove('hidden'); return true; } }
+  for(const it of secSameDay){
+    if(overlaps(it.startMin, it.endMin, sm, em)){
+      bar.textContent='Section conflict: this section already has a class at this time.';
+      bar.classList.remove('hidden'); 
+      return true;
+    }
+  }
   bar.classList.add('hidden'); return false;
 }
 ;['start-time','end-time','day','section','room'].forEach(id=> document.getElementById(id).addEventListener('change',checkConflictInline));
 
-async function hasRoomConflictAllSections(day, room, startMin, endMin, skipSectionId=null, skipScheduleId=null){
+/* ===== SMART room conflict across ALL sections =====
+   Allows MERGED classes: same room + overlapping time + SAME SUBJECT (normalized)
+   and (optionally) same teacher → no conflict.
+*/
+async function hasRoomConflictAllSections(day, room, startMin, endMin, subject, teacher, skipSectionId=null, skipScheduleId=null){
   const qRoom = query(collectionGroup(db,'schedules'), where('room','==', room));
   const snap = await getDocs(qRoom);
+
+  const want = normSubj(subject);
   for(const docu of snap.docs){
     const d = docu.data();
     if(d.day !== day) continue;
     const secId = docu.ref.parent.parent.id;
+
+    // skip the currently edited row in the same section
     if(skipSectionId && secId===skipSectionId && skipScheduleId && docu.id===skipScheduleId) continue;
-    if(overlaps(d.startMin, d.endMin, startMin, endMin)) return true;
+
+    if(overlaps(d.startMin, d.endMin, startMin, endMin)){
+      // ✅ MERGE RULE: if it's the same subject (normalized) and teacher matches (or one is blank), allow it
+      const otherSubj = normSubj(d.subject || '');
+      const teacherOk = (!teacher || !d.teacher) ? true : sameTeacher(d.teacher, teacher);
+      if (otherSubj === want && teacherOk){
+        // treat as allowed merged class; NOT a conflict
+        continue;
+      }
+      // otherwise, this is a real room clash
+      return {
+        conflict: true,
+        withSection: secId,
+        withSubj: d.subject || 'another class',
+        withTeacher: d.teacher || ''
+      };
+    }
   }
-  return false;
+  return { conflict:false };
 }
 
-const scheduleModal = $('#schedule-modal');
-$('#add-section-schedule-btn').onclick = async ()=>{
+const scheduleModal = document.getElementById('schedule-modal');
+document.getElementById('add-section-schedule-btn').onclick = async ()=>{
   if (!isAdmin) return;
   await requireAuth();
   resetScheduleForm();
-  delete $('#schedule-form').dataset.editId;
-  $('#section').value=activeSection;
-  $('#section-selected').textContent=activeSection;
-  $('#submit-text').textContent = 'Add Schedule';
-  $('#modal-title').textContent = 'Add New Schedule';
-  hideFormError(); $('#conflict').classList.add('hidden');
+  delete document.getElementById('schedule-form').dataset.editId;
+  document.getElementById('section').value=activeSection;
+  document.getElementById('section-selected').textContent=activeSection;
+  document.getElementById('submit-text').textContent = 'Add Schedule';
+  document.getElementById('modal-title').textContent = 'Add New Schedule';
+  hideFormError(); document.getElementById('conflict').classList.add('hidden');
   scheduleModal.classList.remove('hidden');
   closeAllCombos();
 };
-$('#close-section-detail-btn').onclick = ()=> $('#section-detail-modal').classList.add('hidden');
-$('#close-modal-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete $('#schedule-form').dataset.editId; };
-$('#cancel-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete $('#schedule-form').dataset.editId; };
+document.getElementById('close-section-detail-btn').onclick = ()=> document.getElementById('section-detail-modal').classList.add('hidden');
+document.getElementById('close-modal-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editId; };
+document.getElementById('cancel-btn').onclick = ()=>{ scheduleModal.classList.add('hidden'); resetScheduleForm(); delete document.getElementById('schedule-form').dataset.editId; };
 
-$('#schedule-form').addEventListener('submit', async (e)=>{
+document.getElementById('schedule-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
   if (!isAdmin) return;
   try{
@@ -990,12 +1197,23 @@ $('#schedule-form').addEventListener('submit', async (e)=>{
     const sm=toMinutes(startHHMM), em=toMinutes(endHHMM);
     if(em<=sm){ markError('end-time'); showFormError('End time must be after start time.'); return; }
 
-    const editId = $('#schedule-form').dataset.editId;
+    const editId = document.getElementById('schedule-form').dataset.editId;
     const secSameDay = currentSchedules.filter(x=>x.day===day && (!editId || x.id!==editId));
-    for(const it of secSameDay){ if(overlaps(it.startMin, it.endMin, sm, em)){ showFormError('Section conflict: this section already has a class at this time.'); return; } }
+    for(const it of secSameDay){
+      if(overlaps(it.startMin, it.endMin, sm, em)){
+        showFormError('Section conflict: this section already has a class at this time.');
+        return;
+      }
+    }
 
-    const roomConflict = await hasRoomConflictAllSections(day, room, sm, em, section, editId || null);
-    if(roomConflict){ showFormError('Room conflict: this room is already booked at this time.'); return; }
+    // 🔧 smarter room conflict: allow merged (same subject+teacher) across sections
+    const roomChk = await hasRoomConflictAllSections(day, room, sm, em, subject, teacher, section, editId || null);
+    if(roomChk.conflict){
+      const who = `${roomChk.withSubj}${roomChk.withTeacher ? ' • '+roomChk.withTeacher : ''}`;
+      const where = roomChk.withSection ? ` (${roomChk.withSection})` : '';
+      showFormError(`Room conflict: ${room} already booked at this time by ${who}${where}.`);
+      return;
+    }
 
     const aBtn  = document.getElementById('schedule-submit');
     const aText = document.getElementById('submit-text');
@@ -1025,8 +1243,8 @@ $('#schedule-form').addEventListener('submit', async (e)=>{
 });
 
 function resetScheduleForm(){
-  const form=$('#schedule-form'); if(form) form.reset();
-  hideFormError(); $('#conflict')?.classList.add('hidden');
+  const form=document.getElementById('schedule-form'); if(form) form.reset();
+  hideFormError(); document.getElementById('conflict')?.classList.add('hidden');
   ['section','room','teacher','day','time'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   const defaults={ 'section-selected':(activeSection||'Select section'), 'room-selected':'Select room', 'teacher-selected':'Select teacher', 'day-selected':'Select day' };
   Object.entries(defaults).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.textContent=val; });
@@ -1043,7 +1261,7 @@ function resetScheduleForm(){
 }
 
 function setDayOptionsForYear(){
-  const panel = $('#day-options');
+  const panel = document.getElementById('day-options');
   if(!panel) return;
   const exists = panel.querySelector('.day-option[data-value="Saturday"]');
   if(currentYear === '1st Year'){
@@ -1057,11 +1275,11 @@ function setDayOptionsForYear(){
   } else if (exists){ exists.remove(); }
 }
 function setupYearDropdown(){
-  const yearBtn   = $('#year-dropdown');
-  const yearPanel = $('#year-options');
-  const yearLabel = $('#year-selected');
+  const yearBtn   = document.getElementById('year-dropdown');
+  const yearPanel = document.getElementById('year-options');
+  const yearLabel = document.getElementById('year-selected');
   yearBtn.addEventListener('click', ()=> yearPanel.classList.toggle('hidden'));
-  $$('.year-option', yearPanel).forEach(opt=>{
+  Array.from(yearPanel.querySelectorAll('.year-option')).forEach(opt=>{
     opt.addEventListener('click', ()=>{
       currentYear = opt.textContent.trim();
       yearLabel.textContent = currentYear;
@@ -1082,23 +1300,20 @@ const confirmSignout = document.getElementById('confirm-signout');
 if(signoutBtn && signoutModal){
   signoutBtn.addEventListener('click', ()=>{ signoutModal.classList.remove('hidden'); signoutModal.style.display='flex'; });
   cancelSignout.addEventListener('click', ()=>{ signoutModal.classList.add('hidden'); signoutModal.style.display='none'; });
-  confirmSignout.addEventListener('click', ()=>{
-    signoutModal.classList.add('hidden'); signoutModal.style.display='none';
-  });
+  confirmSignout.addEventListener('click', ()=>{ signoutModal.classList.add('hidden'); signoutModal.style.display='none'; });
 }
 
 function applyRoleUI(){
-  const yearWrap = $('#year-filter-wrap');
-  const headTitle = $('#section-title');
-  const headSubtitle = $('#section-subtitle');
-  const addStuBtn = $('#add-section-student-btn');
-  const addSchedBtn = $('#add-section-schedule-btn');
+  const yearWrap = document.getElementById('year-filter-wrap');
+  const headTitle = document.getElementById('section-title');
+  const headSubtitle = document.getElementById('section-subtitle');
+  const addStuBtn = document.getElementById('add-section-student-btn');
+  const addSchedBtn = document.getElementById('add-section-schedule-btn');
 
   if (isStudent) {
     if (yearWrap) yearWrap.classList.add('hidden');
     if (headTitle) headTitle.textContent = 'Your Section';
     if (headSubtitle) headSubtitle.textContent = 'View your section schedule and student list';
-    if (addStuBtn) addStuBtn.classList.add('hidden');
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
   }
 
