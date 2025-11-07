@@ -37,8 +37,12 @@ tailwind.config = {
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
 :where([class^="ri-"])::before { content: "\f3c2"; }
+
+/* prevent horizontal blank space */
 html, body { overflow-x: hidden; }
 #home, #about-merged { overflow-x: hidden; }
+
+/* subtle site-wide diagonal pattern */
 .site-bg-pattern{
   position: fixed;
   inset: 0;
@@ -52,7 +56,11 @@ html, body { overflow-x: hidden; }
       transparent 2px,
       transparent 14px);
 }
+
+/* keep watermark inside the about section so it scrolls away */
 #about-merged { position: relative; }
+
+/* --- bottom-right watermark (unchanged) --- */
 .footer-logo-wm{
   position: absolute;
   right: 0;
@@ -81,11 +89,13 @@ html, body { overflow-x: hidden; }
   pointer-events: none;
   z-index: 0;
 }
+
+/* --- NEW: top-left side watermark (beside the screen) --- */
 .side-logo-left{
   position: absolute;
-  left: 0;
-  top: 24px;
-  transform: translateX(-16%);
+  left: 0;                 /* anchor to the left edge */
+  top: 24px;               /* near the top of this section */
+  transform: translateX(-16%);  /* slightly off-screen for the crop */
   width: min(38vw, 480px);
   aspect-ratio: 1/1;
   background: url('logolucenabg.png') center/contain no-repeat;
@@ -109,7 +119,11 @@ html, body { overflow-x: hidden; }
   pointer-events: none;
   z-index: 0;
 }
+
+/* footer is above both watermarks */
 footer { position: relative; z-index: 10; }
+
+/* solid CTA button */
 .solid-btn{
   position: relative;
   z-index: 2;
@@ -120,6 +134,7 @@ footer { position: relative; z-index: 10; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- background pattern behind everything -->
 <div class="site-bg-pattern"></div>
 
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
@@ -245,8 +260,8 @@ footer { position: relative; z-index: 10; }
             </div>
 
             <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30">
-              <div class="w-16 h-16 flex items-center justify-center bg-gray/10 text-gray-700 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
-                <i class="ri-user-star-line text-2xl"></i>
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
+                <i class="ri-user-star-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Faculty Directory</h3>
               <p class="text-gray-600">See teaching assignments with subjects and rooms at a glance.</p>
@@ -264,6 +279,7 @@ footer { position: relative; z-index: 10; }
   </section>
 
   <section id="about-merged" class="bg-gray-50">
+    <!-- LEFT-SIDE WATERMARK (new) -->
     <div class="side-logo-blob-left"></div>
     <div class="side-logo-left"></div>
 
@@ -332,6 +348,7 @@ footer { position: relative; z-index: 10; }
       </div>
     </div>
 
+    <!-- RIGHT/BOTTOM watermark near the footer -->
     <div class="footer-logo-blob"></div>
     <div class="footer-logo-wm"></div>
   </section>
