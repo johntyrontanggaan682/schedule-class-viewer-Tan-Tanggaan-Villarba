@@ -37,8 +37,12 @@ tailwind.config = {
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
 :where([class^="ri-"])::before { content: "\f3c2"; }
+
+/* prevent horizontal blank space */
 html, body { overflow-x: hidden; }
 #home, #about-merged { overflow-x: hidden; }
+
+/* subtle site-wide diagonal pattern */
 .site-bg-pattern{
   position: fixed;
   inset: 0;
@@ -52,7 +56,11 @@ html, body { overflow-x: hidden; }
       transparent 2px,
       transparent 14px);
 }
+
+/* keep watermark inside the about section so it scrolls away */
 #about-merged { position: relative; }
+
+/* --- bottom-right watermark (unchanged) --- */
 .footer-logo-wm{
   position: absolute;
   right: 0;
@@ -81,11 +89,13 @@ html, body { overflow-x: hidden; }
   pointer-events: none;
   z-index: 0;
 }
+
+/* --- NEW: top-left side watermark (beside the screen) --- */
 .side-logo-left{
   position: absolute;
-  left: 0;
-  top: 24px;
-  transform: translateX(-16%);
+  left: 0;                 /* anchor to the left edge */
+  top: 24px;               /* near the top of this section */
+  transform: translateX(-16%);  /* slightly off-screen for the crop */
   width: min(38vw, 480px);
   aspect-ratio: 1/1;
   background: url('logolucenabg.png') center/contain no-repeat;
@@ -109,7 +119,11 @@ html, body { overflow-x: hidden; }
   pointer-events: none;
   z-index: 0;
 }
+
+/* footer is above both watermarks */
 footer { position: relative; z-index: 10; }
+
+/* solid CTA button */
 .solid-btn{
   position: relative;
   z-index: 2;
@@ -117,71 +131,10 @@ footer { position: relative; z-index: 10; }
   color:#fff !important;
   isolation:isolate;
 }
-.feature-card{
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 28px rgba(10,75,45,.08);
-  border: 1px solid rgba(10,75,45,.22);
-  background:
-    linear-gradient(180deg,#ffffff 0%, rgba(10,75,45,.02) 100%);
-  transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease, background .25s ease;
-}
-.feature-card::before{
-  content:"";
-  position:absolute;
-  left:0; right:0; top:0;
-  height:3px;
-  background: linear-gradient(90deg,#0A4B2D,#0D5C38);
-  opacity:.85;
-}
-.feature-card:hover{
-  transform: translateY(-6px);
-  box-shadow: 0 18px 48px rgba(10,75,45,.22);
-  border-color: rgba(10,75,45,.42);
-  background:
-    linear-gradient(180deg, rgba(10,75,45,.03) 0%, #ffffff 100%);
-}
-.feature-card .w-12, .feature-card .w-16{
-  box-shadow: 0 0 0 6px rgba(10,75,45,.06);
-}
-.icon-wrap{
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  isolation: isolate;
-}
-.icon-wrap::after{
-  content:"";
-  position:absolute;
-  inset:-8px;
-  border-radius:16px;
-  background: radial-gradient(closest-side, rgba(10,75,45,.28), transparent 65%);
-  filter: blur(10px);
-  z-index:0;
-}
-.features-wrap{
-  position: relative;
-  border-radius: 1rem;
-  background: rgba(255,255,255,.72);
-  -webkit-backdrop-filter: blur(10px) saturate(1.05);
-  backdrop-filter: blur(10px) saturate(1.05);
-  border: 1px solid rgba(10,75,45,.18);
-  box-shadow: 0 18px 60px rgba(10,75,45,.12);
-  overflow: hidden;
-}
-.features-wrap::before{
-  content:"";
-  position:absolute;
-  inset: -2px;
-  background: radial-gradient(1200px 400px at -10% -20%, rgba(10,75,45,.10), transparent 60%),
-              radial-gradient(600px 300px at 120% 120%, rgba(10,75,45,.08), transparent 60%);
-  pointer-events:none;
-  filter: blur(10px);
-}
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- background pattern behind everything -->
 <div class="site-bg-pattern"></div>
 
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
@@ -267,7 +220,7 @@ footer { position: relative; z-index: 10; }
     <div class="relative z-10 px-6 py-16">
       <div class="max-w-6xl mx-auto text-center">
         <div class="mb-12">
-          <div class="w-32 h-32 mx-auto bg-white rounded-xl border-2 border-primary/20 shadow-lg flex items-center justify-center mb-6 overflow-hidden">
+          <div class="w-32 h-32 mx-auto bg-white/90 backdrop-blur-sm rounded-xl border-2 border-primary/20 shadow-lg flex items-center justify-center mb-6 overflow-hidden">
             <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-24 h-24 object-contain rounded-full" />
           </div>
         </div>
@@ -280,11 +233,9 @@ footer { position: relative; z-index: 10; }
           </p>
 
           <div class="grid md:grid-cols-3 gap-8 mt-16">
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-calendar-check-line text-2xl text-primary"></i>
-                </div>
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-3">
+                <i class="ri-calendar-check-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Schedule Viewer</h3>
               <p class="text-gray-600">Browse the weekly BIT timetable by day, subject, room, and instructor.</p>
@@ -295,11 +246,9 @@ footer { position: relative; z-index: 10; }
               </div>
             </div>
 
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-group-line text-2xl text-primary"></i>
-                </div>
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:-rotate-3">
+                <i class="ri-group-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Student Directory</h3>
               <p class="text-gray-600">Search students by name or section, including regular/irregular status.</p>
@@ -310,11 +259,9 @@ footer { position: relative; z-index: 10; }
               </div>
             </div>
 
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-user-star-line text-2xl text-primary"></i>
-                </div>
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
+                <i class="ri-user-star-line text-2xl text-primary"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Faculty Directory</h3>
               <p class="text-gray-600">See teaching assignments with subjects and rooms at a glance.</p>
@@ -332,6 +279,7 @@ footer { position: relative; z-index: 10; }
   </section>
 
   <section id="about-merged" class="bg-gray-50">
+    <!-- LEFT-SIDE WATERMARK (new) -->
     <div class="side-logo-blob-left"></div>
     <div class="side-logo-left"></div>
 
@@ -349,14 +297,12 @@ footer { position: relative; z-index: 10; }
           </div>
         </div>
 
-        <div class="features-wrap p-8">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 shadow-sm p-8">
           <h3 class="text-2xl font-extrabold text-gray-900 mb-6">Key Features</h3>
           <div class="grid md:grid-cols-3 gap-6">
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
-                  <i class="ri-calendar-check-line text-xl"></i>
-                </div>
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+                <i class="ri-calendar-check-line text-xl"></i>
               </div>
               <h4 class="font-semibold text-gray-900 mb-2">Interactive Viewing</h4>
               <p class="text-gray-600 text-sm">Weekly grid with subjects, rooms, teachers, and edit actions.</p>
@@ -364,11 +310,9 @@ footer { position: relative; z-index: 10; }
                 Go to Master Schedule <i class="ri-arrow-right-up-line"></i>
               </a>
             </div>
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
-                  <i class="ri-group-line text-xl"></i>
-                </div>
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+                <i class="ri-group-line text-xl"></i>
               </div>
               <h4 class="font-semibold text-gray-900 mb-2">Student Directory</h4>
               <p class="text-gray-600 text-sm">Search by name or section; regular/irregular tagging.</p>
@@ -376,15 +320,13 @@ footer { position: relative; z-index: 10; }
                 Open Student Directory <i class="ri-arrow-right-up-line"></i>
               </a>
             </div>
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
+            <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-12 h-12 rounded-xl bg-gray/10 text-gray-700 flex items-center justify-center mb-4">
+                <i class="ri-user-star-line text-xl"></i>
+items-center justify-center mb-4 relative z-[1]">
                   <i class="ri-user-star-line text-xl"></i>
                 </div>
-              </div>
-              <h4 class="font-semibold text-gray-900 mb-2">Faculty Info</h4>
-              <p class="text-gray-600 text-sm">Subjects, rooms, and assignments in one consistent layout.</p>
-              <a href="teachers.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm mt-2">
+">
                 View Faculty Page <i class="ri-arrow-right-up-line"></i>
               </a>
             </div>
@@ -406,6 +348,7 @@ footer { position: relative; z-index: 10; }
       </div>
     </div>
 
+    <!-- RIGHT/BOTTOM watermark near the footer -->
     <div class="footer-logo-blob"></div>
     <div class="footer-logo-wm"></div>
   </section>
