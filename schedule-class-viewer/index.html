@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home • SLSU Lucena</title>
+<title>Home • SLSU Lucena BIT Class Schedule Viewer</title>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
   theme: {
     extend: {
-      colors: { primary: '#16a34a', secondary: '#22c55e' },
+      colors: { primary: '#0A4B2D', secondary: '#0A4B2D' },
       borderRadius: {
         'none':'0px','sm':'4px', DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px',
         '2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
@@ -30,15 +30,98 @@ tailwind.config = {
   }
 }
 </script>
+<link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
 :where([class^="ri-"])::before { content: "\f3c2"; }
+html, body { overflow-x: hidden; }
+#home, #about-merged { overflow-x: hidden; }
+.site-bg-pattern{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .06;
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(10,75,45,.25) 0px,
+      rgba(10,75,45,.25) 2px,
+      transparent 2px,
+      transparent 14px);
+}
+#about-merged { position: relative; }
+.footer-logo-wm{
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  transform: translateX(12%);
+  width: min(42vw, 520px);
+  aspect-ratio: 1/1;
+  background: url('lucenalogo.jpg') center/contain no-repeat;
+  opacity: .14;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
+}
+.footer-logo-blob{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translateX(20%);
+  width: min(56vw, 680px);
+  height: min(56vw, 680px);
+  background: radial-gradient(closest-side, rgba(10,75,45,.12), transparent 60%);
+  filter: blur(6px);
+  opacity: .8;
+  pointer-events: none;
+  z-index: 0;
+}
+.side-logo-left{
+  position: absolute;
+  left: 0;
+  top: 24px;
+  transform: translateX(-16%);
+  width: min(38vw, 480px);
+  aspect-ratio: 1/1;
+  background: url('logolucenabg.png') center/contain no-repeat;
+  opacity: .14;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
+}
+.side-logo-blob-left{
+  position: absolute;
+  left: 0;
+  top: -20px;
+  transform: translateX(-24%);
+  width: min(52vw, 640px);
+  height: min(52vw, 640px);
+  background: radial-gradient(closest-side, rgba(10,75,45,.10), transparent 60%);
+  filter: blur(6px);
+  opacity: .8;
+  pointer-events: none;
+  z-index: 0;
+}
+footer { position: relative; z-index: 10; }
+.solid-btn{
+  position: relative;
+  z-index: 2;
+  background-color:#0A4B2D !important;
+  color:#fff !important;
+  isolation:isolate;
+}
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<div class="site-bg-pattern"></div>
+
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
   <div class="px-6 py-4">
     <div class="flex items-center justify-between">
@@ -123,15 +206,15 @@ tailwind.config = {
       <div class="max-w-6xl mx-auto text-center">
         <div class="mb-12">
           <div class="w-32 h-32 mx-auto bg-white/90 backdrop-blur-sm rounded-xl border-2 border-primary/20 shadow-lg flex items-center justify-center mb-6 overflow-hidden">
-            <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-24 h-24 object-contain" />
+            <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-24 h-24 object-contain rounded-full" />
           </div>
         </div>
 
-        <h1 class="text-5xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-sm">SLSU Lucena Class Schedule Viewer</h1>
+        <h1 class="text-5xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-sm">SLSU Lucena BIT Class Schedule Viewer</h1>
 
         <div class="max-w-3xl mx-auto">
           <p class="text-xl text-gray-700 leading-relaxed mb-8 drop-shadow-sm">
-            This website helps you manage class schedules, students, and faculty fast and easy.
+            The SLSU Lucena BIT Class Schedule Viewer. Quickly browse weekly timetables and find students, sections, and teachers in one place.
           </p>
 
           <div class="grid md:grid-cols-3 gap-8 mt-16">
@@ -139,8 +222,8 @@ tailwind.config = {
               <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-3">
                 <i class="ri-calendar-check-line text-2xl text-primary"></i>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-3">Easy Scheduling</h3>
-              <p class="text-gray-600">Manage weekly timetables with subjects, rooms, and teachers.</p>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Schedule Viewer</h3>
+              <p class="text-gray-600">Browse the weekly BIT timetable by day, subject, room, and instructor.</p>
               <div class="mt-5">
                 <a href="schedules.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Schedules <i class="ri-arrow-right-up-line"></i>
@@ -152,8 +235,8 @@ tailwind.config = {
               <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:-rotate-3">
                 <i class="ri-group-line text-2xl text-primary"></i>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-3">Student Management</h3>
-              <p class="text-gray-600">Searchable directory with section organization and tags.</p>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Student Directory</h3>
+              <p class="text-gray-600">Search students by name or section, including regular/irregular status.</p>
               <div class="mt-5">
                 <a href="students.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Students <i class="ri-arrow-right-up-line"></i>
@@ -161,12 +244,12 @@ tailwind.config = {
               </div>
             </div>
 
-            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30">
-              <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
-                <i class="ri-user-star-line text-2xl text-primary"></i>
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30">
+              <div class="w-16 h-16 flex items-center justify-center bg-gray/10 text-gray-700 rounded-xl mx-auto mb-4 transition group-hover:rotate-1">
+                <i class="ri-user-star-line text-2xl"></i>
               </div>
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Faculty Directory</h3>
-              <p class="text-gray-600">Subjects, rooms, and assignments in one view.</p>
+              <p class="text-gray-600">See teaching assignments with subjects and rooms at a glance.</p>
               <div class="mt-5">
                 <a href="teachers.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
                   Open Teachers <i class="ri-arrow-right-up-line"></i>
@@ -181,6 +264,9 @@ tailwind.config = {
   </section>
 
   <section id="about-merged" class="bg-gray-50">
+    <div class="side-logo-blob-left"></div>
+    <div class="side-logo-left"></div>
+
     <div class="px-6 py-16">
       <div class="max-w-6xl mx-auto space-y-10">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 relative overflow-hidden">
@@ -190,10 +276,7 @@ tailwind.config = {
             <p class="text-xs uppercase tracking-wider text-primary font-semibold">About</p>
             <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1">System Purpose</h3>
             <p class="text-gray-700 leading-relaxed mt-4">
-              The SLSU Lucena Class Schedule Viewer streamlines academic schedule management for
-              Southern Luzon State University Lucena Campus by centralizing class schedules, student
-              information, and academic resources. It reduces conflicts and gives real-time access
-              through a clean, student- and faculty-friendly interface.
+              The <strong>SLSU Lucena BIT Class Schedule Viewer</strong> provides a centralized, real-time way to view academic schedules for the BIT program at Southern Luzon State University Lucena Campus. It focuses on clear, student and faculty-friendly viewing of class grids, sections, and assignments to minimize conflicts and make information easy to find.
             </p>
           </div>
         </div>
@@ -222,7 +305,7 @@ tailwind.config = {
               </a>
             </div>
             <div class="group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center mb-4">
+              <div class="w-12 h-12 rounded-xl bg-gray/10 text-gray-700 flex items-center justify-center mb-4">
                 <i class="ri-user-star-line text-xl"></i>
               </div>
               <h4 class="font-semibold text-gray-900 mb-2">Faculty Info</h4>
@@ -234,13 +317,13 @@ tailwind.config = {
           </div>
         </div>
 
-        <div class="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-8">
+        <div id="cta-card" class="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-8">
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h4 class="text-xl font-extrabold text-gray-900">Ready to explore the schedules?</h4>
-              <p class="text-gray-700">Jump to the Master Schedule and try the filters.</p>
+              <h4 id="cta-title" class="text-xl font-extrabold text-gray-900">Ready to explore the schedules?</h4>
+              <p id="cta-sub" class="text-gray-700">Open the Master Schedule and use the filters to browse sections.</p>
             </div>
-            <a href="schedules.html" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-button hover:bg-primary/90 active:scale-95 transition">
+            <a href="schedules.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-button solid-btn active:scale-95 transition">
               <i class="ri-calendar-2-line"></i> Open Master Schedule
             </a>
           </div>
@@ -248,43 +331,42 @@ tailwind.config = {
 
       </div>
     </div>
+
+    <div class="footer-logo-blob"></div>
+    <div class="footer-logo-wm"></div>
   </section>
 </main>
 
-<footer class="bg-primary text-white py-12 mt-20">
+<footer class="bg-primary text-white py-6 mt-12 text-sm">
   <div class="px-6">
     <div class="max-w-6xl mx-auto">
-      <div class="grid md:grid-cols-3 gap-8">
+      <div class="grid md:grid-cols-3 gap-6">
         <div>
-          <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
-          <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
-          <div class="flex items-center space-x-4">
-            <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
-              <i class="ri-facebook-line text-xl"></i>
-            </a>
+          <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
+          <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Contact Information</h3>
+          <div class="space-y-1 text-white/80">
+            <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
+            <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
+            <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
           </div>
         </div>
         <div>
-          <h3 class="text-xl font-bold mb-4">Contact Information</h3>
-          <div class="space-y-3 text-white/80">
-            <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
-            <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
-            <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
-          </div>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-          <div class="space-y-2">
-            <a href="index.html"     class="block text-white/80 hover:text-white transition">Home</a>
-            <a href="sections.html"  class="block text-white/80 hover:text-white transition">Sections</a>
-            <a href="schedules.html" class="block text-white/80 hover:text-white transition">Schedules</a>
-            <a href="students.html"  class="block text-white/80 hover:text-white transition">Students</a>
-            <a href="teachers.html"  class="block text-white/80 hover:text-white transition">Teachers</a>
+          <h3 class="font-bold mb-2">Quick Links</h3>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
+            <a href="index.html"     class="hover:text-white">Home</a>
+            <a href="sections.html"  class="hover:text-white">Sections</a>
+            <a href="schedules.html" class="hover:text-white">Schedules</a>
+            <a href="students.html"  class="hover:text-white">Students</a>
+            <a href="teachers.html"  class="hover:text-white">Teachers</a>
+            <a href="profile.html"   class="hover:text-white">Profile</a>
           </div>
         </div>
       </div>
-      <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
-        <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+      <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
+        <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
       </div>
     </div>
   </div>
@@ -327,7 +409,18 @@ tailwind.config = {
         document.body.classList.add('animate-page-fade-out');
       });
     });
-});
+
+    var role = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
+    var ctaCard = document.getElementById('cta-card');
+    var ctaTitle = document.getElementById('cta-title');
+    var ctaSub = document.getElementById('cta-sub');
+    if (role === 'student') {
+      if (ctaTitle) ctaTitle.textContent = 'Ready to view your schedule?';
+      if (ctaSub) ctaSub.textContent = 'Open your section timetable and check today’s classes.';
+    } else if (role === 'teacher' || role === 'admin') {
+      if (ctaCard) ctaCard.classList.add('hidden');
+    }
+  });
 </script>
 </body>
 </html>
