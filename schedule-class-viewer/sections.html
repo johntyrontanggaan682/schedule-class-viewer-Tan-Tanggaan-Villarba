@@ -175,6 +175,9 @@ tailwind.config = {
     box-shadow: 0 0 0 3px rgba(10,75,45,.18);
     transform: translateY(-1px);
   }
+
+  /* NEW: cap preview list to ~3 cards then scroll */
+  .rem-scroll-capped{ max-height: 360px !important; overflow-y: auto !important; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -548,7 +551,11 @@ tailwind.config = {
         <div class="flex items-center justify-end gap-2 pt-1">
           <button type="button" id="rem-preview" class="px-4 py-2 rounded-button bg-white border border-gray-300 text-gray-700 hidden btn-preview">Preview</button>
           <button type="button" id="rem-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
-          <button type="submit" id="rem-save" class="px-4 py-2 rounded-button bg-primary text-white">Save Reminder</button>
+          <!-- UPDATED: Save button with loader + text spans -->
+          <button type="submit" id="rem-save" class="px-4 py-2 rounded-button bg-primary text-white flex items-center justify-center gap-2">
+            <span id="rem-save-loader" class="btn-loader hidden"></span>
+            <span id="rem-save-text">Save Reminder</span>
+          </button>
         </div>
 
         <input type="hidden" id="rem-section">
@@ -1585,6 +1592,11 @@ const remPrevModal = document.getElementById('rem-preview-modal');
 const remPrevClose = document.getElementById('rem-preview-close');
 const remPrevList  = document.getElementById('reminders-list-preview');
 
+/* NEW: references for Save button state */
+const remSaveBtn    = document.getElementById('rem-save');
+const remSaveLoader = document.getElementById('rem-save-loader');
+const remSaveText   = document.getElementById('rem-save-text');
+
 let REMINDER_SUBJECT_SOURCE = []; 
 
 function buildReminderSubjectSource(){
@@ -1601,7 +1613,8 @@ function openReminderModal(){
   remSuggest.classList.add('hidden');
 
   document.getElementById('rem-modal-title').textContent = isEditing ? 'Editing Reminder' : 'Add New Reminder';
-  document.getElementById('rem-save').textContent = isEditing ? 'Save Changes' : 'Save Reminder';
+  document.getElementById('rem-save-text').textContent = isEditing ? 'Save Changes' : 'Save Reminder';
+  remSaveLoader.classList.add('hidden'); remSaveBtn.disabled = false; remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
 
   if (!isEditing){
     remForm.reset();
@@ -1617,7 +1630,8 @@ function closeReminderModal(){
   remModal.classList.remove('flex');
   delete remForm.dataset.editId;
   document.getElementById('rem-modal-title').textContent = 'Add New Reminder';
-  document.getElementById('rem-save').textContent = 'Save Reminder';
+  document.getElementById('rem-save-text').textContent = 'Save Reminder';
+  remSaveLoader.classList.add('hidden'); remSaveBtn.disabled = false; remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
 }
 
 if (remOpenBtn){
@@ -1660,6 +1674,7 @@ function renderPreviewReminders(items){
   if (!remPrevList) return;
   if (!items.length){
     remPrevList.innerHTML = `<div class="text-sm text-gray-500 px-2">No reminders yet.</div>`;
+    remPrevList.classList.remove('rem-scroll-capped'); /* keep natural height when empty */
     return;
   }
   remPrevList.innerHTML = items.map(r=>{
@@ -1682,6 +1697,14 @@ function renderPreviewReminders(items){
       </div>
     `;
   }).join('');
+
+  /* NEW: cap to 3 items then scroll */
+  const count = remPrevList.querySelectorAll('.rem-item').length;
+  if (count > 3){
+    remPrevList.classList.add('rem-scroll-capped');
+  } else {
+    remPrevList.classList.remove('rem-scroll-capped');
+  }
 }
 
 /* Open/Close preview modal */
@@ -1735,6 +1758,7 @@ remPrevList?.addEventListener('click', async (e)=>{
   }
 });
 
+/* UPDATED: Save/Loading behavior for Add/Edit Reminder */
 remForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   try{
@@ -1755,6 +1779,13 @@ remForm.addEventListener('submit', async (e)=>{
     await ensureSectionDoc(section);
 
     const editingId = remForm.dataset.editId;
+
+    /* show loading state */
+    remSaveBtn.disabled = true;
+    remSaveLoader.classList.remove('hidden');
+    remSaveBtn.classList.add('opacity-90','cursor-not-allowed');
+    remSaveText.textContent = editingId ? 'Saving Changes...' : 'Saving Reminder...';
+
     if (editingId){
       await updateDoc(doc(db,'sections',section,'reminders',editingId), {
         title, subject, date,
@@ -1776,12 +1807,23 @@ remForm.addEventListener('submit', async (e)=>{
       sessionStorage.setItem('reminder_target_section', section);
     }
 
+    /* reset loading + close */
+    remSaveBtn.disabled = false;
+    remSaveLoader.classList.add('hidden');
+    remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
+    remSaveText.textContent = editingId ? 'Save Changes' : 'Save Reminder';
+
     closeReminderModal();
     remForm.reset();
     delete remForm.dataset.editId;
   }catch(err){
     console.error(err);
     alert('Failed to save reminder.');
+    /* revert loading state so user can try again */
+    remSaveBtn.disabled = false;
+    remSaveLoader.classList.add('hidden');
+    remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
+    remSaveText.textContent = remForm.dataset.editId ? 'Save Changes' : 'Save Reminder';
   }
 });
 
