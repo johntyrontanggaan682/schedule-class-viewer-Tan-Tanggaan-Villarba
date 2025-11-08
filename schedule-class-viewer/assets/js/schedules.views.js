@@ -1,17 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // read session from login page
+  const USER_ROLE    = sessionStorage.getItem('auth_role')    || 'guest';
+  const USER_SECTION = sessionStorage.getItem('auth_section') || '';
+  const USER_NAME    = sessionStorage.getItem('auth_name')    || '';
+
   const tableBody       = document.getElementById('schedule-table-body');
   const sectionBtns     = document.querySelectorAll('.section-filter-btn');
-  const singleContainer = document.getElementById('single-table-container');   
-  const stackContainer  = document.getElementById('all-sections-stack');       
-  const cardContainer   = document.getElementById('section-card-container');   
+  const singleContainer = document.getElementById('single-table-container');   // the big master table
+  const stackContainer  = document.getElementById('all-sections-stack');       // 4 stacked tables
+  const cardContainer   = document.getElementById('section-card-container');   // 1 section only (card style)
 
   const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   const fade = (el) => { if(!el) return; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); };
 
+  // try to grab "Browse by Section" card and title/subtitle from the page
+  const schedulesSection = document.getElementById('schedules');
+  const pageTitle   = schedulesSection ? schedulesSection.querySelector('h2') : null;
+  const pageSub     = schedulesSection ? schedulesSection.querySelector('p')  : null;
+  // this is the card that has Year / Browse by Section... no id in html, so we pick the first one
+  const browseCard  = schedulesSection
+    ? schedulesSection.querySelector('.bg-white.rounded-xl.shadow-sm.border.border-gray-200.mb-6')
+    : null;
+
   function harvestMasterRows() {
     const bySection = new Map();
-
     const rows = tableBody ? Array.from(tableBody.querySelectorAll('.schedule-row')) : [];
+
     rows.forEach(tr => {
       const sectionName = tr.dataset.section || '';
       const day         = tr.dataset.day || '';
@@ -121,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (singleContainer) singleContainer.classList.add('hidden');
     if (cardContainer)  { cardContainer.classList.add('hidden'); cardContainer.innerHTML = ''; }
     if (stackContainer) { stackContainer.classList.remove('hidden'); fade(stackContainer); }
-
     buildAllSectionsFromMaster();
   }
 
@@ -129,28 +142,84 @@ document.addEventListener('DOMContentLoaded', () => {
     if (singleContainer) singleContainer.classList.add('hidden');
     if (stackContainer)  stackContainer.classList.add('hidden');
     if (cardContainer)   { cardContainer.classList.remove('hidden'); fade(cardContainer); }
-
     buildOneSectionFromMaster(sec);
   }
 
-  sectionBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sec = (btn.getAttribute('data-section') || '').trim();
+  // ============================================================
+  // STUDENT MODE
+  // ============================================================
+  if (USER_ROLE === 'student') {
+    // show the page immediately (remove "pick a year" logic)
+    document.body.classList.add('year-picked');
 
-      sectionBtns.forEach(b => b.classList.remove('bg-primary','text-white','font-semibold'));
-      if (sec.toLowerCase() === 'all') {
-        btn.classList.add('bg-primary','text-white','font-semibold');
-        showAllSections();
-      } else {
-        btn.classList.add('bg-primary','text-white','font-semibold');
-        showOneSection(sec);
+    // hide the browse-by-section card (the one with Year dropdown)
+    if (browseCard) browseCard.style.display = 'none';
+
+    // hide teacher/admin views
+    if (singleContainer) singleContainer.classList.add('hidden');   // master table
+    if (stackContainer)  stackContainer.classList.add('hidden');    // 4 sections
+    if (cardContainer)   cardContainer.classList.remove('hidden');  // student view
+
+    // change title
+    if (pageTitle) pageTitle.textContent = 'Your Schedule';
+    if (pageSub) {
+      if (USER_SECTION) pageSub.textContent = 'Schedule for ' + USER_SECTION;
+      else pageSub.textContent = 'Your enrolled class schedule';
+    }
+
+    // render right away (maybe empty if Firestore not loaded yet)
+    const renderStudentSchedule = () => {
+      if (!cardContainer) return;
+      if (!USER_SECTION) {
+        cardContainer.innerHTML = tableHTMLFromTimeMap(new Map(), 'Your Section');
+        return;
       }
+      buildOneSectionFromMaster(USER_SECTION);
+    };
+    renderStudentSchedule();
+
+    // re-render when Firestore rows arrive / change
+    if (tableBody) {
+      const mo = new MutationObserver(() => {
+        renderStudentSchedule();
+      });
+      mo.observe(tableBody, { childList: true, subtree: true });
+    }
+
+    // student should NOT see / use the section buttons
+    sectionBtns.forEach(btn => {
+      btn.style.display = 'none';
     });
-  });
 
-  const defaultBtn = document.querySelector('.section-filter-btn[data-section="all"]');
-  if (defaultBtn) defaultBtn.click();
+    // student mode ends here – do NOT run the default "all" click
+    // also exit before signout modal code? no, keep signout below
+  } else {
+    // ============================================================
+    // TEACHER / ADMIN MODE (old behaviour)
+    // ============================================================
+    sectionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sec = (btn.getAttribute('data-section') || '').trim();
 
+        sectionBtns.forEach(b => b.classList.remove('bg-primary','text-white','font-semibold'));
+        if (sec.toLowerCase() === 'all') {
+          btn.classList.add('bg-primary','text-white','font-semibold');
+          showAllSections();
+        } else {
+          btn.classList.add('bg-primary','text-white','font-semibold');
+          showOneSection(sec);
+        }
+      });
+    });
+
+    // old behaviour: when NOT student, open "All" by default
+    const defaultBtn = document.querySelector('.section-filter-btn[data-section="all"]');
+    if (defaultBtn) defaultBtn.click();
+  }
+
+  // ============================================================
+  // signout modal (keep as is)
+  // ============================================================
   const LOGIN_PAGE = 'index.html';
   const signoutBtn = document.getElementById('signout-btn');
   const modal      = document.getElementById('signout-modal');
