@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,6 +112,12 @@ tailwind.config = {
     pointer-events:none;
     z-index:0;
   }
+
+  /* Small popover panel for reminder subject suggestions */
+  .rem-suggest-panel{ position:absolute; left:1rem; right:1rem; z-index:50; margin-top:.25rem;
+    background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,.08); max-height:12rem; overflow:auto; }
+  .rem-suggest-item{ padding:.6rem .8rem; border-radius:10px; cursor:pointer; }
+  .rem-suggest-item:hover{ background:#f8fafc; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -212,11 +219,17 @@ tailwind.config = {
             <p id="section-detail-subtitle" class="opacity-90 text-sm">View students and schedules</p>
           </div>
           <div class="flex items-center space-x-2">
+            <!-- Add Student (admin only / hidden for teacher) -->
             <button id="add-section-student-btn" class="bg-white/10 text-white px-4 py-2 rounded-button hover:bg-white/20 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-user-add-line"></i><span>Add Student</span>
             </button>
+            <!-- Add Schedule (admin only / hidden for teacher) -->
             <button id="add-section-schedule-btn" class="bg-white text-primary px-4 py-2 rounded-button hover:bg-gray-100 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-add-line"></i><span>Add Schedule</span>
+            </button>
+            <!-- ✅ Add Reminder (teacher sees ONLY this; admin sees all) -->
+            <button id="add-section-reminder-btn" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-primary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
+              <i class="ri-notification-3-line"></i><span>Add Reminder</span>
             </button>
             <button id="close-section-detail-btn" class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10">
               <i class="ri-close-line text-xl"></i>
@@ -378,7 +391,7 @@ tailwind.config = {
                   <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Thursday">Thursday</div>
                   <div class="day-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="Friday">Friday</div>
                 </div>
-                <input type="hidden" id="day" name="day">
+                <input type="hidden" id="day">
               </div>
 
               <div class="flex md:justify-center">
@@ -396,7 +409,7 @@ tailwind.config = {
               </div>
             </div>
 
-            <input type="hidden" id="time" name="time">
+            <input type="hidden" id="time">
 
             <div id="form-error" class="hidden mt-3 text-sm px-3 py-2 rounded-button bg-red-50 text-red-700"></div>
 
@@ -413,6 +426,78 @@ tailwind.config = {
             <span id="submit-text">Add Schedule</span>
           </button>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✅ UPDATED: Add Reminder Modal (Start beside Date; End below Start) -->
+  <div id="reminder-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-lg w-full overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 modal-head flex items-center justify-between">
+        <div class="text-xl font-bold">Add New Reminder</div>
+        <button id="rem-close" class="w-8 h-8 flex items-center justify-center text-white/90 hover:text-white rounded-full hover:bg-white/10">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+
+      <form id="rem-form" class="p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Reminder Title</label>
+          <input id="rem-title" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Enter reminder title..." required>
+        </div>
+
+        <!-- Subject (with suggestions) -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+          <input id="rem-subject" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Start typing to search..." autocomplete="off" required>
+          <div id="rem-subject-suggest" class="rem-suggest-panel hidden"></div>
+        </div>
+
+        <!-- ⬇️ Layout you asked: Date (left) + Start (right); Day under Date; End under Start -->
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Left column: Date, then Day -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input id="rem-date" type="date" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" required>
+
+            <div class="mt-3">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Day</label>
+              <select id="rem-day" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm">
+                <option value="">Select day</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Right column: Start on top, End directly below -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Start Time (Optional)</label>
+            <input id="rem-time" type="time" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm">
+
+            <div class="mt-3">
+              <label class="block text-sm font-medium text-gray-700 mb-1">End Time (Optional)</label>
+              <input id="rem-end-time" type="time" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+          <textarea id="rem-notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Add additional notes..."></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" id="rem-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+          <button type="submit" id="rem-save" class="px-4 py-2 rounded-button bg-primary text-white">Save Reminder</button>
+        </div>
+
+        <input type="hidden" id="rem-section">
       </form>
     </div>
   </div>
@@ -469,7 +554,7 @@ tailwind.config = {
   </div>
 </div>
 
-<div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+<div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z:[60]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
     <div class="flex items-center gap-3 mb-2">
       <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
@@ -493,7 +578,7 @@ import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/fireb
 import {
   doc, getDoc, setDoc, deleteDoc, updateDoc,
   collection, addDoc, onSnapshot, query, where, getDocs,
-  collectionGroup, serverTimestamp, getCountFromServer, getFirestore
+  collectionGroup, serverTimestamp, getCountFromServer, getFirestore, orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 if (!window.__FB) {
@@ -550,7 +635,7 @@ const makeRange = (s,e)=>`${to12h(s)} – ${to12h(e)}`;
 const overlaps = (s1,e1,s2,e2)=> Math.max(s1,s2) < Math.min(e1,e2);
 
 /* 🔎 subject normalization used for “merged class” logic */
-const normSubj = (s)=> (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); // CPT 11 == CPT11, removes spaces/(-) etc.
+const normSubj = (s)=> (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const sameTeacher = (a,b)=> (a||'').trim().toLowerCase() === (b||'').trim().toLowerCase();
 
 const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
@@ -820,12 +905,26 @@ async function openSection(sectionName){
   document.getElementById('section-detail-modal').classList.remove('hidden');
   await ensureSectionDoc(sectionName);
 
-  const addStudentBtn = document.getElementById('add-section-student-btn');
+  const addStudentBtn  = document.getElementById('add-section-student-btn');
   const addScheduleBtn = document.getElementById('add-section-schedule-btn');
+  const addReminderBtn = document.getElementById('add-section-reminder-btn');
 
-  addScheduleBtn.classList.toggle('hidden', !isAdmin);
-  if (isAdmin) addStudentBtn.classList.remove('hidden');
-  if (isTeacher) addStudentBtn.classList.add('hidden');
+  // Visibility within modal based on role
+  if (isTeacher) {
+    addStudentBtn.classList.add('hidden');
+    addScheduleBtn.classList.add('hidden');
+    addReminderBtn.classList.remove('hidden');
+  }
+  if (isAdmin) {
+    addStudentBtn.classList.remove('hidden');
+    addScheduleBtn.classList.remove('hidden');
+    addReminderBtn.classList.remove('hidden');
+  }
+  if (isStudent) {
+    addStudentBtn.classList.add('hidden');
+    addScheduleBtn.classList.add('hidden');
+    addReminderBtn.classList.add('hidden');
+  }
 
   if(studentsUnsub) studentsUnsub();
   studentsUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'students'), snap=>{
@@ -848,9 +947,14 @@ async function openSection(sectionName){
   schedulesUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'schedules'), snap=>{
     const data=[]; snap.forEach(d=>data.push({id:d.id,...d.data()}));
     currentSchedules = data; renderScheduleList(data); refreshCounts(sectionName);
+    // Update reminder subject suggestions source (unique subjects)
+    buildReminderSubjectSource();
   });
 
   fadeList(document.getElementById('section-students')); fadeList(document.getElementById('section-schedule'));
+
+  // Pre-set reminder modal target section
+  document.getElementById('rem-section').value = sectionName;
 }
 
 /* ===== Delete modal (reuse) ===== */
@@ -967,7 +1071,7 @@ document.getElementById('student-form').addEventListener('submit', async e=>{
   await requireAuth();
 
   const sBtn   = document.getElementById('student-submit');
-  const sText  = document.getElementById('student-submit-text');
+  sText  = document.getElementById('student-submit-text');
   const sSpin  = document.getElementById('student-loader');
   sBtn.disabled = true; sSpin.classList.remove('hidden'); sText.textContent = (e.target.dataset.editId ? 'Saving Changes...' : 'Adding Student...'); sBtn.classList.add('opacity-90','cursor-not-allowed');
 
@@ -1062,7 +1166,7 @@ teacherInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDe
 teacherPanel.addEventListener('mousedown', (e)=>{ const op=e.target.closest('.teacher-option'); if(op){ applyTeacher(op.dataset.value || op.textContent.trim()); } });
 document.addEventListener('click', (e)=>{ if(!teacherBtn.contains(e.target) && !teacherPanel.contains(e.target)) teacherPanel.classList.add('hidden'); });
 
-/* ===== Day portal & inline (same-section) conflict ===== */
+/* ===== Day portal & inline conflict ===== */
 document.getElementById('day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
 function openDayPortal(){
   const btn    = document.getElementById('day-dropdown');
@@ -1130,10 +1234,7 @@ function checkConflictInline(){
 }
 ;['start-time','end-time','day','section','room'].forEach(id=> document.getElementById(id).addEventListener('change',checkConflictInline));
 
-/* ===== SMART room conflict across ALL sections =====
-   Allows MERGED classes: same room + overlapping time + SAME SUBJECT (normalized)
-   and (optionally) same teacher → no conflict.
-*/
+/* ===== SMART room conflict across ALL sections ===== */
 async function hasRoomConflictAllSections(day, room, startMin, endMin, subject, teacher, skipSectionId=null, skipScheduleId=null){
   const qRoom = query(collectionGroup(db,'schedules'), where('room','==', room));
   const snap = await getDocs(qRoom);
@@ -1144,18 +1245,14 @@ async function hasRoomConflictAllSections(day, room, startMin, endMin, subject, 
     if(d.day !== day) continue;
     const secId = docu.ref.parent.parent.id;
 
-    // skip the currently edited row in the same section
     if(skipSectionId && secId===skipSectionId && skipScheduleId && docu.id===skipScheduleId) continue;
 
     if(overlaps(d.startMin, d.endMin, startMin, endMin)){
-      // ✅ MERGE RULE: if it's the same subject (normalized) and teacher matches (or one is blank), allow it
       const otherSubj = normSubj(d.subject || '');
       const teacherOk = (!teacher || !d.teacher) ? true : sameTeacher(d.teacher, teacher);
       if (otherSubj === want && teacherOk){
-        // treat as allowed merged class; NOT a conflict
         continue;
       }
-      // otherwise, this is a real room clash
       return {
         conflict: true,
         withSection: secId,
@@ -1206,7 +1303,6 @@ document.getElementById('schedule-form').addEventListener('submit', async (e)=>{
       }
     }
 
-    // 🔧 smarter room conflict: allow merged (same subject+teacher) across sections
     const roomChk = await hasRoomConflictAllSections(day, room, sm, em, subject, teacher, section, editId || null);
     if(roomChk.conflict){
       const who = `${roomChk.withSubj}${roomChk.withTeacher ? ' • '+roomChk.withTeacher : ''}`;
@@ -1309,26 +1405,140 @@ function applyRoleUI(){
   const headSubtitle = document.getElementById('section-subtitle');
   const addStuBtn = document.getElementById('add-section-student-btn');
   const addSchedBtn = document.getElementById('add-section-schedule-btn');
+  const addRemBtn = document.getElementById('add-section-reminder-btn');
 
   if (isStudent) {
     if (yearWrap) yearWrap.classList.add('hidden');
     if (headTitle) headTitle.textContent = 'Your Section';
     if (headSubtitle) headSubtitle.textContent = 'View your section schedule and student list';
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
+    if (addStuBtn) addStuBtn.classList.add('hidden');
+    if (addRemBtn) addRemBtn.classList.add('hidden');
   }
 
   if (isTeacher) {
     if (yearWrap) yearWrap.classList.remove('hidden');
     if (addStuBtn) addStuBtn.classList.add('hidden');
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
+    if (addRemBtn) addRemBtn.classList.remove('hidden');
   }
 
   if (isAdmin) {
     if (yearWrap) yearWrap.classList.remove('hidden');
     if (addStuBtn) addStuBtn.classList.remove('hidden');
     if (addSchedBtn) addSchedBtn.classList.remove('hidden');
+    if (addRemBtn) addRemBtn.classList.remove('hidden');
   }
 }
+
+/* ===== ✅ Add Reminder wiring (teacher/admin) ===== */
+const remModal   = document.getElementById('reminder-modal');
+const remOpenBtn = document.getElementById('add-section-reminder-btn');
+const remClose   = document.getElementById('rem-close');
+const remCancel  = document.getElementById('rem-cancel');
+const remForm    = document.getElementById('rem-form');
+const remSecEl   = document.getElementById('rem-section');
+const remTitleEl = document.getElementById('rem-title');
+const remSubjectEl = document.getElementById('rem-subject');
+const remDateEl  = document.getElementById('rem-date');
+const remTimeEl  = document.getElementById('rem-time');       // start time (optional)
+const remEndEl   = document.getElementById('rem-end-time');    // end time (optional)
+const remDayEl   = document.getElementById('rem-day');         // day selector
+const remNotesEl = document.getElementById('rem-notes');
+const remSuggest = document.getElementById('rem-subject-suggest');
+
+let REMINDER_SUBJECT_SOURCE = []; // unique subjects from current section schedules
+
+function buildReminderSubjectSource(){
+  const set = new Set();
+  currentSchedules.forEach(s => { if (s.subject) set.add(String(s.subject).trim()); });
+  REMINDER_SUBJECT_SOURCE = Array.from(set).sort((a,b)=> a.localeCompare(b));
+}
+
+function openReminderModal(){
+  if (!activeSection) return;
+  remSecEl.value = activeSection;
+  remForm.reset();
+  remSuggest.classList.add('hidden');
+  remModal.classList.add('flex');
+  remModal.classList.remove('hidden');
+}
+function closeReminderModal(){
+  remModal.classList.add('hidden');
+  remModal.classList.remove('flex');
+}
+
+if (remOpenBtn){
+  remOpenBtn.addEventListener('click', ()=>{
+    if (!(isTeacher || isAdmin)) return;
+    openReminderModal();
+  });
+}
+remClose?.addEventListener('click', closeReminderModal);
+remCancel?.addEventListener('click', closeReminderModal);
+
+// Subject suggestions limited to 3
+function filterReminderSubjects(q){
+  const query = (q||'').trim().toLowerCase();
+  if (!query){ remSuggest.classList.add('hidden'); remSuggest.innerHTML=''; return; }
+  const starts = REMINDER_SUBJECT_SOURCE.filter(s => s.toLowerCase().startsWith(query));
+  const contains = REMINDER_SUBJECT_SOURCE.filter(s => !s.toLowerCase().startsWith(query) && s.toLowerCase().includes(query));
+  const list = [...starts, ...contains].slice(0,3);
+  if (!list.length){ remSuggest.classList.add('hidden'); remSuggest.innerHTML=''; return; }
+  remSuggest.innerHTML = list.map(s => `<div class="rem-suggest-item" data-value="${s.replace(/"/g,'&quot;')}">${s}</div>`).join('');
+  remSuggest.classList.remove('hidden');
+}
+remSubjectEl.addEventListener('input', ()=> filterReminderSubjects(remSubjectEl.value));
+remSubjectEl.addEventListener('focus', ()=> filterReminderSubjects(remSubjectEl.value));
+document.addEventListener('mousedown', (e)=>{
+  if (!remSuggest.contains(e.target) && e.target !== remSubjectEl){
+    remSuggest.classList.add('hidden');
+  }
+});
+remSuggest.addEventListener('mousedown', (e)=>{
+  const it = e.target.closest('.rem-suggest-item');
+  if (!it) return;
+  remSubjectEl.value = it.dataset.value || it.textContent.trim();
+  remSuggest.classList.add('hidden');
+});
+
+// Save reminder
+remForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  try{
+    const section = remSecEl.value.trim();
+    const title   = remTitleEl.value.trim();
+    const subject = remSubjectEl.value.trim();
+    const date    = remDateEl.value;
+    const start   = (remTimeEl.value || '').trim();
+    const end     = (remEndEl.value  || '').trim();
+    const day     = (remDayEl.value  || '').trim();
+    const notes   = remNotesEl.value.trim();
+
+    if (!section || !title || !subject || !date){
+      alert('Please complete the required fields: Title, Subject, Date.');
+      return;
+    }
+
+    await ensureSectionDoc(section);
+    await addDoc(collection(doc(db,'sections',section),'reminders'), {
+      title, subject, date,
+      time: start || null,
+      endTime: end || null,
+      day: day || null,
+      notes,
+      createdAt: serverTimestamp()
+    });
+
+    sessionStorage.setItem('reminder_target_section', section);
+
+    closeReminderModal();
+    remForm.reset();
+  }catch(err){
+    console.error(err);
+    alert('Failed to save reminder.');
+  }
+});
 
 function init(){
   document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>document.getElementById('mobile-menu')?.classList.toggle('hidden'));
