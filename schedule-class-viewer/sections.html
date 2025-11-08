@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,16 +112,73 @@ tailwind.config = {
     z-index:0;
   }
 
-  /* Small popover panel for reminder subject suggestions */
   .rem-suggest-panel{ position:absolute; left:1rem; right:1rem; z-index:50; margin-top:.25rem;
     background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,.08); max-height:12rem; overflow:auto; }
   .rem-suggest-item{ padding:.6rem .8rem; border-radius:10px; cursor:pointer; }
   .rem-suggest-item:hover{ background:#f8fafc; }
+
+  .rem-card{
+    background:linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%);
+    border:1px solid rgba(10,75,45,.12);
+    border-radius:16px;
+    position:relative; display:flex; flex-direction:column;
+    border:1.5px solid transparent;
+    background:
+      linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%) padding-box,
+      linear-gradient(135deg, rgba(10,75,45,.35), rgba(13,92,56,.25)) border-box;
+    box-shadow: 0 12px 26px rgba(10,75,45,.14), 0 2px 0 rgba(10,75,45,.05) inset;
+  }
+  .rem-card::after{
+    content:""; position:absolute; left:14px; right:14px; top:8px; height:6px;
+    background: linear-gradient(90deg, rgba(10,75,45,.18), rgba(10,75,45,0));
+    filter: blur(10px); opacity:.35; pointer-events:none;
+  }
+  .rem-head{ position:sticky; top:0; z-index:1; padding:10px 12px; background:linear-gradient(90deg, rgba(10,75,45,.10) 0%, #ffffff 70%); border-bottom:1px solid rgba(10,75,45,.10); backdrop-filter:saturate(120%) blur(2px); }
+  .rem-head .font-semibold{ letter-spacing:.2px; }
+  #reminders-list-preview{ max-height: 420px; overflow-y:auto; padding: 12px; }
+  #reminders-list-preview::-webkit-scrollbar{ width:10px; }
+  #reminders-list-preview::-webkit-scrollbar-track{ background: rgba(10,75,45,.06); border-radius:9999px; }
+  #reminders-list-preview::-webkit-scrollbar-thumb{ background: rgba(10,75,45,.45); border-radius:9999px; border:2px solid rgba(10,75,45,.06); }
+  .rem-item{
+    border:1px solid rgba(10,75,45,.16);
+    background:
+      linear-gradient(180deg, rgba(10,75,45,.05) 0%, rgba(255,255,255,1) 65%) !important;
+    border-radius:14px; padding:10px;
+    transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    cursor:pointer; overflow: visible; position: relative;
+    box-shadow: 0 6px 14px rgba(10,75,45,.10);
+  }
+  .rem-item:hover{ box-shadow: 0 10px 22px rgba(10,75,45,.18); transform: translateY(-1px); border-color: rgba(10,75,45,.35) !important; }
+  .rem-item::before{
+    content:""; position:absolute; left:-1px; top:8px; bottom:8px; width:4px; border-radius:6px;
+    background:linear-gradient(#0A4B2D,#0D5C38);
+    box-shadow: 0 0 0 2px rgba(10,75,45,.06);
+  }
+  .rem-exp{ font-variant-numeric: tabular-nums; padding:0 .25rem; border-radius:6px; background: rgba(10,75,45,.08); }
+  .rem-notes-preview{
+    display:-webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Minimal hover/focus effect for the Preview button */
+  .btn-preview{
+    transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease, background-color .18s ease;
+  }
+  .btn-preview:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(10,75,45,.12);
+    border-color: rgba(10,75,45,.35) !important;
+    background-color: #ffffff;
+  }
+  .btn-preview:focus-visible{
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(10,75,45,.18);
+    transform: translateY(-1px);
+  }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- add role class to body so the student-specific styles apply -->
 <script>
 (function(){
   const r = (sessionStorage.getItem('auth_role') || localStorage.getItem('auth_role') || 'guest').toLowerCase();
@@ -218,7 +274,7 @@ tailwind.config = {
             <h3 id="section-detail-title" class="text-2xl font-bold">Section Details</h3>
             <p id="section-detail-subtitle" class="opacity-90 text-sm">View students and schedules</p>
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2" id="section-action-bar">
             <!-- Add Student (admin only / hidden for teacher) -->
             <button id="add-section-student-btn" class="bg-white/10 text-white px-4 py-2 rounded-button hover:bg-white/20 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-user-add-line"></i><span>Add Student</span>
@@ -227,7 +283,7 @@ tailwind.config = {
             <button id="add-section-schedule-btn" class="bg-white text-primary px-4 py-2 rounded-button hover:bg-gray-100 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-add-line"></i><span>Add Schedule</span>
             </button>
-            <!-- ✅ Add Reminder (teacher sees ONLY this; admin sees all) -->
+            <!-- Add Reminder -->
             <button id="add-section-reminder-btn" class="bg-primary text-white px-4 py-2 rounded-button hover:bg-primary/90 transition-colors flex items-center space-x-2 !rounded-button whitespace-nowrap">
               <i class="ri-notification-3-line"></i><span>Add Reminder</span>
             </button>
@@ -430,11 +486,10 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- ✅ UPDATED: Add Reminder Modal (Start beside Date; End below Start) -->
   <div id="reminder-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-lg w-full overflow-hidden shadow-2xl">
       <div class="px-6 py-4 modal-head flex items-center justify-between">
-        <div class="text-xl font-bold">Add New Reminder</div>
+        <div class="text-xl font-bold" id="rem-modal-title">Add New Reminder</div>
         <button id="rem-close" class="w-8 h-8 flex items-center justify-center text-white/90 hover:text-white rounded-full hover:bg-white/10">
           <i class="ri-close-line text-xl"></i>
         </button>
@@ -453,9 +508,7 @@ tailwind.config = {
           <div id="rem-subject-suggest" class="rem-suggest-panel hidden"></div>
         </div>
 
-        <!-- ⬇️ Layout you asked: Date (left) + Start (right); Day under Date; End under Start -->
         <div class="grid md:grid-cols-2 gap-4">
-          <!-- Left column: Date, then Day -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
             <input id="rem-date" type="date" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" required>
@@ -475,7 +528,6 @@ tailwind.config = {
             </div>
           </div>
 
-          <!-- Right column: Start on top, End directly below -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Start Time (Optional)</label>
             <input id="rem-time" type="time" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm">
@@ -492,7 +544,9 @@ tailwind.config = {
           <textarea id="rem-notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Add additional notes..."></textarea>
         </div>
 
+        <!--  Preview button left of Cancel; only visible when reminders exist -->
         <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" id="rem-preview" class="px-4 py-2 rounded-button bg-white border border-gray-300 text-gray-700 hidden btn-preview">Preview</button>
           <button type="button" id="rem-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
           <button type="submit" id="rem-save" class="px-4 py-2 rounded-button bg-primary text-white">Save Reminder</button>
         </div>
@@ -501,6 +555,32 @@ tailwind.config = {
       </form>
     </div>
   </div>
+
+  <!-- Reminder Preview Modal -->
+  <div id="rem-preview-modal" class="fixed inset-0 bg-black/50 z-[60] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl">
+      <div class="px-5 py-3 border-b flex items-center justify-between">
+        <div class="font-semibold text-gray-800">Reminders Preview</div>
+        <button id="rem-preview-close" class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <div id="reminders-card-preview" class="rem-card">
+          <div class="rem-head flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center"><i class="ri-notification-3-line text-[15px]"></i></div>
+              <div class="font-semibold text-gray-800">Class Reminders</div>
+            </div>
+          </div>
+          <div id="reminders-list-preview" class="space-y-3">
+            <div class="text-sm text-gray-500 px-2">No reminders yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <footer class="bg-primary text-white py-6 mt-12 text-sm">
@@ -554,7 +634,8 @@ tailwind.config = {
   </div>
 </div>
 
-<div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z:[60]">
+<!-- Delete Confirmation Modal-->
+<div id="delete-confirm" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[80]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
     <div class="flex items-center gap-3 mb-2">
       <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
@@ -569,6 +650,7 @@ tailwind.config = {
     </div>
   </div>
 </div>
+
 
 <script src="assets/js/profile.js"></script>
 <script type="module" src="firebase-config.js"></script>
@@ -630,11 +712,10 @@ const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 const fadeList = (el)=>{ if(!el) return; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); };
 const toOrdinal = (n)=>{ const s=String(n), a=s.slice(-1), b=s.slice(-2); if(b==='11'||b==='12'||b==='13')return s+'th'; if(a==='1')return s+'st'; if(a==='2')return s+'nd'; if(a==='3')return s+'rd'; return s+'th'; };
 const toMinutes = (hhmm)=>{ const [h,m]=hhmm.split(':').map(Number); return h*60+m; };
-const to12h = (hhmm)=>{ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12; if(h===0) h=12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
-const makeRange = (s,e)=>`${to12h(s)} – ${to12h(e)}`;
+const to12h = (hhmm)=>{ if(!hhmm) return ''; let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12; if(h===0) h=12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+const makeRange = (s,e)=> (s||e) ? (s && e ? `${to12h(s)} – ${to12h(e)}` : to12h(s||e)) : '';
 const overlaps = (s1,e1,s2,e2)=> Math.max(s1,s2) < Math.min(e1,e2);
 
-/* 🔎 subject normalization used for “merged class” logic */
 const normSubj = (s)=> (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const sameTeacher = (a,b)=> (a||'').trim().toLowerCase() === (b||'').trim().toLowerCase();
 
@@ -650,6 +731,8 @@ let currentYear = '3rd Year';
 let activeSection = null;
 let studentsUnsub=null, schedulesUnsub=null, currentSchedules=[];
 let studentHasOwn=false;
+
+let remindersUnsub=null, currentReminders=[];
 
 let LIVE_TEACHERS = [];
 function buildTeacherDisplay(t){
@@ -854,7 +937,6 @@ function renderScheduleList(data){
   }).join('');
 }
 
-/* ===== Generic dropdown / combo wiring ===== */
 function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
   const btn    = document.getElementById(buttonId);
   const panel  = document.getElementById(panelId);
@@ -898,7 +980,6 @@ function wireComboSearch(cfg){
   __combos.push({ id: btnId, close });
 }
 
-/* ===== Open Section & snapshots ===== */
 async function openSection(sectionName){
   activeSection = sectionName;
   document.getElementById('section-detail-title').textContent = sectionName;
@@ -908,8 +989,8 @@ async function openSection(sectionName){
   const addStudentBtn  = document.getElementById('add-section-student-btn');
   const addScheduleBtn = document.getElementById('add-section-schedule-btn');
   const addReminderBtn = document.getElementById('add-section-reminder-btn');
+  const actionBar      = document.getElementById('section-action-bar');
 
-  // Visibility within modal based on role
   if (isTeacher) {
     addStudentBtn.classList.add('hidden');
     addScheduleBtn.classList.add('hidden');
@@ -919,6 +1000,10 @@ async function openSection(sectionName){
     addStudentBtn.classList.remove('hidden');
     addScheduleBtn.classList.remove('hidden');
     addReminderBtn.classList.remove('hidden');
+
+    if (actionBar && addReminderBtn && addStudentBtn) {
+      actionBar.insertBefore(addReminderBtn, addStudentBtn);
+    }
   }
   if (isStudent) {
     addStudentBtn.classList.add('hidden');
@@ -947,36 +1032,89 @@ async function openSection(sectionName){
   schedulesUnsub = onSnapshot(collection(doc(db,'sections',sectionName),'schedules'), snap=>{
     const data=[]; snap.forEach(d=>data.push({id:d.id,...d.data()}));
     currentSchedules = data; renderScheduleList(data); refreshCounts(sectionName);
-    // Update reminder subject suggestions source (unique subjects)
     buildReminderSubjectSource();
   });
 
-  fadeList(document.getElementById('section-students')); fadeList(document.getElementById('section-schedule'));
+  const prevBtn = document.getElementById('rem-preview');
+  if (remindersUnsub) remindersUnsub();
+  if (isTeacher) {
+    const qOwn = query(
+      collection(doc(db,'sections',sectionName),'reminders'),
+      where('ownerId','==', CURRENT_USER_ID || '__none__')
+    );
+    remindersUnsub = onSnapshot(qOwn, snap=>{
+      const arr=[]; snap.forEach(d=> arr.push({ id:d.id, ...(d.data()||{}) }));
+      currentReminders = arr;
+      if (prevBtn) prevBtn.classList.toggle('hidden', currentReminders.length === 0);
+    });
+  } else if (isAdmin) {
+    const qMine = query(
+      collection(doc(db,'sections',sectionName),'reminders'),
+      where('ownerId','==', CURRENT_USER_ID || '__none__')
+    );
+    remindersUnsub = onSnapshot(qMine, snap=>{
+      const arr=[]; snap.forEach(d=> arr.push({ id:d.id, ...(d.data()||{}) }));
+      currentReminders = arr;
+      if (prevBtn) prevBtn.classList.toggle('hidden', currentReminders.length === 0);
+    });
+  } else {
+    currentReminders = [];
+    if (prevBtn) prevBtn.classList.add('hidden');
+  }
 
-  // Pre-set reminder modal target section
+  fadeList(document.getElementById('section-students')); 
+  fadeList(document.getElementById('section-schedule'));
+
   document.getElementById('rem-section').value = sectionName;
 }
 
-/* ===== Delete modal (reuse) ===== */
 const delModal = document.getElementById('delete-confirm');
 let pendingDeleteId = null;
 let deleteMode = null;
-const openDelModal = (mode)=>{ deleteMode = mode; document.getElementById('delete-title').textContent = mode==='student' ? 'Delete student?' : 'Delete schedule?'; document.getElementById('delete-desc').textContent = mode==='student' ? 'Are you sure you want to delete this student record?' : 'Are you sure you want to delete it?'; delModal.classList.remove('hidden'); delModal.style.display='flex'; };
+const openDelModal = (mode)=>{
+  deleteMode = mode;
+  const t = document.getElementById('delete-title');
+  const d = document.getElementById('delete-desc');
+  if (mode==='student'){
+    t.textContent = 'Delete student?';
+    d.textContent = 'Are you sure you want to delete this student record?';
+  } else if (mode==='schedule'){
+    t.textContent = 'Delete schedule?';
+    d.textContent = 'Are you sure you want to delete it?';
+  } else if (mode==='reminder'){
+    t.textContent = 'Delete reminder?';
+    d.textContent = 'Are you sure you want to delete this reminder?';
+  } else {
+    t.textContent = 'Delete item?';
+    d.textContent = 'Are you sure you want to delete it?';
+  }
+  delModal.classList.remove('hidden'); 
+  delModal.style.display='flex';
+};
 const closeDelModal = ()=>{ pendingDeleteId=null; deleteMode=null; delModal.style.display='none'; delModal.classList.add('hidden'); };
 document.getElementById('del-cancel').onclick = closeDelModal;
 document.getElementById('del-yes').onclick = async ()=>{
-  if(!pendingDeleteId || !activeSection) return;
+  if(!pendingDeleteId || !activeSection) { closeDelModal(); return; }
   await requireAuth();
   if (deleteMode === 'schedule') {
     await deleteDoc(doc(db, 'sections', activeSection, 'schedules', pendingDeleteId));
   } else if (deleteMode === 'student') {
     if (!isAdmin) { closeDelModal(); return; }
     await deleteDoc(doc(db, 'sections', activeSection, 'students', pendingDeleteId));
+  } else if (deleteMode === 'reminder') {
+    if (!(isTeacher || isAdmin)) { closeDelModal(); return; }
+    await deleteDoc(doc(db, 'sections', activeSection, 'reminders', pendingDeleteId));
+    currentReminders = currentReminders.filter(r => r.id !== pendingDeleteId);
+    const previewModalEl = document.getElementById('rem-preview-modal');
+    if (previewModalEl && !previewModalEl.classList.contains('hidden')) {
+      renderPreviewReminders(currentReminders);
+    }
+    const prevBtn = document.getElementById('rem-preview');
+    if (prevBtn) prevBtn.classList.toggle('hidden', currentReminders.length === 0);
   }
   closeDelModal();
 };
 
-/* ===== Schedule card actions ===== */
 document.getElementById('section-schedule').addEventListener('click', (e)=>{
   if (!isAdmin) return;
   const editBtn = e.target.closest('.sched-edit');
@@ -1003,7 +1141,6 @@ document.getElementById('section-schedule').addEventListener('click', (e)=>{
   if (delBtn){ pendingDeleteId = delBtn.dataset.id; openDelModal('schedule'); }
 });
 
-/* ===== Student list actions ===== */
 document.getElementById('section-students').addEventListener('click', async (e)=>{
   const editBtn = e.target.closest('.stu-edit');
   const delBtn  = e.target.closest('.stu-del');
@@ -1118,7 +1255,6 @@ document.getElementById('student-form').addEventListener('submit', async e=>{
   }
 });
 
-/* ===== Wire combos ===== */
 wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
 
 wireComboSearch({
@@ -1147,7 +1283,6 @@ function renderTeacherOptions(list){
 }
 function filterTeacherSuggestions(qRaw){
   const q = (qRaw||'').trim().toLowerCase();
-  if (!q) { teacherPanel.classList.add('hidden'); renderTeacherOptions([]); return; }
   const starts = LIVE_TEACHERS.filter(t=> t.idx.startsWith(q));
   const contains = LIVE_TEACHERS.filter(t=> !t.idx.startsWith(q) && t.idx.includes(q));
   const merged = [...starts, ...contains].slice(0, 3);
@@ -1166,7 +1301,6 @@ teacherInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDe
 teacherPanel.addEventListener('mousedown', (e)=>{ const op=e.target.closest('.teacher-option'); if(op){ applyTeacher(op.dataset.value || op.textContent.trim()); } });
 document.addEventListener('click', (e)=>{ if(!teacherBtn.contains(e.target) && !teacherPanel.contains(e.target)) teacherPanel.classList.add('hidden'); });
 
-/* ===== Day portal & inline conflict ===== */
 document.getElementById('day-dropdown').addEventListener('click',(e)=>{ e.stopPropagation(); openDayPortal(); });
 function openDayPortal(){
   const btn    = document.getElementById('day-dropdown');
@@ -1431,7 +1565,6 @@ function applyRoleUI(){
   }
 }
 
-/* ===== ✅ Add Reminder wiring (teacher/admin) ===== */
 const remModal   = document.getElementById('reminder-modal');
 const remOpenBtn = document.getElementById('add-section-reminder-btn');
 const remClose   = document.getElementById('rem-close');
@@ -1446,8 +1579,13 @@ const remEndEl   = document.getElementById('rem-end-time');    // end time (opti
 const remDayEl   = document.getElementById('rem-day');         // day selector
 const remNotesEl = document.getElementById('rem-notes');
 const remSuggest = document.getElementById('rem-subject-suggest');
+const remPreviewBtn = document.getElementById('rem-preview');
 
-let REMINDER_SUBJECT_SOURCE = []; // unique subjects from current section schedules
+const remPrevModal = document.getElementById('rem-preview-modal');
+const remPrevClose = document.getElementById('rem-preview-close');
+const remPrevList  = document.getElementById('reminders-list-preview');
+
+let REMINDER_SUBJECT_SOURCE = []; 
 
 function buildReminderSubjectSource(){
   const set = new Set();
@@ -1458,26 +1596,41 @@ function buildReminderSubjectSource(){
 function openReminderModal(){
   if (!activeSection) return;
   remSecEl.value = activeSection;
-  remForm.reset();
+
+  const isEditing = !!remForm.dataset.editId;       
   remSuggest.classList.add('hidden');
+
+  document.getElementById('rem-modal-title').textContent = isEditing ? 'Editing Reminder' : 'Add New Reminder';
+  document.getElementById('rem-save').textContent = isEditing ? 'Save Changes' : 'Save Reminder';
+
+  if (!isEditing){
+    remForm.reset();
+  }
+
   remModal.classList.add('flex');
   remModal.classList.remove('hidden');
+
+  remPreviewBtn.classList.toggle('hidden', currentReminders.length === 0);
 }
 function closeReminderModal(){
   remModal.classList.add('hidden');
   remModal.classList.remove('flex');
+  delete remForm.dataset.editId;
+  document.getElementById('rem-modal-title').textContent = 'Add New Reminder';
+  document.getElementById('rem-save').textContent = 'Save Reminder';
 }
 
 if (remOpenBtn){
   remOpenBtn.addEventListener('click', ()=>{
     if (!(isTeacher || isAdmin)) return;
+    delete remForm.dataset.editId;
+    remForm.reset();
     openReminderModal();
   });
 }
 remClose?.addEventListener('click', closeReminderModal);
 remCancel?.addEventListener('click', closeReminderModal);
 
-// Subject suggestions limited to 3
 function filterReminderSubjects(q){
   const query = (q||'').trim().toLowerCase();
   if (!query){ remSuggest.classList.add('hidden'); remSuggest.innerHTML=''; return; }
@@ -1502,7 +1655,86 @@ remSuggest.addEventListener('mousedown', (e)=>{
   remSuggest.classList.add('hidden');
 });
 
-// Save reminder
+/* Render reminders in Preview (hover to show edit/delete) */
+function renderPreviewReminders(items){
+  if (!remPrevList) return;
+  if (!items.length){
+    remPrevList.innerHTML = `<div class="text-sm text-gray-500 px-2">No reminders yet.</div>`;
+    return;
+  }
+  remPrevList.innerHTML = items.map(r=>{
+    const whenStr = [r.date, r.day, makeRange(r.time, r.endTime)].filter(Boolean).join(' • ');
+    const notesPreview = r.notes ? `<div class="mt-1 text-[12px] text-gray-700 text-justify leading-relaxed rem-notes-preview">${r.notes}</div>` : '';
+    return `
+      <div class="rem-item group" data-id="${r.id}">
+        <div class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition">
+          <button class="rem-edit w-7 h-7 rounded-[8px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit"><i class="ri-pencil-line text-xs"></i></button>
+          <button class="rem-del  w-7 h-7 rounded-[8px] bg-red-600 text-white hover:opacity-90 flex items-center justify-center" title="Delete"><i class="ri-delete-bin-6-line text-xs"></i></button>
+        </div>
+        <div class="flex items-start justify-between gap-3">
+          <div class="pr-2">
+            <div class="text-[13px] font-semibold text-gray-800 break-anywhere">${r.title||'—'}</div>
+            <div class="text-[11px] text-gray-500 break-anywhere">${r.subject||'—'}</div>
+          </div>
+        </div>
+        <div class="mt-2 text-[11px] text-gray-600 flex items-center gap-1 break-anywhere"><i class="ri-time-line text-[13px]"></i>${whenStr||'—'}</div>
+        ${notesPreview}
+      </div>
+    `;
+  }).join('');
+}
+
+/* Open/Close preview modal */
+function openPreview(){
+  renderPreviewReminders(currentReminders);
+  remPrevModal.classList.remove('hidden');
+  remPrevModal.classList.add('flex');
+}
+function closePreview(){
+  remPrevModal.classList.add('hidden');
+  remPrevModal.classList.remove('flex');
+}
+remPreviewBtn?.addEventListener('click', openPreview);
+remPrevClose?.addEventListener('click', closePreview);
+remPrevModal?.addEventListener('click', (e)=>{ if (e.target === remPrevModal) closePreview(); });
+
+/* edit/Delete actions inside preview */
+remPrevList?.addEventListener('click', async (e)=>{
+  const card = e.target.closest('.rem-item'); if (!card) return;
+  const id = card.getAttribute('data-id');
+  const editBtn = e.target.closest('.rem-edit');
+  const delBtn  = e.target.closest('.rem-del');
+
+  if (delBtn){
+    if (!(isTeacher || isAdmin)) return;
+    if (!activeSection) return;
+    pendingDeleteId = id;
+    openDelModal('reminder');  // show confirm modal
+    return;
+  }
+
+  if (editBtn){
+    if (!(isTeacher || isAdmin)) return;
+    if (!activeSection) return;
+    const snap = await getDoc(doc(db,'sections',activeSection,'reminders',id));
+    if (!snap.exists()) return;
+    const r = snap.data()||{};
+    // prefill
+    remForm.dataset.editId = id;                    
+    remSecEl.value   = activeSection;
+    remTitleEl.value = r.title || '';
+    remSubjectEl.value = r.subject || '';
+    remDateEl.value  = r.date || '';
+    remDayEl.value   = r.day || '';
+    remTimeEl.value  = r.time || '';
+    remEndEl.value   = r.endTime || '';
+    remNotesEl.value = r.notes || '';
+
+    closePreview();
+    openReminderModal();                              
+  }
+});
+
 remForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   try{
@@ -1521,22 +1753,51 @@ remForm.addEventListener('submit', async (e)=>{
     }
 
     await ensureSectionDoc(section);
-    await addDoc(collection(doc(db,'sections',section),'reminders'), {
-      title, subject, date,
-      time: start || null,
-      endTime: end || null,
-      day: day || null,
-      notes,
-      createdAt: serverTimestamp()
-    });
 
-    sessionStorage.setItem('reminder_target_section', section);
+    const editingId = remForm.dataset.editId;
+    if (editingId){
+      await updateDoc(doc(db,'sections',section,'reminders',editingId), {
+        title, subject, date,
+        time: start || null,
+        endTime: end || null,
+        day: day || null,
+        notes
+      });
+    } else {
+      await addDoc(collection(doc(db,'sections',section),'reminders'), {
+        title, subject, date,
+        time: start || null,
+        endTime: end || null,
+        day: day || null,
+        notes,
+        ownerId: CURRENT_USER_ID || '',
+        createdAt: serverTimestamp()
+      });
+      sessionStorage.setItem('reminder_target_section', section);
+    }
 
     closeReminderModal();
     remForm.reset();
+    delete remForm.dataset.editId;
   }catch(err){
     console.error(err);
     alert('Failed to save reminder.');
+  }
+});
+
+
+function weekdayFromISO(iso){
+  // iso is "YYYY-MM-DD"
+  if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  return names[dt.getDay()];
+}
+remDateEl.addEventListener('change', ()=>{
+  const w = weekdayFromISO(remDateEl.value);
+  if (w){
+    remDayEl.value = w;
   }
 });
 
