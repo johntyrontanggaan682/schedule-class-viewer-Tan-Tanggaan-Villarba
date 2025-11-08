@@ -9,15 +9,20 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: { primary: '#16a34a', secondary: '#22c55e' },
+          colors: { primary: '#0A4B2D', secondary: '#0A4B2D' },
           borderRadius: {
             'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px',
             'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px'
+          },
+          boxShadow: {
+            card: '0 10px 20px rgba(0,0,0,.06)',
+            cardHover: '0 14px 28px rgba(0,0,0,.10)'
           }
         }
       }
     }
   </script>
+  <link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
@@ -25,10 +30,19 @@
   <style>
     :where([class^="ri-"])::before { content: "\f3c2"; }
     .rounded-button { border-radius: 8px; }
-  </style>
-  <style>
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in { animation: fadeIn .25s ease-out both; }
+
+    /* remove rightward scroll/blank space */
+    html, body { overflow-x: hidden; }
+
+    /* decorative watermark icon in corner (kept) */
+    .wm-icon{
+      position:absolute; right:-6px; top:-6px;
+      font-size:68px; line-height:1; opacity:.06;
+      transform: rotate(-10deg);
+      pointer-events:none;
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -143,8 +157,6 @@
                   <ul id="combo-list"
                       class="hidden absolute z-20 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-lg shadow-lg text-sm"
                       role="listbox"></ul>
-
-                  
                   <div id="combo-overlay" class="hidden absolute inset-0 rounded-button bg-white/60 cursor-not-allowed"></div>
                 </div>
               </div>
@@ -155,18 +167,20 @@
                        placeholder="Search by name, ID, or section..."
                        class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"/>
                 <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-primary"></i>
-
-                
                 <div id="search-overlay" class="hidden absolute inset-0 rounded-button bg-white/60 cursor-not-allowed"></div>
               </div>
             </div>
           </div>
 
+          <!-- Stats (hidden for teachers via JS) -->
           <div id="statsWrap" class="hidden mb-6">
             <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-              <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+              <!-- Total Students in Section -->
+              <div class="stat-card group relative bg-white border border-gray-200 rounded-xl p-6 shadow-card transition hover:shadow-cardHover hover:-translate-y-0.5 hover:border-primary/40">
+                <i class="ri-team-line wm-icon"></i>
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-blue-50 ring-1 ring-blue-200/60 flex items-center justify-center">
                     <i class="ri-user-line text-lg text-blue-600"></i>
                   </div>
                   <div>
@@ -175,9 +189,12 @@
                   </div>
                 </div>
               </div>
-              <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+              <!-- Regular Students -->
+              <div class="stat-card group relative bg-white border border-gray-200 rounded-xl p-6 shadow-card transition hover:shadow-cardHover hover:-translate-y-0.5 hover:border-primary/40">
+                <i class="ri-user-smile-line wm-icon"></i>
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-green-50 ring-1 ring-green-200/60 flex items-center justify-center">
                     <i class="ri-user-smile-line text-lg text-green-600"></i>
                   </div>
                   <div>
@@ -186,9 +203,12 @@
                   </div>
                 </div>
               </div>
-              <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+              <!-- Irregular Students -->
+              <div class="stat-card group relative bg-white border border-gray-200 rounded-xl p-6 shadow-card transition hover:shadow-cardHover hover:-translate-y-0.5 hover:border-primary/40">
+                <i class="ri-alert-line wm-icon"></i>
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items=center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-orange-50 ring-1 ring-orange-200/60 flex items=center justify-center">
                     <i class="ri-alert-line text-lg text-orange-600"></i>
                   </div>
                   <div>
@@ -197,9 +217,12 @@
                   </div>
                 </div>
               </div>
-              <div class="bg-white border border-gray-200 rounded-xl p-6 lg:block hidden">
+
+              <!-- Active Students -->
+              <div class="stat-card group relative bg-white border border-gray-200 rounded-xl p-6 shadow-card transition hover:shadow-cardHover hover:-translate-y-0.5 hover:border-primary/40 lg:block hidden">
+                <i class="ri-checkbox-circle-line wm-icon"></i>
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+                  <div class="w-10 h-10 rounded-full bg-emerald-50 ring-1 ring-emerald-200/60 flex items-center justify-center">
                     <i class="ri-check-line text-lg text-emerald-600"></i>
                   </div>
                   <div>
@@ -208,10 +231,10 @@
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
 
-          
           <div id="emptyState" class="text-center py-6">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
               <i class="ri-search-line text-2xl text-gray-400"></i>
@@ -230,6 +253,9 @@
 
           <div id="grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
+          <!-- ✅ Pagination (6 cards per page; groups of 3 page numbers) -->
+          <div id="pagi" class="hidden mt-6 flex items-center justify-center gap-2 select-none"></div>
+
           <div id="noResults" class="hidden text-center py-16">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
               <i class="ri-information-line text-2xl text-gray-400"></i>
@@ -242,42 +268,37 @@
     </section>
   </main>
 
-  <footer class="bg-primary text-white py-12 mt-16">
+  <!-- FOOTER: exactly the same structure as your homepage -->
+  <footer class="bg-primary text-white py-6 mt-12 text-sm">
     <div class="px-6">
       <div class="max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-6">
           <div>
-            <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
-            <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
-            <div class="flex items-center space-x-4">
-              <a href="https://www.facebook.com/share/1A5cjEm4od/" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page">
-                <i class="ri-facebook-line text-xl"></i>
-              </a>
-              <i class="ri-twitter-line text-xl"></i>
-              <i class="ri-instagram-line text-xl"></i>
+            <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
+            <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">Contact Information</h3>
+            <div class="space-y-1 text-white/80">
+              <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
+              <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
+              <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
             </div>
           </div>
           <div>
-            <h3 class="text-xl font-bold mb-4">Contact Information</h3>
-            <div class="space-y-3 text-white/80">
-              <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
-              <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
-              <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-            <div class="space-y-2">
-              <a href="index.html#home" class="block text-white/80 hover:text-white">Home</a>
-              <a href="sections.html" class="block text-white/80 hover:text-white">Sections</a>
-              <a href="schedules.html" class="block text-white/80 hover:text-white">Schedules</a>
-              <a href="students.html" class="block text-white/80 hover:text-white">Students</a>
-              <a href="teachers.html" class="block text-white/80 hover:text-white">Teachers</a>
+            <h3 class="font-bold mb-2">Quick Links</h3>
+            <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
+              <a href="index.html"     class="hover:text-white">Home</a>
+              <a href="sections.html"  class="hover:text-white">Sections</a>
+              <a href="schedules.html" class="hover:text-white">Schedules</a>
+              <a href="students.html"  class="hover:text-white">Students</a>
+              <a href="teachers.html"  class="hover:text-white">Teachers</a>
+              <a href="profile.html"   class="hover:text-white">Profile</a>
             </div>
           </div>
         </div>
-        <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
-          <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+        <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
+          <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
         </div>
       </div>
     </div>
@@ -304,6 +325,8 @@
       document.getElementById('mobile-menu')?.classList.toggle('hidden');
     });
   </script>
+
+  <!-- Data / logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import {
@@ -330,7 +353,7 @@
     const { db } = window.__FB;
 
     const sectionSelect = document.getElementById('sectionSelect');
-     const searchInput   = document.getElementById('searchInput');
+    const searchInput   = document.getElementById('searchInput');
     const grid          = document.getElementById('grid');
     const emptyState    = document.getElementById('emptyState');
     const noResults     = document.getElementById('noResults');
@@ -340,6 +363,12 @@
     const statRegular   = document.getElementById('statRegular');
     const statIrregular = document.getElementById('statIrregular');
     const statActive    = document.getElementById('statActive');
+    const pagi          = document.getElementById('pagi');
+
+    // role check (hide stats for teachers)
+    const ROLE = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
+    const HIDE_STATS = ROLE === 'teacher';
+    if (HIDE_STATS && statsWrap) statsWrap.classList.add('hidden');
 
     let ALL_STUDENTS = [];
     let SECTION_STUDENTS = [];
@@ -349,32 +378,134 @@
 
     let USER_INTERACTED = false;
 
+    // ✅ Pagination state
+    const PAGE_SIZE = 6;         // 6 cards per page
+    const GROUP_SIZE = 3;        // show 3 page numbers at a time
+    let CURRENT_PAGE = 1;        // 1-based
+    let CURRENT_GROUP = 0;       // 0-based group index
+
+    const initials = (s)=> (s||'').trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || 'ST';
+
+    // Styled student cards (NO year level row)
     function renderCards(list){
       grid.innerHTML = '';
       list.forEach(s=>{
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 p-6';
+        card.className = 'group relative bg-white rounded-2xl border border-gray-200 shadow-card hover:shadow-cardHover hover:border-primary/40 transition p-5 overflow-hidden';
         card.innerHTML = `
-          <div class="flex items-center space-x-4 mb-4">
-            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-              <i class="ri-user-line text-primary text-xl"></i>
+          <div class="pointer-events-none absolute -right-6 -top-6 w-24 h-24 rounded-full bg-primary/5 blur-2xl"></div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-emerald-50 text-primary ring-1 ring-primary/20 flex items-center justify-center font-semibold">
+              ${initials(s.name)}
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-800">${s.name}</h3>
-              <p class="text-sm text-gray-600">Student ID: ${s.id||''}</p>
+            <div class="min-w-0">
+              <h3 class="font-semibold text-gray-900 truncate">${s.name}</h3>
+              <p class="text-xs text-gray-500">Student ID: <span class="font-medium text-gray-700">${s.id||''}</span></p>
             </div>
           </div>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between"><span class="text-gray-600">Section:</span><span class="font-medium text-primary">${s.section||''}</span></div>
-            <div class="flex justify-between"><span class="text-gray-600">Year Level:</span><span class="text-gray-800">${s.year||''}</span></div>
-            <div class="flex justify-between"><span class="text-gray-600">Type:</span>
-              <span class="text-xs px-2 py-1 ${s.type==='Irregular' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'} rounded">${s.type || 'Regular'}</span>
-            </div>
-            <div class="flex justify-between"><span class="text-gray-600">Status:</span><span class="text-green-600 font-medium">${s.status || 'Active'}</span></div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+              <i class="ri-layout-grid-line text-[14px]"></i>${s.section||''}
+            </span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${s.type==='Irregular' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}">
+              ${s.type || 'Regular'}
+            </span>
+            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${ (s.status||'Active')==='Active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-700 border border-gray-200'}">
+              <i class="ri-checkbox-circle-line mr-1 text-[14px]"></i>${s.status || 'Active'}
+            </span>
+          </div>
+
+          <div class="mt-4 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+          <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
+            <div class="flex items-center gap-1"><i class="ri-book-2-line"></i><span>Section</span></div>
+            <div class="font-medium text-gray-700">${s.section||''}</div>
           </div>
         `;
         grid.appendChild(card);
       });
+    }
+
+    // ✅ Build pagination UI
+    function renderPagination(totalItems){
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+      if (totalPages <= 1) {
+        pagi.classList.add('hidden');
+        pagi.innerHTML = '';
+        return;
+      }
+
+      // Clamp current page/group to bounds
+      const maxGroup = Math.max(0, Math.ceil(totalPages / GROUP_SIZE) - 1);
+      CURRENT_GROUP = Math.min(CURRENT_GROUP, maxGroup);
+      const startIdx = CURRENT_GROUP * GROUP_SIZE + 1;
+      const endIdx = Math.min(startIdx + GROUP_SIZE - 1, totalPages);
+
+      const btn = (label, {active=false, disabled=false, onClick=null, title='' }={})=>{
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = [
+          'min-w-9 h-9 px-3 inline-flex items-center justify-center rounded-button border text-sm',
+          active ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-200 hover:border-primary/40 hover:text-primary',
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+        ].join(' ');
+        el.innerHTML = label;
+        if (title) el.title = title;
+        if (!disabled && onClick) el.addEventListener('click', onClick);
+        return el;
+      };
+
+      const frag = document.createDocumentFragment();
+
+      // Back to previous group (right-up arrow)
+      const hasPrevGroup = CURRENT_GROUP > 0;
+      frag.appendChild(
+        btn('<i class="ri-arrow-right-up-line"></i>', {
+          disabled: !hasPrevGroup,
+          title: 'Previous pages',
+          onClick: ()=>{ CURRENT_GROUP -= 1; CURRENT_PAGE = CURRENT_GROUP * GROUP_SIZE + 1; updateView(true); }
+        })
+      );
+
+      // Numbers in current group
+      for (let p = startIdx; p <= endIdx; p++){
+        frag.appendChild(
+          btn(String(p), {
+            active: p === CURRENT_PAGE,
+            onClick: ()=>{ CURRENT_PAGE = p; updateView(true); }
+          })
+        );
+      }
+
+      // Next group (down-left arrow)
+      const hasNextGroup = endIdx < totalPages;
+      frag.appendChild(
+        btn('<i class="ri-arrow-left-down-line"></i>', {
+          disabled: !hasNextGroup,
+          title: 'Next pages',
+          onClick: ()=>{ CURRENT_GROUP += 1; CURRENT_PAGE = CURRENT_GROUP * GROUP_SIZE + 1; updateView(true); }
+        })
+      );
+
+      pagi.innerHTML = '';
+      pagi.appendChild(frag);
+      pagi.classList.remove('hidden');
+    }
+
+    // ✅ Render paginated grid
+    function renderPaginated(list){
+      const total = list.length;
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+
+      // Safety clamp
+      if (CURRENT_PAGE < 1) CURRENT_PAGE = 1;
+      if (CURRENT_PAGE > totalPages) CURRENT_PAGE = totalPages || 1;
+
+      const start = (CURRENT_PAGE - 1) * PAGE_SIZE;
+      const chunk = list.slice(start, start + PAGE_SIZE);
+      renderCards(chunk);
+      renderPagination(total);
     }
 
     function fillStats(results, selectedSection){
@@ -396,21 +527,26 @@
       ALL_STUDENTS = list;
     }
 
-    function updateView(){
+    function resetPagination(){
+      CURRENT_PAGE = 1;
+      CURRENT_GROUP = 0;
+    }
+
+    function updateView(keepPage=false){
       const q   = searchInput.value.trim().toLowerCase();
       const sec = sectionSelect.value;
 
-      if (q || sec) {
-        emptyState.classList.add('hidden');
-      } else {
-        emptyState.classList.remove('hidden');
-      }
+      if (!keepPage) resetPagination();
+
+      if (q || sec) emptyState.classList.add('hidden');
+      else          emptyState.classList.remove('hidden');
 
       if (!USER_INTERACTED) {
         grid.innerHTML = '';
         noResults.classList.add('hidden');
         noStudents.classList.add('hidden');
         statsWrap.classList.add('hidden');
+        pagi.classList.add('hidden');
         return;
       }
 
@@ -419,15 +555,11 @@
         noResults.classList.add('hidden');
         noStudents.classList.add('hidden');
         statsWrap.classList.add('hidden');
+        pagi.classList.add('hidden');
         return;
       }
 
-      let base;
-      if (q) {
-        base = ALL_STUDENTS; 
-      } else {
-        base = sec ? SECTION_STUDENTS : ALL_STUDENTS;
-      }
+      let base = q ? ALL_STUDENTS : (sec ? SECTION_STUDENTS : ALL_STUDENTS);
 
       let results = base;
       if (q){
@@ -441,17 +573,18 @@
 
       if (results.length === 0){
         grid.innerHTML = '';
+        pagi.classList.add('hidden');
         if (!q && sec && SECTION_STUDENTS.length === 0){
           noStudents.classList.remove('hidden');
           noResults.classList.add('hidden');
-          statsWrap.classList.remove('hidden');
-          fillStats([], sec);
+          if (!HIDE_STATS) { statsWrap.classList.remove('hidden'); fillStats([], sec); }
+          else { statsWrap.classList.add('hidden'); }
         } else {
           noResults.classList.remove('hidden');
           noStudents.classList.add('hidden');
           if (!q && sec){
-            statsWrap.classList.remove('hidden');
-            fillStats([], sec);
+            if (!HIDE_STATS) { statsWrap.classList.remove('hidden'); fillStats([], sec); }
+            else { statsWrap.classList.add('hidden'); }
           } else {
             statsWrap.classList.add('hidden');
           }
@@ -461,9 +594,11 @@
 
       noResults.classList.add('hidden');
       noStudents.classList.add('hidden');
-      renderCards(results);
 
-      if (sec && !q){
+      // ✅ Use paginated rendering
+      renderPaginated(results);
+
+      if (sec && !q && !HIDE_STATS){
         statsWrap.classList.remove('hidden');
         fillStats(results, sec);
       } else {
@@ -482,7 +617,7 @@
           const secId = secDoc.id;
           currentSections.add(secId);
 
-          if (!SECTION_STU_UNSUB[secId]) {
+        if (!SECTION_STU_UNSUB[secId]) {
             const stuRef = collection(doc(db, 'sections', secId), 'students');
             const unsub = onSnapshot(stuRef, (stuSnap)=>{
               const arr = [];
@@ -503,7 +638,7 @@
               if (sectionSelect.value === secId){
                 SECTION_STUDENTS = arr.slice();
               }
-              updateView();
+              updateView(true);
             });
             SECTION_STU_UNSUB[secId] = unsub;
           }
@@ -518,14 +653,11 @@
         });
 
         rebuildAllFromMap();
-        updateView();
+        updateView(true);
       });
     }
 
-    function unsubscribeSection(){
-      SECTION_STUDENTS = [];
-    }
-
+    function unsubscribeSection(){ SECTION_STUDENTS = []; }
     function subscribeSection(sectionId){
       const arr = SECTION_MAP[sectionId] || [];
       SECTION_STUDENTS = arr.slice();
@@ -535,12 +667,8 @@
     sectionSelect.addEventListener('change', ()=>{
       USER_INTERACTED = true;
       const sec = sectionSelect.value;
-      if (sec){
-        subscribeSection(sec);
-      } else {
-        unsubscribeSection();
-        updateView();
-      }
+      if (sec){ subscribeSection(sec); }
+      else { unsubscribeSection(); updateView(); }
     });
     searchInput.addEventListener('input', ()=>{
       USER_INTERACTED = true;
@@ -551,6 +679,7 @@
     updateView();
   </script>
 
+  <!-- Combobox UI -->
   <script>
     (function(){
       const selectEl = document.getElementById('sectionSelect');
@@ -696,11 +825,9 @@
     (function(){
       const role = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
       if (role === 'student') {
-        
         const notice = document.getElementById('studentNotice');
         if (notice) notice.classList.remove('hidden');
 
-        // Block combobox
         const comboInput = document.getElementById('combo-input');
         const comboToggle = document.getElementById('combo-toggle');
         const comboList = document.getElementById('combo-list');
@@ -728,7 +855,6 @@
         if (comboOverlay) comboOverlay.classList.remove('hidden');
         if (selectEl) selectEl.value = '';
 
-        // Block search
         const searchInput = document.getElementById('searchInput');
         const searchOverlay = document.getElementById('search-overlay');
         if (searchInput) {
