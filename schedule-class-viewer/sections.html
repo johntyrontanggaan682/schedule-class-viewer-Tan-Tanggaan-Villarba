@@ -160,7 +160,6 @@ tailwind.config = {
     overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* Minimal hover/focus effect for the Preview button */
   .btn-preview{
     transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease, background-color .18s ease;
   }
@@ -176,7 +175,6 @@ tailwind.config = {
     transform: translateY(-1px);
   }
 
-  /* NEW: cap preview list to ~3 cards then scroll */
   .rem-scroll-capped{ max-height: 360px !important; overflow-y: auto !important; }
 </style>
 </head>
@@ -249,7 +247,7 @@ tailwind.config = {
           <p id="section-subtitle" class="text-base text-gray-600">Browse all available sections and access their schedules and student lists</p>
         </div>
         
-        <div id="year-filter-wrap" class="mb-8 flex justify-start">
+        <div id="year-filter-wrap" class="mb-8 flex items-center gap-3 justify-start">
           <div class="w-full max-w-xs relative">
             <button id="year-dropdown" class="w-full px-4 py-3 border border-gray-200 rounded-button bg-white text-sm flex items-center justify-between shadow-sm hover:shadow">
               <span id="year-selected">3rd Year</span>
@@ -262,12 +260,74 @@ tailwind.config = {
               <div class="year-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">4th Year</div>
             </div>
           </div>
+
+          <!-- NEW: Add Section button (admin only; shown/hidden in JS) -->
+          <button id="add-section-btn" class="hidden px-4 py-3 rounded-button bg-primary text-white text-sm flex items-center gap-2 active:scale-95">
+            <i class="ri-add-line"></i>
+            <span>Add Section</span>
+          </button>
         </div>
 
         <div id="sections-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
     </div>
   </section>
+
+  <!-- Add Section Modal -->
+  <div id="add-section-modal" class="fixed inset-0 bg-black/50 z-[70] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full shadow-2xl overflow-hidden">
+      <div class="p-5 modal-head flex items-center justify-between">
+        <div class="text-xl font-bold">Add Section</div>
+        <button id="add-sec-close" class="w-8 h-8 flex items-center justify-center text-white/90 hover:text-white rounded-full hover:bg-white/10">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      <form id="add-section-form" class="p-5 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <input id="add-sec-title" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="e.g. bit 1c-c or BIT 2a" required>
+          <p class="text-xs text-gray-500 mt-1">Tip: first number = year, letter(s) = track-section. One letter means both. Example: <span class="font-medium">bit 1c</span> → <span class="font-semibold">BIT 1C-C</span></p>
+          <!-- NEW: mismatch notice -->
+          <div id="add-sec-mismatch" class="hidden mt-1 text-xs text-red-600"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Bachelor</label>
+            <input id="add-sec-degree" type="text" class="w-full px-3 py-2 border border-gray-200 rounded-button text-sm bg-gray-50" value="Bachelor in Industrial Technology" readonly>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Year</label>
+            <input id="add-sec-yearlabel" type="text" class="w-full px-3 py-2 border border-gray-200 rounded-button text-sm bg-gray-50" readonly>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Track</label>
+            <input id="add-sec-track" type="text" class="w-full px-3 py-2 border border-gray-200 rounded-button text-sm bg-gray-50" readonly>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Section</label>
+            <input id="add-sec-section" type="text" class="w-full px-3 py-2 border border-gray-200 rounded-button text-sm bg-gray-50" readonly>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Computed Code</label>
+          <input id="add-sec-code" type="text" class="w-full px-3 py-2 border border-gray-200 rounded-button text-sm bg-gray-50 font-semibold" readonly>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" id="add-sec-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+          <button type="submit" id="add-sec-save" class="px-4 py-2 rounded-button bg-primary text-white flex items-center justify-center gap-2">
+            <span id="add-sec-loader" class="btn-loader hidden"></span>
+            <span id="add-sec-text">Save</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div id="section-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
@@ -504,7 +564,6 @@ tailwind.config = {
           <input id="rem-title" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Enter reminder title..." required>
         </div>
 
-        <!-- Subject (with suggestions) -->
         <div class="relative">
           <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
           <input id="rem-subject" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Start typing to search..." autocomplete="off" required>
@@ -547,11 +606,9 @@ tailwind.config = {
           <textarea id="rem-notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-button text-sm" placeholder="Add additional notes..."></textarea>
         </div>
 
-        <!--  Preview button left of Cancel; only visible when reminders exist -->
         <div class="flex items-center justify-end gap-2 pt-1">
           <button type="button" id="rem-preview" class="px-4 py-2 rounded-button bg-white border border-gray-300 text-gray-700 hidden btn-preview">Preview</button>
           <button type="button" id="rem-cancel" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
-          <!-- UPDATED: Save button with loader + text spans -->
           <button type="submit" id="rem-save" class="px-4 py-2 rounded-button bg-primary text-white flex items-center justify-center gap-2">
             <span id="rem-save-loader" class="btn-loader hidden"></span>
             <span id="rem-save-text">Save Reminder</span>
@@ -563,7 +620,6 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- Reminder Preview Modal -->
   <div id="rem-preview-modal" class="fixed inset-0 bg-black/50 z-[60] hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl">
       <div class="px-5 py-3 border-b flex items-center justify-between">
@@ -734,6 +790,14 @@ const YEAR_SECTIONS = {
   '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
 };
 
+/* NEW: runtime-added sections from Firestore */
+const EXTRA_SECTIONS = {
+  '1st Year': new Set(),
+  '2nd Year': new Set(),
+  '3rd Year': new Set(),
+  '4th Year': new Set(),
+};
+
 let currentYear = '3rd Year';
 let activeSection = null;
 let studentsUnsub=null, schedulesUnsub=null, currentSchedules=[];
@@ -767,9 +831,38 @@ async function ensureSectionDoc(sectionId){
   const ref = doc(db, 'sections', sectionId);
   const snap = await getDoc(ref);
   if(!snap.exists()){
-    await setDoc(ref, { name: sectionId, meta: { studentCount: 0, subjectCount: 0 } });
+    await setDoc(ref, { name: sectionId, meta: { studentCount: 0, subjectCount: 0 } }, { merge:true });
   }
 }
+async function upsertSectionInfo(sectionId, info){
+  await ensureSectionDoc(sectionId);
+  await setDoc(doc(db,'sections',sectionId), info, { merge:true });
+}
+
+/* NEW: parse title like "bit 1c-c", "BIT 2b", "Bit 3A-a" */
+function parseSectionTitle(raw){
+  const s = (raw||'').trim();
+  if(!s) return null;
+  const yrMatch = s.match(/([1-4])/);
+  if(!yrMatch) return null;
+  const yearNum = Number(yrMatch[1]);
+  const rest = s.slice(yrMatch.index + 1);
+
+  let track='A', section='A';
+  const pair = rest.match(/([a-zA-Z])(?:\s*-\s*([a-zA-Z]))?/);
+  if (pair){
+    track = pair[1].toUpperCase();
+    section = (pair[2] ? pair[2] : pair[1]).toUpperCase();
+  }
+
+  const code = `BIT ${yearNum}${track}-${section}`;
+  const yearLabel = `${toOrdinal(yearNum)} Year`;
+  return {
+    code, yearNum, yearLabel, track, section,
+    degree: 'Bachelor in Industrial Technology'
+  };
+}
+
 async function refreshCounts(sectionId){
   const secRef = doc(db, 'sections', sectionId);
   const stuAgg = await getCountFromServer(collection(secRef, 'students'));
@@ -793,6 +886,92 @@ function getDesc(code){
   return `Bachelor in Industrial Technology - ${toOrdinal(year)} Year Section ${track}`;
 }
 
+/* ==== Firestore live sections → EXTRA_SECTIONS ==== */
+let sectionsUnsub = null;
+function observeSections(){
+  if (sectionsUnsub) sectionsUnsub();
+  sectionsUnsub = onSnapshot(collection(db,'sections'), (snap)=>{
+    Object.keys(EXTRA_SECTIONS).forEach(k => EXTRA_SECTIONS[k].clear());
+    snap.forEach(d=>{
+      const data = d.data() || {};
+      const yearNum = data.yearNum;
+      const code = data.name || d.id;
+      if (!yearNum || !code) return;
+      const map = {1:'1st Year',2:'2nd Year',3:'3rd Year',4:'4th Year'};
+      const label = map[yearNum];
+      if (label) EXTRA_SECTIONS[label].add(code);
+    });
+    renderSectionCards();
+    populateSectionOptions();
+  });
+}
+observeSections();
+
+function mergedSectionsForYear(yLabel){
+  const base = YEAR_SECTIONS[yLabel] || [];
+  const extras = Array.from(EXTRA_SECTIONS[yLabel] || []);
+  const set = new Set(base);
+  const merged = base.slice();
+  extras.forEach(s => { if(!set.has(s)) { set.add(s); merged.push(s); } });
+  return merged;
+}
+
+/* ========= NEW: Section edit/delete helpers ========= */
+async function copyDocs(srcParentRef, dstParentRef, subcol){
+  const src = collection(srcParentRef, subcol);
+  const dst = collection(dstParentRef, subcol);
+  const snap = await getDocs(src);
+  for(const d of snap.docs){
+    const data = d.data();
+    await addDoc(dst, data);
+  }
+}
+async function deleteSubcollection(parentRef, subcol){
+  const colRef = collection(parentRef, subcol);
+  const snap = await getDocs(colRef);
+  for(const d of snap.docs){
+    await deleteDoc(d.ref);
+  }
+}
+async function cascadeDeleteSection(sectionId){
+  const oldRef = doc(db,'sections', sectionId);
+  await deleteSubcollection(oldRef, 'students');
+  await deleteSubcollection(oldRef, 'schedules');
+  await deleteSubcollection(oldRef, 'reminders');
+  await deleteDoc(oldRef);
+}
+async function renameSection(oldId, newParsed){
+  const oldRef = doc(db,'sections', oldId);
+  const newRef = doc(db,'sections', newParsed.code);
+
+  await upsertSectionInfo(newParsed.code, {
+    name: newParsed.code,
+    degree: newParsed.degree,
+    yearNum: newParsed.yearNum,
+    yearLabel: newParsed.yearLabel,
+    track: newParsed.track,
+    section: newParsed.section,
+    createdAt: serverTimestamp(),
+    meta: { studentCount: 0, subjectCount: 0 }
+  });
+
+  await copyDocs(oldRef, newRef, 'students');
+  await copyDocs(oldRef, newRef, 'schedules');
+  await copyDocs(oldRef, newRef, 'reminders');
+
+  await cascadeDeleteSection(oldId);
+
+  await refreshCounts(newParsed.code);
+
+  const map = {'1st Year':1,'2nd Year':2,'3rd Year':3,'4th Year':4};
+  const oldYearLabel = Object.keys(EXTRA_SECTIONS).find(k => EXTRA_SECTIONS[k].has(oldId)) || null;
+  if (oldYearLabel) EXTRA_SECTIONS[oldYearLabel].delete(oldId);
+  EXTRA_SECTIONS[newParsed.yearLabel]?.add(newParsed.code);
+
+  if (activeSection === oldId) activeSection = newParsed.code;
+}
+
+/* ========= RENDER SECTION CARDS (with admin edit/delete) ========= */
 function renderSectionCards(){
   const grid = $('#sections-grid');
 
@@ -838,12 +1017,22 @@ function renderSectionCards(){
   }
 
   grid.className = 'grid md:grid-cols-2 lg:grid-cols-3 gap-6';
-  const secs = YEAR_SECTIONS[currentYear] || [];
+  const secs = mergedSectionsForYear(currentYear);
   grid.innerHTML = secs.map(sec=>`
-    <div class="section-card soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
+    <div class="section-card group soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-2xl font-bold text-primary">${sec}</h3>
-        <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+        <div class="flex items-center gap-2">
+          ${isAdmin ? `
+            <button class="sec-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition" title="Edit" data-sec="${sec}">
+              <i class="ri-pencil-line text-sm"></i>
+            </button>
+            <button class="sec-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition" title="Delete" data-sec="${sec}">
+              <i class="ri-delete-bin-6-line text-sm"></i>
+            </button>
+          `:''}
+          <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full"><i class="ri-arrow-right-line text-primary"></i></div>
+        </div>
       </div>
       <p class="text-gray-600 mb-3">${getDesc(sec)}</p>
       <div class="flex items-center justify-between text-sm text-gray-500">
@@ -853,7 +1042,10 @@ function renderSectionCards(){
     </div>`).join('');
 
   $$('.section-card').forEach(card=>{
-    card.addEventListener('click', ()=> openSection(card.dataset.sec));
+    card.addEventListener('click', (e)=>{
+      if (e.target.closest('.sec-edit') || e.target.closest('.sec-del')) return;
+      openSection(card.dataset.sec);
+    });
   });
 
   secs.forEach(async sec=>{
@@ -865,6 +1057,38 @@ function renderSectionCards(){
       if(s) s.textContent = d.meta.studentCount ?? 0;
       if(q) q.textContent = d.meta.subjectCount ?? 0;
     });
+  });
+
+  grid.addEventListener('click', async (e)=>{
+    const editBtn = e.target.closest('.sec-edit');
+    const delBtn  = e.target.closest('.sec-del');
+    if (!editBtn && !delBtn) return;
+    e.stopPropagation();
+    if (!isAdmin) return;
+
+    if (editBtn){
+      const sec = editBtn.dataset.sec;
+      const parsedNow = parseSectionTitle(sec);
+      $('#add-section-form').reset();
+      $('#add-sec-degree').value = parsedNow?.degree || 'Bachelor in Industrial Technology';
+      $('#add-sec-yearlabel').value = parsedNow?.yearLabel || '';
+      $('#add-sec-track').value = parsedNow?.track || '';
+      $('#add-sec-section').value = parsedNow?.section || '';
+      $('#add-sec-code').value = parsedNow?.code || '';
+      $('#add-sec-title').value = sec.toLowerCase();
+      $('#add-sec-mismatch').classList.add('hidden');
+      const form = $('#add-section-form');
+      form.dataset.editOldId = sec;
+      $('.modal-head .font-bold').textContent = 'Edit Section';
+      $('#add-sec-text').textContent = 'Save Changes';
+      openAddSection();
+      return;
+    }
+    if (delBtn){
+      pendingDeleteId = delBtn.dataset.sec;
+      openDelModal('section');
+      return;
+    }
   });
 }
 
@@ -956,7 +1180,7 @@ function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
 }
 function populateSectionOptions(){
   const panel = document.getElementById('section-options');
-  const list = YEAR_SECTIONS[currentYear] || [];
+  const list = mergedSectionsForYear(currentYear) || [];
   panel.innerHTML = list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
   wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
 }
@@ -1091,6 +1315,9 @@ const openDelModal = (mode)=>{
   } else if (mode==='reminder'){
     t.textContent = 'Delete reminder?';
     d.textContent = 'Are you sure you want to delete this reminder?';
+  } else if (mode==='section'){
+    t.textContent = 'Delete section?';
+    d.textContent = 'This will remove the section and all its students, schedules, and reminders.';
   } else {
     t.textContent = 'Delete item?';
     d.textContent = 'Are you sure you want to delete it?';
@@ -1101,7 +1328,7 @@ const openDelModal = (mode)=>{
 const closeDelModal = ()=>{ pendingDeleteId=null; deleteMode=null; delModal.style.display='none'; delModal.classList.add('hidden'); };
 document.getElementById('del-cancel').onclick = closeDelModal;
 document.getElementById('del-yes').onclick = async ()=>{
-  if(!pendingDeleteId || !activeSection) { closeDelModal(); return; }
+  if(!pendingDeleteId) { closeDelModal(); return; }
   await requireAuth();
   if (deleteMode === 'schedule') {
     await deleteDoc(doc(db, 'sections', activeSection, 'schedules', pendingDeleteId));
@@ -1118,6 +1345,22 @@ document.getElementById('del-yes').onclick = async ()=>{
     }
     const prevBtn = document.getElementById('rem-preview');
     if (prevBtn) prevBtn.classList.toggle('hidden', currentReminders.length === 0);
+  } else if (deleteMode === 'section'){
+    if (!isAdmin) { closeDelModal(); return; }
+    const secId = pendingDeleteId;
+    try{
+      await cascadeDeleteSection(secId);
+      Object.keys(EXTRA_SECTIONS).forEach(k=> EXTRA_SECTIONS[k].delete(secId));
+      renderSectionCards();
+      populateSectionOptions();
+      if (activeSection === secId){
+        activeSection = null;
+        document.getElementById('section-detail-modal').classList.add('hidden');
+      }
+    }catch(err){
+      console.error(err);
+      alert('Failed to delete section.');
+    }
   }
   closeDelModal();
 };
@@ -1548,6 +1791,8 @@ function applyRoleUI(){
   const addSchedBtn = document.getElementById('add-section-schedule-btn');
   const addRemBtn = document.getElementById('add-section-reminder-btn');
 
+  const addSectionBtn = document.getElementById('add-section-btn'); // NEW
+
   if (isStudent) {
     if (yearWrap) yearWrap.classList.add('hidden');
     if (headTitle) headTitle.textContent = 'Your Section';
@@ -1555,6 +1800,7 @@ function applyRoleUI(){
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
     if (addStuBtn) addStuBtn.classList.add('hidden');
     if (addRemBtn) addRemBtn.classList.add('hidden');
+    if (addSectionBtn) addSectionBtn.classList.add('hidden');
   }
 
   if (isTeacher) {
@@ -1562,6 +1808,7 @@ function applyRoleUI(){
     if (addStuBtn) addStuBtn.classList.add('hidden');
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
     if (addRemBtn) addRemBtn.classList.remove('hidden');
+    if (addSectionBtn) addSectionBtn.classList.add('hidden');
   }
 
   if (isAdmin) {
@@ -1569,9 +1816,146 @@ function applyRoleUI(){
     if (addStuBtn) addStuBtn.classList.remove('hidden');
     if (addSchedBtn) addSchedBtn.classList.remove('hidden');
     if (addRemBtn) addRemBtn.classList.remove('hidden');
+    if (addSectionBtn) addSectionBtn.classList.remove('hidden'); // show only for admin
   }
 }
 
+/* ======= ADD / EDIT SECTION UI (Admin) ======= */
+const addSecBtn = document.getElementById('add-section-btn');
+const addSecModal = document.getElementById('add-section-modal');
+const addSecForm = document.getElementById('add-section-form');
+const addSecClose = document.getElementById('add-sec-close');
+const addSecCancel = document.getElementById('add-sec-cancel');
+const addSecTitle = document.getElementById('add-sec-title');
+const addSecDegree = document.getElementById('add-sec-degree');
+const addSecYearLabel = document.getElementById('add-sec-yearlabel');
+const addSecTrack = document.getElementById('add-sec-track');
+const addSecSection = document.getElementById('add-sec-section');
+const addSecCode = document.getElementById('add-sec-code');
+const addSecSave = document.getElementById('add-sec-save');
+const addSecLoader = document.getElementById('add-sec-loader');
+const addSecText = document.getElementById('add-sec-text');
+const addSecMismatch = document.getElementById('add-sec-mismatch');
+
+function openAddSection(){
+  addSecModal.classList.remove('hidden');
+  addSecModal.classList.add('flex');
+}
+function closeAddSection(){
+  addSecModal.classList.add('hidden');
+  addSecModal.classList.remove('flex');
+  delete addSecForm.dataset.editOldId;
+  document.querySelector('#add-section-modal .modal-head .font-bold').textContent = 'Add Section';
+  addSecText.textContent = 'Save';
+}
+
+addSecBtn?.addEventListener('click', ()=>{
+  if (!isAdmin) return;
+  addSecForm.reset();
+  addSecDegree.value = 'Bachelor in Industrial Technology';
+  addSecYearLabel.value = '';
+  addSecTrack.value = '';
+  addSecSection.value = '';
+  addSecCode.value = '';
+  addSecMismatch.classList.add('hidden');
+  openAddSection();
+});
+addSecClose?.addEventListener('click', closeAddSection);
+addSecCancel?.addEventListener('click', closeAddSection);
+
+function checkYearMismatchUI(parsed){
+  if (!parsed){ addSecMismatch.classList.add('hidden'); return false; }
+  const expect = currentYear;
+  const mismatch = parsed.yearLabel !== expect;
+  if (mismatch){
+    const expectNum = expect.match(/^(\d)/)?.[1] || '';
+    addSecMismatch.textContent = `You are adding under ${expect}. Please use year ${expectNum} in the title.`;
+    addSecMismatch.classList.remove('hidden');
+  } else {
+    addSecMismatch.classList.add('hidden');
+  }
+  return mismatch;
+}
+
+addSecTitle?.addEventListener('input', ()=>{
+  const parsed = parseSectionTitle(addSecTitle.value);
+  if (!parsed){
+    addSecYearLabel.value = '';
+    addSecTrack.value = '';
+    addSecSection.value = '';
+    addSecCode.value = '';
+    addSecMismatch.classList.add('hidden');
+    return;
+  }
+  addSecYearLabel.value = parsed.yearLabel;
+  addSecTrack.value = parsed.track;
+  addSecSection.value = parsed.section;
+  addSecCode.value = parsed.code;
+  checkYearMismatchUI(parsed);
+});
+
+addSecForm?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if (!isAdmin) return;
+  const parsed = parseSectionTitle(addSecTitle.value);
+  if (!parsed || !parsed.code){
+    alert('Please enter a valid title like "bit 1c" or "bit 1c-c".');
+    return;
+  }
+  if (checkYearMismatchUI(parsed)) return;
+
+  try{
+    addSecSave.disabled = true;
+    addSecLoader.classList.remove('hidden');
+    addSecText.textContent = addSecForm.dataset.editOldId ? 'Saving...' : 'Saving...';
+
+    const editingOld = addSecForm.dataset.editOldId || null;
+
+    if (editingOld){
+      if (editingOld !== parsed.code){
+        await renameSection(editingOld, parsed);
+      } else {
+        await upsertSectionInfo(parsed.code, {
+          name: parsed.code,
+          degree: parsed.degree,
+          yearNum: parsed.yearNum,
+          yearLabel: parsed.yearLabel,
+          track: parsed.track,
+          section: parsed.section,
+          updatedAt: serverTimestamp()
+        });
+        await refreshCounts(parsed.code);
+      }
+    } else {
+      await upsertSectionInfo(parsed.code, {
+        name: parsed.code,
+        degree: parsed.degree,
+        yearNum: parsed.yearNum,
+        yearLabel: parsed.yearLabel,
+        track: parsed.track,
+        section: parsed.section,
+        createdAt: serverTimestamp(),
+        meta: { studentCount: 0, subjectCount: 0 }
+      });
+
+      EXTRA_SECTIONS[parsed.yearLabel]?.add(parsed.code);
+    }
+
+    renderSectionCards();
+    populateSectionOptions();
+
+    closeAddSection();
+  }catch(err){
+    console.error(err);
+    alert('Failed to save section.');
+  }finally{
+    addSecSave.disabled = false;
+    addSecLoader.classList.add('hidden');
+    addSecText.textContent = 'Save';
+  }
+});
+
+/* ====== Reminders (unchanged logic) ====== */
 const remModal   = document.getElementById('reminder-modal');
 const remOpenBtn = document.getElementById('add-section-reminder-btn');
 const remClose   = document.getElementById('rem-close');
@@ -1581,9 +1965,9 @@ const remSecEl   = document.getElementById('rem-section');
 const remTitleEl = document.getElementById('rem-title');
 const remSubjectEl = document.getElementById('rem-subject');
 const remDateEl  = document.getElementById('rem-date');
-const remTimeEl  = document.getElementById('rem-time');       // start time (optional)
-const remEndEl   = document.getElementById('rem-end-time');    // end time (optional)
-const remDayEl   = document.getElementById('rem-day');         // day selector
+const remTimeEl  = document.getElementById('rem-time');
+const remEndEl   = document.getElementById('rem-end-time');
+const remDayEl   = document.getElementById('rem-day');
 const remNotesEl = document.getElementById('rem-notes');
 const remSuggest = document.getElementById('rem-subject-suggest');
 const remPreviewBtn = document.getElementById('rem-preview');
@@ -1592,7 +1976,6 @@ const remPrevModal = document.getElementById('rem-preview-modal');
 const remPrevClose = document.getElementById('rem-preview-close');
 const remPrevList  = document.getElementById('reminders-list-preview');
 
-/* NEW: references for Save button state */
 const remSaveBtn    = document.getElementById('rem-save');
 const remSaveLoader = document.getElementById('rem-save-loader');
 const remSaveText   = document.getElementById('rem-save-text');
@@ -1609,7 +1992,7 @@ function openReminderModal(){
   if (!activeSection) return;
   remSecEl.value = activeSection;
 
-  const isEditing = !!remForm.dataset.editId;       
+  const isEditing = !!remForm.dataset.editId;
   remSuggest.classList.add('hidden');
 
   document.getElementById('rem-modal-title').textContent = isEditing ? 'Editing Reminder' : 'Add New Reminder';
@@ -1669,12 +2052,11 @@ remSuggest.addEventListener('mousedown', (e)=>{
   remSuggest.classList.add('hidden');
 });
 
-/* Render reminders in Preview (hover to show edit/delete) */
 function renderPreviewReminders(items){
   if (!remPrevList) return;
   if (!items.length){
     remPrevList.innerHTML = `<div class="text-sm text-gray-500 px-2">No reminders yet.</div>`;
-    remPrevList.classList.remove('rem-scroll-capped'); /* keep natural height when empty */
+    remPrevList.classList.remove('rem-scroll-capped');
     return;
   }
   remPrevList.innerHTML = items.map(r=>{
@@ -1698,7 +2080,6 @@ function renderPreviewReminders(items){
     `;
   }).join('');
 
-  /* NEW: cap to 3 items then scroll */
   const count = remPrevList.querySelectorAll('.rem-item').length;
   if (count > 3){
     remPrevList.classList.add('rem-scroll-capped');
@@ -1707,7 +2088,6 @@ function renderPreviewReminders(items){
   }
 }
 
-/* Open/Close preview modal */
 function openPreview(){
   renderPreviewReminders(currentReminders);
   remPrevModal.classList.remove('hidden');
@@ -1721,7 +2101,6 @@ remPreviewBtn?.addEventListener('click', openPreview);
 remPrevClose?.addEventListener('click', closePreview);
 remPrevModal?.addEventListener('click', (e)=>{ if (e.target === remPrevModal) closePreview(); });
 
-/* edit/Delete actions inside preview */
 remPrevList?.addEventListener('click', async (e)=>{
   const card = e.target.closest('.rem-item'); if (!card) return;
   const id = card.getAttribute('data-id');
@@ -1732,7 +2111,7 @@ remPrevList?.addEventListener('click', async (e)=>{
     if (!(isTeacher || isAdmin)) return;
     if (!activeSection) return;
     pendingDeleteId = id;
-    openDelModal('reminder');  // show confirm modal
+    openDelModal('reminder');
     return;
   }
 
@@ -1742,8 +2121,7 @@ remPrevList?.addEventListener('click', async (e)=>{
     const snap = await getDoc(doc(db,'sections',activeSection,'reminders',id));
     if (!snap.exists()) return;
     const r = snap.data()||{};
-    // prefill
-    remForm.dataset.editId = id;                    
+    remForm.dataset.editId = id;
     remSecEl.value   = activeSection;
     remTitleEl.value = r.title || '';
     remSubjectEl.value = r.subject || '';
@@ -1754,11 +2132,10 @@ remPrevList?.addEventListener('click', async (e)=>{
     remNotesEl.value = r.notes || '';
 
     closePreview();
-    openReminderModal();                              
+    openReminderModal();
   }
 });
 
-/* UPDATED: Save/Loading behavior for Add/Edit Reminder */
 remForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   try{
@@ -1780,7 +2157,6 @@ remForm.addEventListener('submit', async (e)=>{
 
     const editingId = remForm.dataset.editId;
 
-    /* show loading state */
     remSaveBtn.disabled = true;
     remSaveLoader.classList.remove('hidden');
     remSaveBtn.classList.add('opacity-90','cursor-not-allowed');
@@ -1807,7 +2183,6 @@ remForm.addEventListener('submit', async (e)=>{
       sessionStorage.setItem('reminder_target_section', section);
     }
 
-    /* reset loading + close */
     remSaveBtn.disabled = false;
     remSaveLoader.classList.add('hidden');
     remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
@@ -1819,7 +2194,6 @@ remForm.addEventListener('submit', async (e)=>{
   }catch(err){
     console.error(err);
     alert('Failed to save reminder.');
-    /* revert loading state so user can try again */
     remSaveBtn.disabled = false;
     remSaveLoader.classList.add('hidden');
     remSaveBtn.classList.remove('opacity-90','cursor-not-allowed');
@@ -1829,7 +2203,6 @@ remForm.addEventListener('submit', async (e)=>{
 
 
 function weekdayFromISO(iso){
-  // iso is "YYYY-MM-DD"
   if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
   const [y,m,d] = iso.split('-').map(Number);
   const dt = new Date(y, m-1, d);
