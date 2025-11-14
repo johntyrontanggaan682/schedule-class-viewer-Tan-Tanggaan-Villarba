@@ -1,55 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SLSU Lucena Class Schedule Viewer — Teachers</title>
+  <title>Teachers • SLSU Lucena BIT</title>
+
+  <!-- Apply role class ASAP to avoid any flash (hides add button instantly for students) -->
+  <script>
+    (function () {
+      var r = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
+      document.documentElement.classList.add('role-' + r);
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: { primary: '#16a34a', secondary: '#22c55e' },
-          borderRadius: {
-            'none': '0px','sm': '4px', DEFAULT: '8px','md': '12px','lg': '16px',
-            'xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
+          colors: { primary: '#0A4B2D', secondary: '#0A4B2D' },
+          borderRadius: { 'none':'0px','sm':'4px', DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px' },
+          boxShadow: {
+            card: '0 10px 20px rgba(0,0,0,.06)',
+            cardHover: '0 14px 28px rgba(0,0,0,.10)'
           }
         }
       }
     }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-  <style>:where([class^="ri-"])::before{content:"\f3c2";}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
+  <style>
+    :where([class^="ri-"])::before{content:"\f3c2";}
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-loader{
+      width: 16px; height: 16px; border-radius:9999px;
+      border: 2px solid currentColor; border-right-color: transparent;
+      animation: spin .6s linear infinite; display:inline-block;
+    }
+    /* Hide the Add Teacher button instantly for students (prevents the delay/flash) */
+    .role-student #open-add-teacher { display: none !important; }
+  </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+  <script>
+    window.__APP_SESSION = {
+      name:   sessionStorage.getItem('auth_name')    || '',
+      role:   sessionStorage.getItem('auth_role')    || 'guest',
+      section:sessionStorage.getItem('auth_section') || '',
+      email:  sessionStorage.getItem('auth_email')   || '',
+      id:     sessionStorage.getItem('auth_id')      || ''
+    };
+  </script>
+
   <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
     <div class="px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
+          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full"/>
           <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
         </div>
+
+        <!-- DESKTOP NAV -->
         <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
-            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-home-line"></i></div><span>Home</span>
-          </a>
-          <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
-            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-book-2-line"></i></div><span>Sections</span>
-          </a>
-          <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
-            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-calendar-line"></i></div><span>Schedules</span>
-          </a>
-          <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
-            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-user-line"></i></div><span>Students</span>
-          </a>
-          <a href="teachers.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition-colors">
-            <div class="w-5 h-5 flex items-center justify-center"><i class="ri-user-star-line"></i></div><span>Teachers</span>
-          </a>
+          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-book-2-line"></i><span>Sections</span></a>
+          <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-calendar-line"></i><span>Schedules</span></a>
+          <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-line"></i><span>Students</span></a>
+          <a href="teachers.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition-colors"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+
+          <!-- Profile dropdown -->
           <div id="profile-wrap" class="relative">
-            <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
+            <a id="profile-trigger" href="profile.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
               <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
             </a>
             <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
@@ -71,10 +95,11 @@
             </div>
           </div>
         </div>
-        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
-          <div class="w-6 h-6 flex items-center justify-center"><i class="ri-menu-line text-xl"></i></div>
-        </button>
+
+        <!-- MOBILE -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
       </div>
+
       <div id="mobile-menu" class="md:hidden mt-4 hidden">
         <div class="space-y-2">
           <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-home-line"></i><span>Home</span></a>
@@ -83,7 +108,6 @@
           <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-line"></i><span>Students</span></a>
           <a href="teachers.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 transition-colors"><i class="ri-user-star-line"></i><span>Teachers</span></a>
           <a href="profile.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-3-line"></i><span>Profile</span></a>
-          <a href="about.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-information-line"></i><span>About</span></a>
         </div>
       </div>
     </div>
@@ -91,188 +115,192 @@
 
   <main class="pt-20">
     <section id="teachers" class="min-h-screen bg-white">
-      <div class="px-6 py-16">
+      <div class="px-6 py-12">
         <div class="max-w-6xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Faculty Directory</h2>
-            <p class="text-xl text-gray-600">Meet our dedicated faculty members and their subject assign</p>
-          </div>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Jerome Yanga</h3>
-                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programming 1</span>
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programing 2</span>
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Web Development</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Cet Center, Laboratory</p>
-                  </div>
-                </div>
-              </div>
+          <div class="relative mb-8 -mt-4">
+            <div class="text-center max-w-2xl mx-auto">
+              <h2 class="text-4xl font-bold text-gray-800 mb-1">Faculty Directory</h2>
+              <p class="text-lg text-gray-600">Meet our dedicated faculty members and their subject assign</p>
             </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Jerold Oticio</h3>
-                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Computer Programming 1</span>
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Networking</span>
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Maintenance & TroubleShooting</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Faculty</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Ed Cedeno</h3>
-                  <p class="text-gray-600 mb-4">President of Faculty</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Industrial Management</span>
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Readings in the Philippine History</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Faculty</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Mam. Paul Perez</h3>
-                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Computer Fundamentals and System Hardware</span>
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Maintenance & TroubleShooting</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Faculty</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Mam. Maila Caliao</h3>
-                  <p class="text-gray-600 mb-4">Department of Industrial Technology</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Data Structures</span>
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Computer Programming</span>
-                      <span class="px-3 py-1 bg-primary text-white text-sm rounded-full">Flowcharts</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Faculty</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-              <div class="flex items-start space-x-6">
-                <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <i class="ri-user-star-line text-primary text-2xl"></i>
-                </div>
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">Sir. Generoso Maano</h3>
-                  <p class="text-gray-600 mb-4">Department of Engineering</p>
-                  <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Subjects:</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Tech Draw 1</span>
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Tech Draw 2 Autocad</span>
-                      <span class="px-3 py-1 bg-secondary text-white text-sm rounded-full">Mathematics</span>
-                    </div>
-                  </div>
-                  <div class="text-sm text-gray-600">
-                    <p><strong>Office:</strong> Faculty</p>
-                  </div>
-                </div>
-              </div>
+            <!-- Add button LEFT -->
+            <div class="mt-5 md:mt-0 md:absolute md:left-0 md:bottom-1">
+              <button id="open-add-teacher" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-2xl hover:bg-primary/90 active:scale-95 transition">
+                <i class="ri-user-add-line"></i>Add Teacher
+              </button>
             </div>
           </div>
+
+          <!-- CENTERED search -->
+          <div class="max-w-2xl mx-auto mb-6">
+            <div class="relative">
+              <input id="teacher-search" type="search" placeholder="Search teachers…"
+                class="w-full h-12 pl-12 pr-12 border border-gray-300 rounded-2xl text-base focus:ring-2 focus:ring-primary focus:border-primary" />
+              <i class="ri-search-line absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+              <button id="teacher-search-clear" class="absolute right-2.5 top-1/2 -translate-y-1/2 px-3 py-1.5 text-xs rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hidden">Clear</button>
+            </div>
+          </div>
+
+          <!-- Grid -->
+          <div id="teachers-grid" class="grid md:grid-cols-2 gap-8"></div>
+
+          <!-- Empty state -->
+          <div id="empty-state" class="hidden text-center text-gray-500 mt-6">No teachers yet. Click “Add Teacher” to create one.</div>
+
+          <!-- No results after search -->
+          <div id="no-results" class="hidden text-center text-gray-500 mt-6">No matching teachers.</div>
+
+          <!-- Pagination -->
+          <div id="pager" class="flex justify-center items-center gap-2 mt-8"></div>
+
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="bg-primary text-white py-12 mt-12">
+  <!-- FOOTER: same structure as homepage -->
+  <footer class="bg-primary text-white py-6 mt-12 text-sm">
     <div class="px-6">
       <div class="max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-6">
           <div>
-            <h3 class="text-xl font-bold mb-4">SLSU Lucena Campus</h3>
-            <p class="text-white/80 mb-4">Southern Luzon State University Lucena Campus</p>
-            <div class="flex items-center space-x-4">
-              <a href="https://www.facebook.com/profile.php?id=100064260360036" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
-                <i class="ri-facebook-line text-xl"></i>
-              </a>
+            <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
+            <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">Contact Information</h3>
+            <div class="space-y-1 text-white/80">
+              <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
+              <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
+              <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
             </div>
           </div>
           <div>
-            <h3 class="text-xl font-bold mb-4">Contact Information</h3>
-            <div class="space-y-3 text-white/80">
-              <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
-              <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
-              <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-            <div class="space-y-2">
-              <a href="index.html#home" class="block text-white/80 hover:text-white transition-colors">Home</a>
-              <a href="sections.html" class="block text-white/80 hover:text-white transition-colors">Sections</a>
-              <a href="schedules.html" class="block text-white/80 hover:text-white transition-colors">Schedules</a>
-              <a href="students.html" class="block text-white/80 hover:text-white transition-colors">Students</a>
-              <a href="teachers.html" class="block text-white/80 hover:text-white transition-colors">Teachers</a>
+            <h3 class="font-bold mb-2">Quick Links</h3>
+            <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
+              <a href="index.html"     class="hover:text-white">Home</a>
+              <a href="sections.html"  class="hover:text-white">Sections</a>
+              <a href="schedules.html" class="hover:text-white">Schedules</a>
+              <a href="students.html"  class="hover:text-white">Students</a>
+              <a href="teachers.html"  class="hover:text-white">Teachers</a>
+              <a href="profile.html"   class="hover:text-white">Profile</a>
             </div>
           </div>
         </div>
-        <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/80">
+        <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
           <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
         </div>
       </div>
     </div>
   </footer>
 
+  <!-- Add Teacher Modal -->
+  <div id="add-teacher-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
+      <div class="w-full sm:max-w-lg max-w-full bg-white rounded-3xl shadow-2xl border border-emerald-100 flex flex-col max-h-[90vh] ring-1 ring-emerald-100/60">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-emerald-100 flex items-center justify-between sticky top-0 bg-gradient-to-r from-emerald-50 to-white z-10 rounded-t-3xl">
+          <div class="flex items-center gap-2">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><i class="ri-user-add-line"></i></span>
+            <!-- Title is now dark green -->
+            <h3 class="text-xl font-bold text-[#0A4B2D]">Add Teacher</h3>
+          </div>
+          <button id="close-add-teacher" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+            <i class="ri-close-line text-xl text-gray-500"></i>
+          </button>
+        </div>
+
+        <!-- Form (no overflow here; only subjects list scrolls) -->
+        <form id="add-teacher-form" class="px-6 pt-5 pb-2">
+          <div class="space-y-5">
+            <!-- Title dropdown + Name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <div class="flex items-stretch">
+                <div class="relative flex-none">
+                  <input type="hidden" id="t_title" value="Sir">
+                  <button type="button" id="titleBtn"
+                          class="h-10 pl-9 pr-8 border border-gray-300 rounded-l-2xl text-sm bg-gradient-to-br from-white to-emerald-50/40 flex items-center gap-2 hover:bg-emerald-50/60 focus:ring-2 focus:ring-primary focus:border-primary relative">
+                    <i class="ri-user-3-line absolute left-2.5 text-gray-400"></i>
+                    <span id="titleText" class="font-medium text-gray-700">Sir</span>
+                    <i class="ri-arrow-down-s-line absolute right-2 text-gray-400 pointer-events-none"></i>
+                  </button>
+                  <div id="titleMenu"
+                       class="hidden absolute left-0 top-full mt-1 min-w-[108px] bg-white rounded-xl border border-gray-200 shadow-xl z-20 overflow-hidden">
+                    <button type="button" data-value="Sir"  class="title-opt w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 flex items-center justify-between">
+                      <span>Sir</span><i class="ri-check-line text-primary opacity-0"></i>
+                    </button>
+                    <button type="button" data-value="Ma'am" class="title-opt w-full text-left px-3 py-2 text-sm hover:bg-emerald-50 flex items-center justify-between">
+                      <span>Ma'am</span><i class="ri-check-line text-primary opacity-0"></i>
+                    </button>
+                  </div>
+                </div>
+                <input id="t_name" type="text"
+                       class="h-10 w-full px-3 border border-gray-300 border-l-0 rounded-r-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                       placeholder="Full name"/>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text_sm font-medium text-gray-700 mb-1">Department</label>
+              <input id="t_dept" type="text" class="w-full h-10 px-3 border border-gray-300 rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Department"/>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Office</label>
+              <input id="t_office" type="text" class="w-full h-10 px-3 border border-gray-300 rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Office"/>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">How many assigned subjects?</label>
+              <div class="relative">
+                <input id="t_subject_count" type="number" min="0" max="20" inputmode="numeric"
+                       class="w-full h-10 pl-10 pr-3 border border-gray-300 rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                       placeholder="" />
+                <i class="ri-hashtag text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 text-lg"></i>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-800">Subjects</label>
+              <!-- Only this area scrolls -->
+              <div id="t_subjects_container" class="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-emerald-100 bg-white sticky bottom-0 rounded-b-3xl">
+          <div class="flex justify-end gap-3">
+            <button type="button" id="cancel-add-teacher" class="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-50">Cancel</button>
+            <button type="submit" form="add-teacher-form" id="teacher-submit" class="px-5 py-2 bg-primary text-white rounded-2xl hover:bg-primary/90 shadow-sm flex items-center gap-2">
+              <span id="teacher-loader" class="btn-loader hidden"></span>
+              <span id="teacher-submit-text">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div id="delete-teacher-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+          <i class="ri-delete-bin-6-line"></i>
+        </div>
+        <div class="font-semibold text-gray-900">Delete teacher?</div>
+      </div>
+      <p class="text-sm text-gray-600">Are you sure you want to delete it?</p>
+      <div class="mt-6 flex items-center justify-end gap-3">
+        <button id="del-teacher-cancel" class="px-4 py-2 rounded-[14px] bg-gray-100 hover:bg-gray-200 text-gray-800">Cancel</button>
+        <button id="del-teacher-yes" class="px-4 py-2 rounded-[14px] bg-red-600 hover:bg-red-700 text-white">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign out confirmation modal -->
   <div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
     <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
       <div class="flex items-center gap-3">
@@ -289,8 +317,594 @@
     </div>
   </div>
 
+  <!-- Hidden input used for avatar uploads -->
+  <input id="teacher-photo-file" type="file" accept="image/*" class="hidden" />
+
   <script src="assets/js/nav.js"></script>
+
+  <!-- Firebase + Page Logic -->
+  <script type="module">
+    import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, onSnapshot, serverTimestamp,
+      doc, deleteDoc, updateDoc, query, orderBy, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // ===== Cloudinary config (same pattern as profile page) =====
+    const CLOUDINARY_CLOUD_NAME    = 'dexqmjbtj';
+    const CLOUDINARY_UPLOAD_PRESET = 'slsu-class';
+    // ============================================================
+
+    // Firebase (same project as sections page)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAZLXYqe3TaVzkHZh3i4h78VBwI0KckMpE",
+      authDomain: "log-in-cad70.firebaseapp.com",
+      projectId: "log-in-cad70",
+      storageBucket: "log-in-cad70.firebasestorage.app",
+      messagingSenderId: "538387168387",
+      appId: "1:538387168387:web:ef65e3ce36c5a405572fb6",
+      measurementId: "G-Q6KF6ST8XF"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ===== Session / Role =====
+    const SESS = window.__APP_SESSION || {};
+    const CURRENT_USER_ID = (SESS.id || SESS.email || '').trim();
+    const ROLE = (SESS.role || 'guest').toLowerCase();
+    const isAdmin   = ROLE === 'admin';
+    const isTeacher = ROLE === 'teacher';
+    const isStudent = ROLE === 'student';
+
+    // ====== DOM refs ======
+    const grid = document.getElementById('teachers-grid');
+    const emptyState = document.getElementById('empty-state');
+    const noResults  = document.getElementById('no-results');
+    const pager = document.getElementById('pager');
+    const fileInput = document.getElementById('teacher-photo-file');
+
+    // Search
+    const sInput = document.getElementById('teacher-search');
+    const sClear = document.getElementById('teacher-search-clear');
+
+    // Modal refs
+    const openBtn = document.getElementById('open-add-teacher');
+    const closeBtn = document.getElementById('close-add-teacher');
+    const cancelBtn = document.getElementById('cancel-add-teacher');
+    const modal = document.getElementById('add-teacher-modal');
+    const form = document.getElementById('add-teacher-form');
+
+    // Title dropdown
+    const titleHidden = document.getElementById('t_title');
+    const titleBtn = document.getElementById('titleBtn');
+    const titleText = document.getElementById('titleText');
+    const titleMenu = document.getElementById('titleMenu');
+
+    // Inputs for add/edit
+    const subjCountInput = document.getElementById('t_subject_count');
+    const subjContainer = document.getElementById('t_subjects_container');
+
+    // Save button + spinner
+    const btnSave  = document.getElementById('teacher-submit');
+    const btnTxt   = document.getElementById('teacher-submit-text');
+    const btnSpin  = document.getElementById('teacher-loader');
+
+    // Delete modal
+    const delModal  = document.getElementById('delete-teacher-modal');
+    const delCancel = document.getElementById('del-teacher-cancel');
+    const delYes    = document.getElementById('del-teacher-yes');
+    let deleteId = null;
+
+    // Data
+    let TEACHERS = []; // snapshot cache
+
+    // ✅ Pagination settings
+    const PAGE_SIZE = 6;   // 6 cards per page
+    const GROUP_SIZE = 3;  // show 3 page numbers at a time
+    let currentPage = 1;   // 1-based
+    let currentGroup = 0;  // 0-based
+
+    let filterQuery = '';
+    let editingId = null;
+    let teacherHasOwn = false;
+
+    // Avatar upload state
+    let UPLOAD_TARGET_ID = null;
+    let isUploading = false;
+
+    // ====== Helpers ======
+    function openModal(){ modal.classList.remove('hidden'); }
+    function closeModal(){ modal.classList.add('hidden'); }
+    function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+    // ------- Subject inputs (preserve on increase, trim from end on decrease) -------
+    function makeSubjectRow(i, value=''){
+      const wrap = document.createElement('div');
+      wrap.className = 'relative';
+      wrap.innerHTML = `
+        <input type="text" placeholder="Subject ${i}"
+          data-subject-input="true"
+          class="w-full h-10 pl-10 pr-3 border border-gray-300 rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+          value="${value ? value.replace(/"/g,'&quot;') : ''}"/>
+        <i class="ri-book-2-line text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 text-lg"></i>
+      `;
+      return wrap;
+    }
+
+    function currentSubjectCount(){
+      return subjContainer.querySelectorAll('input[data-subject-input="true"]').length;
+    }
+
+    function setSubjectCountDynamic(target){
+      const tgt = clamp(parseInt(target||0,10)||0, 0, 20);
+      const now = currentSubjectCount();
+
+      if (tgt > now){
+        for(let i = now + 1; i <= tgt; i++){
+          subjContainer.appendChild(makeSubjectRow(i, ''));
+        }
+      } else if (tgt < now){
+        for(let i = 0; i < (now - tgt); i++){
+          const last = subjContainer.lastElementChild;
+          if (last) subjContainer.removeChild(last);
+        }
+      }
+      // Update placeholders numbering for neatness
+      Array.from(subjContainer.querySelectorAll('input[data-subject-input="true"]'))
+        .forEach((inp, idx) => inp.placeholder = `Subject ${idx+1}`);
+    }
+
+    function initSubjectInputs(count, values=[]){
+      subjContainer.innerHTML = '';
+      const n = clamp(parseInt(count||0,10)||0, 0, 20);
+      for (let i=1;i<=n;i++){
+        subjContainer.appendChild(makeSubjectRow(i, values[i-1] || ''));
+      }
+      subjCountInput.value = String(n);
+    }
+
+    // Initial
+    initSubjectInputs(0);
+
+    // Only change the list area; keep existing inputs on increase, remove from end on decrease
+    subjCountInput.addEventListener('input', (e)=>{
+      setSubjectCountDynamic(e.target.value);
+    });
+
+    // Title menu UI
+    function openTitleMenu(){ titleMenu.classList.remove('hidden'); }
+    function closeTitleMenu(){ titleMenu.classList.add('hidden'); }
+    function selectTitle(v){
+      titleHidden.value = v;
+      titleText.textContent = v;
+      Array.from(titleMenu.querySelectorAll('.title-opt')).forEach(btn=>{
+        const isSel = btn.dataset.value === v;
+        const icon = btn.querySelector('.ri-check-line');
+        if (icon) icon.classList.toggle('opacity-0', !isSel);
+        btn.classList.toggle('bg-emerald-50', isSel);
+      });
+      closeTitleMenu();
+    }
+    titleBtn.addEventListener('click', (e)=>{ e.stopPropagation(); titleMenu.classList.toggle('hidden'); });
+    document.addEventListener('click', (e)=>{ if (!titleMenu.contains(e.target) && !titleBtn.contains(e.target)) closeTitleMenu(); });
+    titleMenu.querySelectorAll('.title-opt').forEach(b=> b.addEventListener('click', ()=> selectTitle(b.dataset.value)));
+    selectTitle('Sir');
+
+    function buildIndexText(t){
+      return `${t.title} ${t.name} ${t.department} ${t.office} ${(t.subjects||[]).join(' ')}`.toLowerCase();
+    }
+    function canEdit(t){ if (isAdmin) return true; if (isTeacher && t.ownerId && CURRENT_USER_ID && t.ownerId === CURRENT_USER_ID) return true; return false; }
+    function canDelete(t){ return isAdmin; }
+
+    // ====== CARD UI (subject chips EXACT like screenshot: light bg + dark border/text) ======
+    function cardHtml(t){
+      const chips = (t.subjects && t.subjects.length)
+        ? t.subjects.map((s)=>`
+            <span class="inline-flex items-center px-3 py-1 rounded-[12px] text-xs font-medium bg-[#E8F3ED] text-[#0A4B2D] border border-[#0A4B2D]">
+              ${s}
+            </span>`).join('')
+        : '<span class="px-3 py-1 bg-gray-100 text-gray-700 text-[12px] rounded-full border border-gray-200">No subjects</span>';
+
+      const showActions = canEdit(t) || canDelete(t);
+      const actions = showActions ? `
+        <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
+          ${canEdit(t) ? `<button class="teacher-edit w-[38px] h-[38px] rounded-[12px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center shadow" title="Edit"><i class="ri-pencil-line text-base"></i></button>` : ``}
+          ${canDelete(t) ? `<button class="teacher-del w-[38px] h-[38px] rounded-[12px] bg-red-600 text-white hover:opacity-90 flex items-center justify-center shadow" title="Delete"><i class="ri-delete-bin-6-line text-base"></i></button>` : ``}
+        </div>` : '';
+
+      const avatarClickable = canEdit(t) ? 'cursor-pointer hover:ring-2 hover:ring-primary/40' : '';
+      const avatarInner = t.photoURL
+        ? `<img src="${t.photoURL}" class="w-full h-full object-cover" alt="Teacher Photo">`
+        : `<i class="ri-user-star-line text-2xl"></i>`;
+
+      return `
+      <div class="group relative bg-white rounded-2xl border border-gray-200 shadow-card hover:shadow-cardHover hover:border-primary/40 transition p-6 overflow-hidden" data-id="${t.id}">
+        <div class="pointer-events-none absolute -right-6 -top-6 w-24 h-24 rounded-full bg-primary/5 blur-2xl"></div>
+
+        <div class="flex items-start gap-5">
+          <!-- Avatar (click to upload if canEdit) -->
+          <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-emerald-50 text-primary ring-1 ring-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden relative teacher-avatar ${avatarClickable}" data-id="${t.id}" title="${canEdit(t) ? 'Upload photo' : ''}">
+            ${avatarInner}
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="pr-20">
+              <h3 class="text-xl font-bold text-gray-900 leading-tight truncate">${t.title}. ${t.name}</h3>
+              <p class="text-sm text-gray-600 mt-0.5">${t.department || '—'}</p>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-[13px] font-semibold text-gray-800 mb-2">Assigned Subjects</div>
+              <div class="flex flex-wrap gap-2">${chips}</div>
+            </div>
+
+            <div class="mt-4 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+            <div class="mt-3 flex items-center justify-between text-xs text-gray-600">
+              <div class="inline-flex items-center gap-1">
+                <i class="ri-building-4-line"></i><span class="font-medium">Office</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700">${t.office || '—'}</span>
+            </div>
+
+            ${actions}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // ====== Pagination helpers ======
+    function resetPagination(){ currentPage = 1; currentGroup = 0; }
+
+    function renderPagination(totalItems){
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+      pager.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      // group bounds
+      const maxGroup = Math.max(0, Math.ceil(totalPages / GROUP_SIZE) - 1);
+      currentGroup = Math.min(currentGroup, maxGroup);
+      const startIdx = currentGroup * GROUP_SIZE + 1;
+      const endIdx   = Math.min(startIdx + GROUP_SIZE - 1, totalPages);
+
+      const makeBtn = (label, {active=false, disabled=false, title='', onClick}={})=>{
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = [
+          'min-w-9 h-9 px-3 inline-flex items-center justify-center rounded-button border text-sm',
+          active ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300 hover:border-primary/40 hover:text-primary',
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+        ].join(' ');
+        b.innerHTML = label;
+        if (title) b.title = title;
+        if (!disabled && onClick) b.addEventListener('click', onClick);
+        return b;
+      };
+
+      // previous group
+      const hasPrev = currentGroup > 0;
+      pager.appendChild(makeBtn('<i class="ri-arrow-right-up-line"></i>', {
+        disabled: !hasPrev,
+        title: 'Previous pages',
+        onClick: ()=>{ currentGroup -= 1; currentPage = currentGroup*GROUP_SIZE + 1; applyRender(true); }
+      }));
+
+      // numbers
+      for (let p = startIdx; p <= endIdx; p++){
+        pager.appendChild(makeBtn(String(p), {
+          active: p === currentPage,
+          onClick: ()=>{ currentPage = p; applyRender(true); window.scrollTo({top: document.getElementById('teachers').offsetTop-64, behavior:'smooth'}); }
+        }));
+      }
+
+      // next group
+      const hasNext = endIdx < totalPages;
+      pager.appendChild(makeBtn('<i class="ri-arrow-left-down-line"></i>', {
+        disabled: !hasNext,
+        title: 'Next pages',
+        onClick: ()=>{ currentGroup += 1; currentPage = currentGroup*GROUP_SIZE + 1; applyRender(true); }
+      }));
+    }
+
+    function renderPaginated(list){
+      const total = list.length;
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      if (totalPages === 0){ grid.innerHTML=''; pager.innerHTML=''; return; }
+      if (currentPage < 1) currentPage = 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const slice = list.slice(start, start + PAGE_SIZE);
+      grid.innerHTML = slice.map(cardHtml).join('');
+      renderPagination(total);
+
+      // wire actions for visible cards
+      grid.querySelectorAll('.teacher-edit').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.closest('[data-id]')?.dataset.id;
+          const t = TEACHERS.find(x=>x.id===id);
+          if(!t || !canEdit(t)) return;
+          editingId = id;
+          selectTitle(t.title || 'Sir');
+          document.getElementById('t_name').value   = t.name || '';
+          document.getElementById('t_dept').value   = t.department || '';
+          document.getElementById('t_office').value = t.office || '';
+
+          // Initialize subject inputs with existing values (clean + prefill)
+          initSubjectInputs((t.subjects||[]).length, t.subjects||[]);
+
+          openModal();
+        });
+      });
+      grid.querySelectorAll('.teacher-del').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.closest('[data-id]')?.dataset.id || null;
+          const t = TEACHERS.find(x=>x.id===id);
+          if(!t || !canDelete(t)) return;
+          deleteId = id;
+          delModal.classList.remove('hidden'); delModal.classList.add('flex');
+        });
+      });
+
+      // avatar click → choose image (only if canEdit)
+      grid.querySelectorAll('.teacher-avatar').forEach(av=>{
+        av.addEventListener('click', ()=>{
+          const id = av.getAttribute('data-id');
+          const t = TEACHERS.find(x=>x.id===id);
+          if (!t || !canEdit(t) || isUploading) return;
+          UPLOAD_TARGET_ID = id;
+          fileInput.value = '';
+          fileInput.click();
+        });
+      });
+    }
+
+    // ====== Render ======
+    function applyRender(keepPage=false){
+      // Filter
+      const q = (filterQuery || '').trim().toLowerCase();
+      const matched = q ? TEACHERS.filter(t => t.__idx.includes(q)) : [...TEACHERS];
+
+      // Empty & search states
+      emptyState.classList.toggle('hidden', TEACHERS.length !== 0);
+      noResults.classList.toggle('hidden', matched.length !== 0 || TEACHERS.length === 0);
+
+      // Teacher add-limit: compute ownership
+      teacherHasOwn = isTeacher && CURRENT_USER_ID
+        ? TEACHERS.some(t => t.ownerId === CURRENT_USER_ID)
+        : false;
+
+      // Add button visibility by role (CSS already hides for students immediately)
+      if (isStudent) {
+        openBtn.classList.add('hidden');
+      } else if (isTeacher) {
+        openBtn.classList.toggle('hidden', teacherHasOwn);
+      } else if (isAdmin) {
+        openBtn.classList.remove('hidden');
+      }
+
+      if (!keepPage) resetPagination();
+
+      // Paginate
+      renderPaginated(matched);
+    }
+
+    // ====== Snapshot ======
+    onSnapshot(query(collection(db,'teachers'), orderBy('createdAt','desc')), (snap)=>{
+      TEACHERS = [];
+      snap.forEach(d=>{
+        const data = d.data() || {};
+        const t = {
+          id: d.id,
+          title: data.title || 'Sir',
+          name: data.name || '',
+          department: data.department || '',
+          office: data.office || '',
+          subjects: Array.isArray(data.subjects) ? data.subjects : [],
+          ownerId: data.ownerId || '',
+          photoURL: data.photoURL || ''
+        };
+        t.__idx = buildIndexText(t);
+        TEACHERS.push(t);
+      });
+      if (filterQuery) { currentPage = 1; currentGroup = 0; }
+      applyRender(true);
+    });
+
+    // ====== Search ======
+    let tId;
+    sInput.addEventListener('input', (e)=>{
+      clearTimeout(tId);
+      tId = setTimeout(()=>{
+        filterQuery = e.target.value || '';
+        currentPage = 1; currentGroup = 0;
+        sClear.classList.toggle('hidden', !filterQuery.length);
+        applyRender(true);
+      }, 120);
+    });
+    sClear.addEventListener('click', ()=>{
+      sInput.value=''; filterQuery=''; currentPage=1; currentGroup=0;
+      sClear.classList.add('hidden'); applyRender(true); sInput.focus();
+    });
+
+    // ====== Add / Edit with spinner (unchanged except subjects init) ======
+    openBtn.addEventListener('click', ()=>{
+      if (isTeacher && teacherHasOwn) return;
+      editingId=null; form.reset(); selectTitle('Sir');
+      initSubjectInputs(0);
+      openModal();
+    });
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const title = (document.getElementById('t_title').value || 'Sir').trim();
+      const name  = document.getElementById('t_name').value.trim();
+      const dept  = document.getElementById('t_dept').value.trim();
+      const office= document.getElementById('t_office').value.trim();
+      const subjects = Array.from(subjContainer.querySelectorAll('input[data-subject-input="true"]'))
+        .map(i=>i.value.trim()).filter(Boolean);
+      if (!name || !dept) return;
+
+      if (isTeacher && teacherHasOwn && !editingId) return;
+
+      if (editingId && isTeacher) {
+        const target = TEACHERS.find(t=>t.id===editingId);
+        if (!target || target.ownerId !== CURRENT_USER_ID) return;
+      }
+
+      btnSave.disabled = true;
+      btnSave.classList.add('opacity-90','cursor-not-allowed');
+      btnSpin.classList.remove('hidden');
+      btnTxt.textContent = 'Saving...';
+
+      const base = { title, name, department: dept, office, subjects, updatedAt: serverTimestamp() };
+      try{
+        if (editingId) {
+          await updateDoc(doc(db,'teachers',editingId), base);
+        } else {
+          await addDoc(collection(db,'teachers'), {
+            ...base,
+            ownerId: CURRENT_USER_ID || 'unknown',
+            createdAt: serverTimestamp()
+          });
+        }
+        editingId = null;
+        form.reset();
+        initSubjectInputs(0);
+        closeModal();
+      } finally {
+        btnSave.disabled = false;
+        btnSave.classList.remove('opacity-90','cursor-not-allowed');
+        btnSpin.classList.add('hidden');
+        btnTxt.textContent = 'Save';
+      }
+    });
+
+    // ====== Delete ======
+    delCancel.addEventListener('click', ()=>{ deleteId=null; delModal.classList.add('hidden'); delModal.classList.remove('flex'); });
+    delYes.addEventListener('click', async ()=>{
+      if(!deleteId) return;
+      const t = TEACHERS.find(x=>x.id===deleteId);
+      if (!t || !canDelete(t)) { deleteId=null; delModal.classList.add('hidden'); delModal.classList.remove('flex'); return; }
+      await deleteDoc(doc(db,'teachers',deleteId));
+      deleteId=null;
+      delModal.classList.add('hidden'); delModal.classList.remove('flex');
+    });
+
+    // ====== Avatar upload flow (Cloudinary) ======
+    function setAvatarUploading(id, uploading){
+      const card = grid.querySelector(`.teacher-avatar[data-id="${id}"]`);
+      if (!card) return;
+      card.classList.toggle('opacity-70', uploading);
+      if (uploading) {
+        let sp = card.querySelector('[data-spin]');
+        if (!sp) {
+          const el = document.createElement('div');
+          el.setAttribute('data-spin','1');
+          el.className = 'absolute inset-0 flex items-center justify-center bg-white/40';
+          el.innerHTML = '<span class="btn-loader" style="color:#0A4B2D"></span>';
+          card.appendChild(el);
+        }
+      } else {
+        card.querySelector('[data-spin]')?.remove();
+      }
+    }
+
+    async function uploadToCloudinary(file){
+      const form = new FormData();
+      form.append('file', file);
+      form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      form.append('folder', 'slsu-teachers');
+
+      const resp = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: form
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.secure_url) {
+        throw new Error(data.error?.message || 'Upload failed');
+      }
+      return data.secure_url;
+    }
+
+    fileInput.addEventListener('change', async ()=>{
+      const f = fileInput.files && fileInput.files[0];
+      if (!f || !UPLOAD_TARGET_ID) return;
+      if (!/^image\//i.test(f.type)) { alert('Please select an image file.'); fileInput.value=''; UPLOAD_TARGET_ID=null; return; }
+      if (f.size > 5 * 1024 * 1024) { alert('Max file size is 5MB.'); fileInput.value=''; UPLOAD_TARGET_ID=null; return; }
+      if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) { alert('Cloudinary config missing.'); fileInput.value=''; UPLOAD_TARGET_ID=null; return; }
+
+      const t = TEACHERS.find(x=>x.id===UPLOAD_TARGET_ID);
+      if (!t || !canEdit(t)) { fileInput.value=''; UPLOAD_TARGET_ID=null; return; }
+
+      try {
+        isUploading = true;
+        setAvatarUploading(UPLOAD_TARGET_ID, true);
+        const url = await uploadToCloudinary(f);
+        await updateDoc(doc(db,'teachers', UPLOAD_TARGET_ID), { photoURL: url, updatedAt: serverTimestamp() });
+        // snapshot will refresh the UI
+      } catch (e) {
+        alert(e.message || 'Upload failed.');
+      } finally {
+        setAvatarUploading(UPLOAD_TARGET_ID, false);
+        isUploading = false;
+        fileInput.value = '';
+        UPLOAD_TARGET_ID = null;
+      }
+    });
+
+    // ====== Profile dropdown + signout ======
+    (function(){
+      const sess = window.__APP_SESSION || {};
+      const trigger = document.getElementById('profile-trigger');
+      const dropdown = document.getElementById('profile-dropdown');
+      const wrap = document.getElementById('profile-wrap');
+      const label = document.getElementById('profile-label');
+      const nameEl = document.getElementById('acc-name');
+      const roleEl = document.getElementById('acc-role');
+      const emailEl= document.getElementById('acc-email');
+      const idEl   = document.getElementById('acc-id');
+      const avatar = document.getElementById('acc-avatar');
+      function setAvatarInitials(n){
+        const t = (n||'').trim();
+        const initials = t ? t.split(' ').map(p=>p[0]?.toUpperCase()).slice(0,2).join('') : 'U';
+        if (avatar) avatar.innerHTML = '<span>'+initials+'</span>';
+      }
+      if (sess && (sess.name || sess.email || sess.role !== 'guest')) {
+        label && (label.textContent = 'Profile');
+        nameEl && (nameEl.textContent = sess.name || 'User');
+        roleEl && (roleEl.textContent = (sess.role||'').toUpperCase());
+        emailEl && (emailEl.textContent = sess.email || '');
+        idEl && (idEl.textContent = sess.id || '');
+        setAvatarInitials(sess.name || sess.email || 'User');
+      }
+      function openDD(){ dropdown && dropdown.classList.remove('hidden'); }
+      function closeDD(){ dropdown && dropdown.classList.add('hidden'); }
+      trigger && trigger.addEventListener('click', function(e){ e.preventDefault(); if (dropdown.classList.contains('hidden')) openDD(); else closeDD(); });
+      document.addEventListener('click', (e)=>{ if (wrap && !wrap.contains(e.target)) closeDD(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeDD(); });
+
+      const modal = document.getElementById('signout-modal');
+      const openSignout = document.getElementById('signout-btn');
+      const cancelSignout = document.getElementById('cancel-signout');
+      const confirmSignout = document.getElementById('confirm-signout');
+      function openModal(){ if(modal){ modal.classList.remove('hidden'); modal.classList.add('flex'); } }
+      function closeModal2(){ if(modal){ modal.classList.add('hidden'); modal.classList.remove('flex'); } }
+      openSignout && openSignout.addEventListener('click', function(e){ e.preventDefault(); closeDD(); openModal(); });
+      cancelSignout && cancelSignout.addEventListener('click', closeModal2);
+      modal && modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal2(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal2(); });
+      confirmSignout && confirmSignout.addEventListener('click', function(){
+        try { ['auth_name','auth_role','auth_section','auth_email','auth_id'].forEach(k => sessionStorage.removeItem(k)); } catch(_) {}
+        window.location.href = 'about.html';
+      });
+    })();
+  </script>
+
   <script src="assets/js/realtime-calendar.js"></script>
-  <script src="assets/js/profile.js"></script>
+  <script src=""></script>
 </body>
 </html>
