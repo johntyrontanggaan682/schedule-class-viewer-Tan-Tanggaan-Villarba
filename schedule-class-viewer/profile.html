@@ -9,14 +9,17 @@
 tailwind.config = {
   theme: {
     extend: {
-      colors: { primary:'#16a34a', secondary:'#22c55e', leaf:'#34d399' },
+      /* dark green like homepage; kept your light green 'leaf' */
+      colors: { primary:'#0A4B2D', secondary:'#0A4B2D', leaf:'#34d399' },
       borderRadius: { DEFAULT:'14px','lg':'18px','xl':'22px','2xl':'26px','full':'9999px' },
       boxShadow: { glow:'0 18px 60px rgba(22,163,74,.18)', soft:'0 10px 30px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.35)' },
-      backgroundImage: { mesh: 'radial-gradient(40% 60% at 10% 10%, rgba(34,197,94,.18) 0, transparent 60%), radial-gradient(35% 45% at 90% 20%, rgba(16,185,129,.18) 0, transparent 60%), radial-gradient(30% 40% at 50% 100%, rgba(59,130,246,.14) 0, transparent 60%)' }
+      /* kept your mesh with light greens */
+      backgroundImage: { mesh: 'radial-gradient(40% 60% at 10% 10%, rgba(34,197,94,.12) 0, transparent 60%), radial-gradient(35% 45% at 90% 20%, rgba(16,185,129,.10) 0, transparent 60%), radial-gradient(30% 40% at 50% 100%, rgba(59,130,246,.06) 0, transparent 60%)' }
     }
   }
 }
 </script>
+<link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +28,133 @@ tailwind.config = {
 :where([class^="ri-"])::before{content:"\f3c2"}
 body{font-family:Inter, system-ui, Segoe UI, Roboto, Arial}
 .title-font{font-family:"Plus Jakarta Sans", Inter, system-ui}
+
+/* ====== BIT DESIGN ADDITIONS (visual-only) ====== */
+
+/* decorative blurred blobs */
+.blob {
+  position: absolute;
+  filter: blur(40px);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-emerald { background: radial-gradient(circle at 30% 30%, rgba(10,75,45,.85), rgba(10,75,45,.25) 25%, transparent 60%); width:260px; height:260px; border-radius:9999px; left:-40px; top:12%; transform: translateZ(0); }
+.blob-olive { background: radial-gradient(circle at 70% 70%, rgba(34,197,94,.6), rgba(34,197,94,.12) 30%, transparent 60%); width:180px; height:180px; border-radius:9999px; right:-30px; top:6%; }
+
+header{ position: relative; overflow: visible; }
+
+/* subtle card glass + border gradient */
+.header-card {
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+  backdrop-filter: blur(6px) saturate(110%);
+  border: 1px solid rgba(10,75,45,0.08);
+  box-shadow: 0 12px 40px rgba(6, 48, 32, .06), 0 2px 0 rgba(255,255,255,.6) inset;
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease, border-color .18s ease;
+  position: relative;
+  overflow: visible;
+}
+
+/* HIGHLIGHT: subtle lift + stronger glow on hover/focus */
+.header-card:hover,
+.header-card:focus-within,
+.header-card.highlighted { /* 'highlighted' class allows persistent highlight if desired later */
+  transform: translateY(-6px);
+  box-shadow: 0 22px 70px rgba(6, 48, 32, .12), 0 6px 18px rgba(10,75,45,.06);
+  border-color: rgba(10,75,45,0.14);
+}
+
+/* soft glowing gradient border (appears on hover) */
+.header-card::after{
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(10,75,45,0.06), rgba(16,185,129,0.06), rgba(10,75,45,0.06));
+  opacity: 0;
+  transition: opacity .28s ease, transform .28s ease;
+  transform: scale(.98);
+  z-index: -1;
+}
+.header-card:hover::after,
+.header-card:focus-within::after,
+.header-card.highlighted::after{
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* avatar framing */
+#avatar {
+  width: 9rem; height:9rem;
+  border-radius: 16px;
+  border: 4px solid rgba(255,255,255,0.9);
+  box-shadow: 0 8px 30px rgba(10,75,45,.12);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(250,250,250,0.9), rgba(245,255,245,0.95));
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* avatar fallback initials style */
+#avatar span {
+  display:block; font-weight:800; color: #064121; font-size:2.25rem;
+  letter-spacing: -0.02em;
+}
+
+/* heading emphasis */
+#name-heading {
+  background: linear-gradient(90deg, rgba(10,75,45,1), rgba(13,92,56,1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight:800;
+  line-height:1;
+}
+
+/* subtle divider line */
+.header-divider { height:1px; background: linear-gradient(90deg, transparent, rgba(10,75,45,.08), transparent); margin-top:0.25rem; }
+
+/* info cards */
+.info-card {
+  border-radius: 14px;
+  background: linear-gradient(180deg,#ffffff,#fbfffb);
+  border: 1px solid rgba(10,75,45,.06);
+  box-shadow: 0 8px 30px rgba(10,75,45,.04);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+/* slight pop for info cards when parent is hovered */
+.header-card:hover .info-card{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(10,75,45,.06);
+}
+
+/* action buttons refinement */
+button.rounded-action {
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+button.rounded-action:active { transform: translateY(1px) scale(.997); }
+
+/* small responsive tweaks */
+@media (min-width: 768px) {
+  #avatar { width:10rem; height:10rem; border-radius:20px; }
+  #name-heading { font-size: clamp(1.6rem, 5vw, 2.9rem); }
+}
+@media (max-width: 767px) {
+  .blob-emerald, .blob-olive { opacity: .12; transform: scale(.9); }
+}
+
+/* ensure decorative elements don't interfere with click targets */
+header .blob { pointer-events: none !important; }
+
+/* keep signout modal visually consistent */
+#signout-modal .bg-white { border:1px solid rgba(10,75,45,.06); box-shadow: 0 20px 50px rgba(10,75,45,.12); }
+
+/* improve footer contrast slightly */
+footer { background: linear-gradient(90deg, #083b24, #0a4b2d); box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+
+/* END visual-only changes */
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -50,97 +180,140 @@ body{font-family:Inter, system-ui, Segoe UI, Roboto, Arial}
 </nav>
 
 <header class="relative pt-36">
-  <div class="absolute inset-0 bg-mesh opacity-90"></div>
+  <!-- decorative blobs (visual-only) -->
+  <div class="blob blob-emerald"></div>
+  <div class="blob blob-olive"></div>
+
+  <div class="absolute inset-0 bg-mesh opacity-60"></div>
   <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/60 to-white/90"></div>
 
   <div class="relative z-10 px-6 pb-16">
-    <div class="max-w-5xl mx-auto mt-4">
-      <div class="rounded-2xl md:rounded-3xl border border-white/40 bg-white/70 backdrop-blur-md shadow-glow">
-        <div class="p-6 md:p-8">
-          <div class="flex flex-col md:flex-row md:items-center gap-8 md:gap-10">
-            <div class="w-full md:w-auto">
-              <div id="avatar" class="w-36 h-36 md:w-40 md:h-40 mx-auto md:mx-0 rounded-2xl bg-white/90 backdrop-blur border-2 border-primary/30 shadow-soft flex items-center justify-center text-4xl font-extrabold text-primary overflow-hidden"></div>
-              <div class="mt-3 flex items-center justify-center md:justify-start">
-                <input id="file-input" type="file" accept="image/*" class="hidden" />
-                <button id="btn-change" class="px-3 py-1.5 text-sm rounded-full border border-primary text-primary bg-white hover:bg-primary/10 active:scale-95">
-                  Change Photo
-                </button>
-              </div>
-              <div id="upload-status" class="text-xs text-gray-500 mt-2 text-center md:text-left"></div>
+    <div class="max-w-5xl mx-auto mt-4 header-card">
+      <div class="p-6 md:p-8">
+        <div class="flex flex-col md:flex-row md:items-center gap-8 md:gap-10">
+          <div class="w-full md:w-auto">
+            <div id="avatar" class="w-36 h-36 md:w-40 md:h-40 mx-auto md:mx-0 rounded-2xl bg-white/90 backdrop-blur border-2 border-primary/30 shadow-soft flex items-center justify-center text-4xl font-extrabold text-primary overflow-hidden">
+              <!-- avatar image or initials inserted via JS -->
             </div>
+            <div class="mt-3 flex items-center justify-center md:justify-start gap-3">
+              <input id="file-input" type="file" accept="image/*" class="hidden" />
+              <button id="btn-change" class="px-3 py-1.5 text-sm rounded-full border border-primary text-primary bg-white hover:bg-primary/10 active:scale-95 rounded-action">
+                Change Photo
+              </button>
+              <!-- Remove button intentionally deleted as requested -->
+            </div>
+            <div id="upload-status" class="text-xs text-gray-500 mt-2 text-center md:text-left"></div>
+          </div>
 
-            <div class="flex-1">
-              <h1 id="name-heading" class="title-font text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900"></h1>
-              <div class="mt-4 flex flex-wrap items-center gap-2">
-                <span id="role-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 inline-flex items-center gap-1">
+          <div class="flex-1">
+            <h1 id="name-heading" class="title-font text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900"></h1>
+
+            <div class="mt-4 space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="role-badge" class="px-3 py-1 rounded-full text-xs font-semibold border inline-flex items-center gap-1">
                   <i class="ri-shield-user-line"></i><span>Student</span>
                 </span>
                 <span id="status-chip" class="hidden px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"></span>
-                <span class="inline-flex items-center gap-1 text-sm text-gray-600">
-                  <i class="ri-mail-line"></i><span id="email-sub"></span>
-                </span>
               </div>
-              <div class="mt-2 flex items-center gap-1 text-sm text-gray-600">
-                <i class="ri-id-card-line"></i><span id="id-sub"></span>
-              </div>
-
-              <div class="mt-6 flex flex-wrap items-center gap-3">
-                <a href="index.html" class="px-4 py-2 rounded-full border border-primary/30 text-primary bg-white hover:bg-primary/5 active:scale-95 text-sm flex items-center gap-2">
-                  <i class="ri-arrow-left-line"></i><span>Back to Home</span>
-                </a>
-                <button id="signout" class="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90 active:scale-95 text-sm shadow-sm flex items-center gap-2">
-                  <i class="ri-logout-box-r-line"></i><span>Sign out</span>
-                </button>
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <i class="ri-mail-line"></i><span id="email-sub"></span>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+            <div id="id-row" class="mt-2 flex items-center gap-1 text-sm text-gray-600">
+              <i class="ri-id-card-line"></i><span id="id-sub"></span>
+            </div>
 
-        <div class="p-6 md:p-8">
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
-              <div class="text-xs uppercase tracking-wide text-gray-500">Full Name</div>
-              <div id="d-name" class="mt-1.5 text-gray-900 font-semibold"></div>
-            </div>
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
-              <div class="text-xs uppercase tracking-wide text-gray-500">Role</div>
-              <div id="d-role" class="mt-1.5 text-gray-900 font-semibold"></div>
-            </div>
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
-              <div class="text-xs uppercase tracking-wide text-gray-500">Email</div>
-              <div id="d-email" class="mt-1.5 text-gray-900 font-semibold break-all"></div>
-            </div>
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
-              <div class="text-xs uppercase tracking-wide text-gray-500">Section</div>
-              <div id="d-id" class="mt-1.5 text-gray-900 font-semibold"></div>
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <a href="index.html" class="px-4 py-2 rounded-full border border-primary/30 text-primary bg-white hover:bg-primary/5 active:scale-95 text-sm flex items-center gap-2">
+                <i class="ri-arrow-left-line"></i><span>Back to Home</span>
+              </a>
+              <button id="signout" class="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90 active:scale-95 text-sm shadow-sm flex items-center gap-2 rounded-action">
+                <i class="ri-logout-box-r-line"></i><span>Sign out</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
+      <div class="header-divider"></div>
+
+      <div class="p-6 md:p-8">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="info-card rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Full Name</div>
+            <div id="d-name" class="mt-1.5 text-gray-900 font-semibold"></div>
+          </div>
+          <div class="info-card rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Role</div>
+            <div id="d-role" class="mt-1.5 text-gray-900 font-semibold"></div>
+          </div>
+          <div class="info-card rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Email</div>
+            <div id="d-email" class="mt-1.5 text-gray-900 font-semibold break-all"></div>
+          </div>
+          <div class="info-card rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Section</div>
+            <div id="d-id" class="mt-1.5 text-gray-900 font-semibold"></div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </header>
 
 <main class="pb-24"></main>
 
-<!-- OLD-STYLE, PERFECTLY CENTERED SIGN OUT MODAL -->
-<div id="confirm-modal" class="fixed inset-0 bg-black/40 hidden flex items-center justify-center z-[60]">
-  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl text-center">
-    <div class="text-lg font-semibold text-gray-900">Sign out?</div>
-    <p class="mt-2 text-sm text-gray-600">Are you sure you want to sign out?</p>
-    <div class="mt-6 flex items-center justify-center gap-3">
-      <button id="cancel-signout" class="px-4 py-2 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200">Cancel</button>
-      <button id="confirm-signout" class="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90">Yes</button>
+<div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+        <i class="ri-question-line"></i>
+      </div>
+      <div class="font-semibold text-gray-900">Sign out?</div>
+    </div>
+    <p class="mt-3 text-sm text-gray-600">Are you sure you want to sign out?</p>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button id="cancel-signout" class="px-4 py-2 rounded-full bg-gray-100">Cancel</button>
+      <button id="confirm-signout" class="px-4 py-2 rounded-full bg-primary text-white">Yes</button>
     </div>
   </div>
 </div>
 
-<footer class="bg-primary text-white py-10">
+<!-- FOOTER: same structure/style as homepage -->
+<footer class="bg-primary text-white py-6 mt-12 text-sm">
   <div class="px-6">
-    <div class="max-w-6xl mx-auto text-center text-white/80 text-sm">© 2025 SLSU Lucena. All rights reserved.</div>
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
+          <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Contact Information</h3>
+          <div class="space-y-1 text-white/80">
+            <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
+            <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
+            <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Quick Links</h3>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
+            <a href="index.html"     class="hover:text-white">Home</a>
+            <a href="sections.html"  class="hover:text-white">Sections</a>
+            <a href="schedules.html" class="hover:text-white">Schedules</a>
+            <a href="students.html"  class="hover:text-white">Students</a>
+            <a href="teachers.html"  class="hover:text-white">Teachers</a>
+            <a href="profile.html"   class="hover:text-white">Profile</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
+        <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
+      </div>
+    </div>
   </div>
 </footer>
 
@@ -149,9 +322,21 @@ body{font-family:Inter, system-ui, Segoe UI, Roboto, Arial}
   import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
   import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
+  // ===== Cloudinary config (FILL THESE) =====
+  const CLOUDINARY_CLOUD_NAME    = 'dexqmjbtj';
+  const CLOUDINARY_UPLOAD_PRESET = 'slsu-class';
+  // ==========================================
+
   const { auth, db } = window.__FB;
   const initials = s => (s||'').trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('') || 'GU';
   const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : '';
+
+  const ROLE_STYLES = {
+    admin:   'bg-rose-50 text-rose-700 border-rose-200',
+    teacher: 'bg-blue-50 text-blue-700 border-blue-200',
+    student: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    guest:   'bg-gray-100 text-gray-700 border-gray-200'
+  };
 
   let currentUser = null, cachedData = {};
 
@@ -169,13 +354,28 @@ body{font-family:Inter, system-ui, Segoe UI, Roboto, Arial}
       avatarEl.innerHTML = `<img src="${url}?v=${Date.now()}" class="w-full h-full object-cover" alt="Profile">`;
       sessionStorage.setItem('auth_photo', url);
     } else {
-      avatarEl.textContent = initials(cachedData.name);
+      avatarEl.innerHTML = '<span>' + initials(cachedData.name) + '</span>';
       sessionStorage.removeItem('auth_photo');
     }
 
+    const role = (cachedData.role || sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
+    const roleLabel = role==='admin' ? 'Admin' : role==='teacher' ? 'Teacher' : role==='student' ? 'Student' : 'Guest';
+
+    const roleBadge = document.getElementById('role-badge');
+    roleBadge.className = `px-3 py-1 rounded-full text-xs font-semibold border inline-flex items-center gap-1 ${ROLE_STYLES[role] || ROLE_STYLES.guest}`;
+    roleBadge.querySelector('span').textContent = roleLabel;
+
     document.getElementById('name-heading').textContent = cachedData.name || 'User';
     document.getElementById('email-sub').textContent = cachedData.email || '—';
-    document.getElementById('id-sub').textContent = 'ID: ' + (cachedData.studentId || sessionStorage.getItem('auth_id') || '—');
+
+    const idRow = document.getElementById('id-row');
+    const idSub = document.getElementById('id-sub');
+    if (role === 'student') {
+      idSub.textContent = 'ID: ' + (cachedData.studentId || sessionStorage.getItem('auth_id') || '—');
+      idRow?.classList.remove('hidden');
+    } else {
+      idRow?.classList.add('hidden');
+    }
 
     const status = (cachedData.status || sessionStorage.getItem('auth_status') || '').trim();
     const statusChip = document.getElementById('status-chip');
@@ -183,52 +383,95 @@ body{font-family:Inter, system-ui, Segoe UI, Roboto, Arial}
     else { statusChip.textContent = ''; statusChip.classList.add('hidden'); }
 
     document.getElementById('d-name').textContent  = cachedData.name || '—';
-    document.getElementById('d-role').textContent  = cap(cachedData.role||'guest');
+    document.getElementById('d-role').textContent  = roleLabel;
     document.getElementById('d-email').textContent = cachedData.email || '—';
     document.getElementById('d-id').textContent    = cachedData.section || '—';
 
     sessionStorage.setItem('auth_name', cachedData.name||'User');
     sessionStorage.setItem('auth_role', cachedData.role||'guest');
     sessionStorage.setItem('auth_email', cachedData.email||'');
-    if (cachedData.studentId) sessionStorage.setItem('auth_id', cachedData.studentId);
-    if (cachedData.section)   sessionStorage.setItem('auth_section', cachedData.section);
-    if (cachedData.status)    sessionStorage.setItem('auth_status', cachedData.status);
-  });
-
-  const fileInput = document.getElementById('file-input');
-  document.getElementById('btn-change').addEventListener('click', ()=> fileInput.click());
-  fileInput.addEventListener('change', async (e)=>{
-    const f = e.target.files?.[0]; if(!f || !currentUser) return;
-    const status = document.getElementById('upload-status'); status.textContent = 'Uploading...';
-    try{
-      const form = new FormData();
-      form.append('file', f);
-      form.append('upload_preset', "slsu-class");
-      form.append('folder', 'avatars');
-
-      const r = await fetch(`https://api.cloudinary.com/v1_1/dexqmjbtj/image/upload`, { method:'POST', body: form });
-      const j = await r.json();
-      if(!j.secure_url) throw new Error(j.error?.message || 'Upload failed');
-
-      const url = j.secure_url;
-      await setDoc(doc(db,'users',currentUser.uid), { photoURL:url, updatedAt:serverTimestamp() }, { merge:true });
-      await updateProfile(currentUser, { photoURL:url });
-
-      sessionStorage.setItem('auth_photo', url);
-      document.getElementById('avatar').innerHTML = `<img src="${url}?v=${Date.now()}" class="w-full h-full object-cover">`;
-      status.textContent = 'Saved!';
-    }catch(e){
-      alert('Upload failed: ' + (e.message||e));
-      status.textContent = 'Upload failed';
-    }finally{
-      setTimeout(()=> status.textContent='', 1500);
+    if (role === 'student') {
+      if (cachedData.studentId) sessionStorage.setItem('auth_id', cachedData.studentId);
+      if (cachedData.section)   sessionStorage.setItem('auth_section', cachedData.section);
+      if (cachedData.status)    sessionStorage.setItem('auth_status', cachedData.status);
     }
   });
 
-  const modal = document.getElementById('confirm-modal');
-  document.getElementById('signout').addEventListener('click', ()=> modal.classList.remove('hidden'));
-  document.getElementById('cancel-signout').addEventListener('click', ()=> modal.classList.add('hidden'));
-  document.getElementById('confirm-signout').addEventListener('click', async ()=>{
+  // ======= Change Photo (open file picker + Cloudinary upload) =======
+  const btnChange   = document.getElementById('btn-change');
+  const fileInput   = document.getElementById('file-input');
+  const statusEl    = document.getElementById('upload-status');
+  const avatarEl    = document.getElementById('avatar');
+
+  btnChange.addEventListener('click', ()=>{
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', async ()=>{
+    const f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+
+    if (!/^image\//i.test(f.type)) { statusEl.textContent = 'Please select an image file.'; fileInput.value = ''; return; }
+    if (f.size > 5 * 1024 * 1024) { statusEl.textContent = 'Max file size is 5MB.'; fileInput.value = ''; return; }
+
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      statusEl.textContent = 'Cloudinary config missing. Please set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET.';
+      fileInput.value = '';
+      return;
+    }
+
+    btnChange.disabled = true;
+    btnChange.classList.add('opacity-70','cursor-not-allowed');
+    statusEl.textContent = 'Uploading...';
+
+    try {
+      const form = new FormData();
+      form.append('file', f);
+      form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      form.append('folder', 'slsu-profile');
+
+      const resp = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: form
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.secure_url) throw new Error(data.error?.message || 'Upload failed');
+
+      const newUrl = data.secure_url;
+
+      if (!currentUser) throw new Error('Not authenticated');
+      await updateProfile(currentUser, { photoURL: newUrl });
+      await setDoc(doc(db, 'users', currentUser.uid), { photoURL: newUrl, updatedAt: serverTimestamp() }, { merge: true });
+
+      avatarEl.innerHTML = `<img src="${newUrl}?v=${Date.now()}" class="w-full h-full object-cover" alt="Profile">`;
+      sessionStorage.setItem('auth_photo', newUrl);
+      statusEl.textContent = 'Photo updated!';
+    } catch (e) {
+      statusEl.textContent = e.message || 'Upload failed.';
+    } finally {
+      btnChange.disabled = false;
+      btnChange.classList.remove('opacity-70','cursor-not-allowed');
+      fileInput.value = '';
+      setTimeout(()=> (statusEl.textContent=''), 2500);
+    }
+  });
+  // ===================================================================
+
+  // Sign out modal behavior
+  const signoutBtn   = document.getElementById('signout');
+  const signoutModal = document.getElementById('signout-modal');
+  const cancelBtn    = document.getElementById('cancel-signout');
+  const confirmBtn   = document.getElementById('confirm-signout');
+
+  function openSignout(){ signoutModal.classList.remove('hidden'); signoutModal.style.display='flex'; }
+  function closeSignout(){ signoutModal.classList.add('hidden'); signoutModal.style.display='none'; }
+
+  signoutBtn.addEventListener('click', openSignout);
+  cancelBtn.addEventListener('click', closeSignout);
+  signoutModal.addEventListener('click', (e)=>{ if(e.target === signoutModal) closeSignout(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSignout(); });
+
+  confirmBtn.addEventListener('click', async ()=>{
     try{ await signOut(auth);}catch(_){}
     sessionStorage.clear();
     location.href='about.html';
