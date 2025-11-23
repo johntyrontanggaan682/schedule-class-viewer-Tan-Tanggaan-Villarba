@@ -22,6 +22,7 @@ if (!window.__FB) {
 const { app, db } = window.__FB;
 
 /* ====== NO localStorage: removed all localStorage usage ====== */
+/* ====== NO localStorage: removed all localStorage usage ====== */
 const ssRole = sessionStorage.getItem('auth_role');
 let EFFECTIVE_ROLE = 'student';
 if (ssRole && ssRole !== 'null') {
@@ -44,13 +45,31 @@ if (ssStatus && ssStatus !== 'null') {
 }
 sessionStorage.setItem('auth_status', EFFECTIVE_STATUS);
 
+// NEW: read course (picked when registering / logging in)
+const ssCourse = sessionStorage.getItem('auth_course');
+let EFFECTIVE_COURSE = '';
+if (ssCourse && ssCourse !== 'null') {
+  EFFECTIVE_COURSE = ssCourse;
+}
+sessionStorage.setItem('auth_course', EFFECTIVE_COURSE);
+
+
+
 const CURRENT_USER_ID = (sessionStorage.getItem('auth_id') || sessionStorage.getItem('auth_email') || '').trim();
 
 const isStudent = EFFECTIVE_ROLE === 'student';
 const isTeacher = EFFECTIVE_ROLE === 'teacher';
 const isAdmin   = EFFECTIVE_ROLE === 'admin';
-/* NEW: irregular flag */
-const isIrregularStudent = isStudent && String(EFFECTIVE_STATUS||'').toLowerCase() === 'irregular';
+
+/* irregular / regular flags (from auth_status) */
+const isIrregularStudent = isStudent && String(EFFECTIVE_STATUS || '').toLowerCase() === 'irregular';
+const isRegularStudent   = isStudent && String(EFFECTIVE_STATUS || '').toLowerCase() === 'regular';
+
+/* irregular course (read directly from sessionStorage so it never crashes) */
+const IRREGULAR_COURSE = isIrregularStudent
+  ? (sessionStorage.getItem('auth_course') || '')
+  : null;
+
 
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
@@ -64,6 +83,7 @@ const overlaps = (s1,e1,s2,e2)=> Math.max(s1,s2) < Math.min(e1,e2);
 const normSubj = (s)=> (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const sameTeacher = (a,b)=> (a||'').trim().toLowerCase() === (b||'').trim().toLowerCase();
 
+/* ====== COURSES & YEARS ====== */
 const YEARS = ['1st Year','2nd Year','3rd Year','4th Year'];
 const YEAR_SECTIONS = {
   '1st Year': ['BIT 1A-A','BIT 1A-B','BIT 1B-A','BIT 1B-B'],
@@ -72,7 +92,35 @@ const YEAR_SECTIONS = {
   '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
 };
 
-/* NEW: runtime-added sections from Firestore */
+/* NEW: supported courses (from your HTML course dropdown) */
+const COURSES = [
+  'BIT Computer Technology',
+  'BTVT-ED Automotive Technology',
+  'BTVT-ED Computer Programming',
+  'BTVT-ED Civil Technology',
+  'BTVT-ED Electrical Technology',
+  'BTVT-ED Electronics Technology',
+  'BTVT-ED Food & Service Management',
+  'BTVT-ED Mechanical Technology'
+];
+const COURSE_SHORT = {
+  'BIT Computer Technology': 'BIT',
+  'BTVT-ED Automotive Technology': 'BTVT-ED AT',
+  'BTVT-ED Computer Programming': 'BTVT-ED CP',
+  'BTVT-ED Civil Technology': 'BTVT-ED CT',
+  'BTVT-ED Electrical Technology': 'BTVT-ED ET',
+  'BTVT-ED Electronics Technology': 'BTVT-ED ELX',
+  'BTVT-ED Food & Service Management': 'BTVT-ED FSM',
+  'BTVT-ED Mechanical Technology': 'BTVT-ED ME'
+};
+const PREFIX_TO_COURSE = Object.fromEntries(
+  Object.entries(COURSE_SHORT).map(([course, prefix]) => [prefix, course])
+);
+
+/* BIT is the default / existing course */
+const DEFAULT_COURSE = 'BIT Computer Technology';
+
+/* NEW: runtime-added sections from Firestore (BIT-only union) */
 const EXTRA_SECTIONS = {
   '1st Year': new Set(),
   '2nd Year': new Set(),
@@ -80,7 +128,21 @@ const EXTRA_SECTIONS = {
   '4th Year': new Set(),
 };
 
-let currentYear = '3rd Year';
+/* NEW: same, but grouped per course + year */
+const EXTRA_SECTIONS_BY_COURSE = {};
+COURSES.forEach(c => {
+  EXTRA_SECTIONS_BY_COURSE[c] = {
+    '1st Year': new Set(),
+    '2nd Year': new Set(),
+    '3rd Year': new Set(),
+    '4th Year': new Set(),
+  };
+});
+
+/* NEW: selection state for filters */
+let currentYear   = '3rd Year';
+let currentCourse = null;   // nothing selected at first
+
 let activeSection = null;
 let studentsUnsub=null, schedulesUnsub=null, currentSchedules=[];
 let studentHasOwn=false;
@@ -119,7 +181,6 @@ async function saveIrregularConfirmed(list) {
   }
 }
 
-// ⬇️ Replace your existing teachers onSnapshot block with this:
 let LIVE_TEACHERS = [];
 function buildTeacherDisplay(t){
   const title = (t.title || 'Sir').replace(/\.$/,'');
@@ -127,23 +188,18 @@ function buildTeacherDisplay(t){
   return `${title}. ${name}`.trim();
 }
 function idxText(s){ return (s||'').toLowerCase(); }
-
-// Only subscribe when needed (teacher/admin)
-if (isTeacher || isAdmin) {
-  onSnapshot(collection(db,'teachers'), (snap)=>{
-    const arr=[];
-    snap.forEach(d=>{
-      const data=d.data()||{};
-      const display = buildTeacherDisplay(data);
-      arr.push({ id:d.id, display, idx:idxText(display) });
-    });
-    LIVE_TEACHERS = arr.sort((a,b)=> a.display.localeCompare(b.display));
-    if (!$('#teacher-options').classList.contains('hidden')) {
-      filterTeacherSuggestions($('#teacher-combo').value.trim());
-    }
+onSnapshot(collection(db,'teachers'), (snap)=>{
+  const arr=[];
+  snap.forEach(d=>{
+    const data=d.data()||{};
+    const display = buildTeacherDisplay(data);
+    arr.push({ id:d.id, display, idx:idxText(display) });
   });
-}
-
+  LIVE_TEACHERS = arr.sort((a,b)=> a.display.localeCompare(b.display));
+  if (!$('#teacher-options').classList.contains('hidden')) {
+    filterTeacherSuggestions($('#teacher-combo').value.trim());
+  }
+});
 
 async function requireAuth(){ return null; }
 
@@ -154,34 +210,56 @@ async function ensureSectionDoc(sectionId){
     await setDoc(ref, { name: sectionId, meta: { studentCount: 0, subjectCount: 0 } }, { merge:true });
   }
 }
+
+/* UPDATED: ensure we always tag with a course (for filtering) */
 async function upsertSectionInfo(sectionId, info){
   await ensureSectionDoc(sectionId);
-  await setDoc(doc(db,'sections',sectionId), info, { merge:true });
+  const payload = { ...info };
+  if (!payload.course) {
+    payload.course = currentCourse || DEFAULT_COURSE;
+  }
+  await setDoc(doc(db,'sections',sectionId), payload, { merge:true });
 }
 
 /* NEW: parse title like "bit 1c-c", "BIT 2b", "Bit 3A-a" */
-function parseSectionTitle(raw){
-  const s = (raw||'').trim();
-  if(!s) return null;
+/* UPDATED: parse title for ANY course and build correct code */
+/* NEW: parse title like "bit 3b-b", "btvt-ed cp 3b-b", etc – uses current course */
+function parseSectionTitle(raw, courseOverride){
+  const s = (raw || '').trim();
+  if (!s) return null;
+
+  // find year 1–4
   const yrMatch = s.match(/([1-4])/);
-  if(!yrMatch) return null;
+  if (!yrMatch) return null;
   const yearNum = Number(yrMatch[1]);
   const rest = s.slice(yrMatch.index + 1);
 
-  let track='A', section='A';
+  // track + section letters (like "b-b" or "b")
+  let track = 'A', section = 'A';
   const pair = rest.match(/([a-zA-Z])(?:\s*-\s*([a-zA-Z]))?/);
   if (pair){
     track = pair[1].toUpperCase();
     section = (pair[2] ? pair[2] : pair[1]).toUpperCase();
   }
 
-  const code = `BIT ${yearNum}${track}-${section}`;
+  const course = courseOverride || currentCourse || DEFAULT_COURSE;
+  const prefix = COURSE_SHORT[course] || 'BIT';    // BIT, BTVT-ED CP, etc.
+
+  const code = `${prefix} ${yearNum}${track}-${section}`; // e.g. "BTVT-ED CP 3B-B"
   const yearLabel = `${toOrdinal(yearNum)} Year`;
+  const degree = degreeForCourse(course);
+
   return {
-    code, yearNum, yearLabel, track, section,
-    degree: 'Bachelor in Industrial Technology'
+    code,
+    yearNum,
+    yearLabel,
+    track,
+    section,
+    degree
   };
 }
+
+
 
 async function refreshCounts(sectionId){
   const secRef = doc(db, 'sections', sectionId);
@@ -200,10 +278,34 @@ async function refreshCounts(sectionId){
 }
 
 function getDesc(code){
-  const m = code.match(/BIT\s+(\d)([A-Z])\-([A-Z])/i);
-  if(!m) return 'Bachelor in Industrial Technology';
-  const year = Number(m[1]), track = m[2].toUpperCase();
-  return `Bachelor in Industrial Technology - ${toOrdinal(year)} Year Section ${track}`;
+  if (!code) return degreeForCourse(currentCourse || DEFAULT_COURSE);
+
+  const upper = String(code).toUpperCase().trim();
+  // match: PREFIX 3B-B  → PREFIX, 3, B, B
+  const m = upper.match(/^([A-Z\- ]+)\s+(\d)([A-Z])\-([A-Z])$/);
+  if (!m){
+    return degreeForCourse(currentCourse || DEFAULT_COURSE);
+  }
+  const prefix  = m[1].trim();
+  const yearNum = Number(m[2]);
+  const track   = m[3];   // not used in text, but available if you want
+  const sec     = m[4];
+
+  const course = PREFIX_TO_COURSE[prefix] || degreeForCourse(DEFAULT_COURSE);
+  // Example: "BTVT-ED Computer Programming - 3rd Year Section B"
+  return `${course} - ${toOrdinal(yearNum)} Year Section ${sec}`;
+}
+
+
+/* ==== helper: map section doc → course name ==== */
+function courseFromSectionDoc(data){
+  if (!data) return DEFAULT_COURSE;
+  if (data.course) return data.course;
+  const deg = (data.degree || '').toString();
+  if (!deg) return DEFAULT_COURSE;
+  if (deg.startsWith('Bachelor in Industrial Technology')) return DEFAULT_COURSE;
+  // If you later store full BTVT names in "degree", you can extend mapping here.
+  return DEFAULT_COURSE;
 }
 
 /* ==== Firestore live sections → EXTRA_SECTIONS ==== */
@@ -211,7 +313,12 @@ let sectionsUnsub = null;
 function observeSections(){
   if (sectionsUnsub) sectionsUnsub();
   sectionsUnsub = onSnapshot(collection(db,'sections'), (snap)=>{
+    // Clear existing sets
     Object.keys(EXTRA_SECTIONS).forEach(k => EXTRA_SECTIONS[k].clear());
+    Object.values(EXTRA_SECTIONS_BY_COURSE).forEach(byYear => {
+      Object.keys(byYear).forEach(y => byYear[y].clear());
+    });
+
     snap.forEach(d=>{
       const data = d.data() || {};
       const yearNum = data.yearNum;
@@ -219,7 +326,19 @@ function observeSections(){
       if (!yearNum || !code) return;
       const map = {1:'1st Year',2:'2nd Year',3:'3rd Year',4:'4th Year'};
       const label = map[yearNum];
-      if (label) EXTRA_SECTIONS[label].add(code);
+      if (!label) return;
+
+      const course = courseFromSectionDoc(data);
+      EXTRA_SECTIONS[label].add(code);
+      if (!EXTRA_SECTIONS_BY_COURSE[course]) {
+        EXTRA_SECTIONS_BY_COURSE[course] = {
+          '1st Year': new Set(),
+          '2nd Year': new Set(),
+          '3rd Year': new Set(),
+          '4th Year': new Set(),
+        };
+      }
+      EXTRA_SECTIONS_BY_COURSE[course][label].add(code);
     });
     renderSectionCards();
     populateSectionOptions();
@@ -232,7 +351,25 @@ function mergedSectionsForYear(yLabel){
   const extras = Array.from(EXTRA_SECTIONS[yLabel] || []);
   const set = new Set(base);
   const merged = base.slice();
-  extras.forEach(s => { if(!set.has(s)) { set.add(s); merged.push(s); } });
+  extras.forEach(s => { if(!set.has(s)){ set.add(s); merged.push(s); } });
+  return merged;
+}
+
+/* NEW: merged sections for specific course + year */
+function mergedSectionsForYearCourse(yLabel, course){
+  if (!course) return [];
+  const base = (course === DEFAULT_COURSE ? (YEAR_SECTIONS[yLabel] || []) : []);
+  const extrasSet = (EXTRA_SECTIONS_BY_COURSE[course] && EXTRA_SECTIONS_BY_COURSE[course][yLabel])
+    ? EXTRA_SECTIONS_BY_COURSE[course][yLabel]
+    : new Set();
+  const merged = base.slice();
+  const seen = new Set(base);
+  extrasSet.forEach(sec => {
+    if (!seen.has(sec)){
+      seen.add(sec);
+      merged.push(sec);
+    }
+  });
   return merged;
 }
 
@@ -244,25 +381,26 @@ function renderSectionCards(){
   const hasConfirmed = isIrregularStudent && IRREGULAR_CONFIRMED.size > 0;
 
   if (isIrregularStudent) {
-    // ✅ FIX: If confirmed, gather all confirmed sections across ALL years
-    let secsAll;
-    if (hasConfirmed) {
-      const allYears = Object.keys(YEAR_SECTIONS);
-      const combined = [];
-      allYears.forEach(y=>{
-        const merged = mergedSectionsForYear(y);
-        merged.forEach(s=>{
-          if (IRREGULAR_CONFIRMED.has(s)) combined.push(s);
-        });
-      });
-      secsAll = combined;
-    } else {
-      secsAll = mergedSectionsForYear(currentYear);
-    }
+  const irregularCourse = IRREGULAR_COURSE || DEFAULT_COURSE;
 
-    const secs = hasConfirmed
-      ? secsAll.filter(s => IRREGULAR_CONFIRMED.has(s))
-      : secsAll;
+  // only show sections that belong to the irregular's course
+  let secsAll;
+  if (hasConfirmed) {
+    const allYears = Object.keys(YEAR_SECTIONS);
+    const combined = [];
+    allYears.forEach(y=>{
+      const merged = mergedSectionsForYearCourse(y, irregularCourse);
+      merged.forEach(s=> combined.push(s));
+    });
+    secsAll = combined;
+  } else {
+    secsAll = mergedSectionsForYearCourse(currentYear, irregularCourse);
+  }
+
+  const secs = hasConfirmed
+    ? secsAll.filter(s => IRREGULAR_CONFIRMED.has(s))
+    : secsAll;
+
 
     // hide year filter & confirm button after confirmed
     const yearWrap = document.getElementById('year-filter-wrap');
@@ -311,7 +449,6 @@ function renderSectionCards(){
     return;
   }
 
-  /* Rest of your code unchanged */
   if (isStudent) {
     grid.className = 'flex justify-center';
     const sec = EFFECTIVE_SECTION ? EFFECTIVE_SECTION.trim() : '';
@@ -353,9 +490,36 @@ function renderSectionCards(){
     return;
   }
 
-  // teacher/admin
-  const secs = mergedSectionsForYear(currentYear);
+  /* ====== TEACHER / ADMIN ====== */
+  const emptyStateHtml = `
+    <div class="col-span-full flex flex-col items-center justify-center text-center py-10 text-gray-500">
+      <i class="ri-book-2-line text-3xl mb-3 text-gray-400"></i>
+      <p class="font-semibold text-gray-700 mb-1">No sections to display yet.</p>
+      <p class="text-sm">Select a course and year level to display sections.</p>
+    </div>
+  `;
+
   grid.className = 'grid md:grid-cols-2 lg:grid-cols-3 gap-6';
+
+  // If course not chosen yet → show empty indication
+  if (!currentCourse) {
+    grid.innerHTML = emptyStateHtml;
+    return;
+  }
+
+  const secs = mergedSectionsForYearCourse(currentYear, currentCourse);
+
+  if (!secs.length) {
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center text-center py-10 text-gray-500">
+        <i class="ri-book-2-line text-3xl mb-3 text-gray-400"></i>
+        <p class="font-semibold text-gray-700 mb-1">No sections found.</p>
+        <p class="text-sm">No sections yet for <span class="font-semibold">${currentCourse}</span> • <span class="font-semibold">${currentYear}</span>.</p>
+      </div>
+    `;
+    return;
+  }
+
   grid.innerHTML = secs.map(sec=>`
     <div class="section-card group soft-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer" data-sec="${sec}">
       <div class="flex items-center justify-between mb-4">
@@ -516,10 +680,28 @@ function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
   panel?.addEventListener('mousedown', (e)=>{ const opt=e.target.closest('.'+optionClass); if(opt){ setVal(opt.dataset.value || opt.textContent.trim()); } });
   document.addEventListener('click', (e)=>{ if(!btn.contains(e.target) && !panel.contains(e.target)) panel.classList.add('hidden'); });
 }
+
 function populateSectionOptions(){
   const panel = document.getElementById('section-options');
-  const list = mergedSectionsForYear(currentYear) || [];
-  panel.innerHTML = list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
+  if (!panel) return;
+
+  let list = [];
+  if (isTeacher || isAdmin) {
+    if (currentCourse) {
+      list = mergedSectionsForYearCourse(currentYear, currentCourse);
+    } else {
+      list = [];
+    }
+  } else {
+    list = mergedSectionsForYear(currentYear) || [];
+  }
+
+  if (!list.length) {
+    panel.innerHTML = `<div class="p-3 text-sm text-gray-500">No sections available. Select a course and year.</div>`;
+  } else {
+    panel.innerHTML = list.map(v=>`<div class="section-option p-3 rounded-xl hover:bg-gray-50 cursor-pointer" data-value="${v}">${v}</div>`).join('');
+  }
+
   wireDropdown('section-dropdown','section-options','section','section-option','section-selected');
 }
 
@@ -561,10 +743,10 @@ async function openSection(sectionName){
   const actionBar      = document.getElementById('section-action-bar');
 
   if (isTeacher) {
-    addStudentBtn.classList.add('hidden');
-    addScheduleBtn.classList.add('hidden');
-    addReminderBtn.classList.remove('hidden');
-  }
+  addStudentBtn.classList.add('hidden');       
+  addScheduleBtn.classList.remove('hidden');  
+  addReminderBtn.classList.remove('hidden');   
+}
   if (isAdmin) {
     addStudentBtn.classList.remove('hidden');
     addScheduleBtn.classList.remove('hidden');
@@ -575,13 +757,10 @@ async function openSection(sectionName){
     }
   }
   if (isStudent) {
-    // Student view: hide schedule & reminder; the Add/Enroll button visibility will be
-    // controlled after we detect whether they already have a record.
     addScheduleBtn.classList.add('hidden');
     addReminderBtn.classList.add('hidden');
     const span = addStudentBtn.querySelector('span');
     if (span) span.textContent = isIrregularStudent ? 'Enroll' : 'Add Student';
-    // start hidden; snapshot below will show it only if they haven't added yet
     addStudentBtn.classList.add('hidden');
   }
 
@@ -598,7 +777,6 @@ async function openSection(sectionName){
     });
     studentHasOwn = hasOwn;
 
-    // ✅ Regular & Irregular: show button only if user hasn't added yet
     if (isStudent) {
       const btn = document.getElementById('add-section-student-btn');
       btn.classList.toggle('hidden', studentHasOwn);
@@ -609,7 +787,6 @@ async function openSection(sectionName){
     renderStudentsList(data);
     refreshCounts(sectionName);
 
-    /* UPDATED: track enrolled this session for irregulars; toggle Confirm visibility only if not yet confirmed */
     if (isIrregularStudent) {
       if (hasOwn) IRREGULAR_ENROLLED.add(sectionName); else IRREGULAR_ENROLLED.delete(sectionName);
       const cbtn = document.getElementById('confirm-choose-btn');
@@ -711,6 +888,9 @@ document.getElementById('del-yes').onclick = async ()=>{
     try{
       await cascadeDeleteSection(secId);
       Object.keys(EXTRA_SECTIONS).forEach(k=> EXTRA_SECTIONS[k].delete(secId));
+      Object.values(EXTRA_SECTIONS_BY_COURSE).forEach(byYear=>{
+        Object.keys(byYear).forEach(y=> byYear[y].delete(secId));
+      });
       renderSectionCards();
       populateSectionOptions();
       if (activeSection === secId){
@@ -800,7 +980,6 @@ document.getElementById('add-section-student-btn').onclick = async ()=>{
   delete form.dataset.editId;
   refreshChoiceStyles();
 
-  /* irregular student → force "Irregular" */
   if (isIrregularStudent) {
     const radios = Array.from(document.querySelectorAll('#student-type-group input[name="student-type"]'));
     radios.forEach(r => { r.checked = (r.value === 'Irregular'); r.disabled = true; });
@@ -811,7 +990,30 @@ document.getElementById('add-section-student-btn').onclick = async ()=>{
     document.getElementById('student-modal-title').textContent = 'Add New Student';
     document.getElementById('student-submit-text').textContent = 'Add Student';
     const radios = Array.from(document.querySelectorAll('#student-type-group input[name="student-type"]'));
-    radios.forEach(r => { r.disabled = false; });
+     radios.forEach(r => {
+      // If the logged-in student is REGULAR, block "Irregular" option
+      if (isRegularStudent && r.value === 'Irregular') {
+        r.disabled = true;
+        r.checked = false;
+        const label = r.closest('.choice');
+        if (label) {
+          label.classList.add('opacity-50', 'pointer-events-none');
+        }
+      } else {
+        r.disabled = false;
+        const label = r.closest('.choice');
+        if (label) {
+          label.classList.remove('opacity-50', 'pointer-events-none');
+        }
+      }
+    });
+
+    // Make sure Regular remains selected by default
+    const regularRadio = radios.find(r => r.value === 'Regular');
+    if (regularRadio && !regularRadio.checked) {
+      regularRadio.checked = true;
+    }
+    refreshChoiceStyles();
   }
 
   studentModal.classList.remove('hidden');
@@ -1023,7 +1225,7 @@ async function hasRoomConflictAllSections(day, room, startMin, endMin, subject, 
 
 const scheduleModal = document.getElementById('schedule-modal');
 document.getElementById('add-section-schedule-btn').onclick = async ()=>{
-  if (!isAdmin) return;
+  if (!(isAdmin || isTeacher)) return;
   await requireAuth();
   resetScheduleForm();
   delete document.getElementById('schedule-form').dataset.editId;
@@ -1041,7 +1243,7 @@ document.getElementById('cancel-btn').onclick = ()=>{ scheduleModal.classList.ad
 
 document.getElementById('schedule-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
-  if (!isAdmin) return;
+  if (!(isAdmin || isTeacher)) return;
   try{
     await requireAuth();
     const check=validateScheduleForm();
@@ -1141,7 +1343,6 @@ function setupYearDropdown(){
       renderSectionCards();
       populateSectionOptions();
       setDayOptionsForYear();
-      // keep chosen highlight visible across year switch only if the section still exists
       if (isIrregularStudent) {
         const btn = $('#confirm-choose-btn');
         if (IRREGULAR_PICK && !mergedSectionsForYear(currentYear).includes(IRREGULAR_PICK)) {
@@ -1153,6 +1354,89 @@ function setupYearDropdown(){
   });
   document.addEventListener('click', (e)=>{ if(!yearBtn.contains(e.target) && !yearPanel.contains(e.target)) yearPanel.classList.add('hidden'); });
 }
+
+
+function setupCourseDropdown(){
+  const courseBtn   = document.getElementById('course-dropdown');
+  const coursePanel = document.getElementById('course-options');
+  const courseLabel = document.getElementById('course-selected');
+  if (!courseBtn || !coursePanel || !courseLabel) return;
+
+  const options = Array.from(coursePanel.querySelectorAll('.course-option'));
+
+  // If irregular has a stored course, show that on load
+  if (isIrregularStudent && IRREGULAR_COURSE) {
+    currentCourse = IRREGULAR_COURSE;
+    courseLabel.textContent = IRREGULAR_COURSE;
+  }
+
+  // open/close panel
+  courseBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    coursePanel.classList.toggle('hidden');
+  });
+
+  // clicking an option
+  options.forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      const clickedCourse = opt.textContent.trim();
+
+      // IRREGULAR: lock to their course, ignore other clicks
+      if (isIrregularStudent && IRREGULAR_COURSE) {
+        // if they click a different course, just close panel and keep their course
+        if (clickedCourse !== IRREGULAR_COURSE) {
+          coursePanel.classList.add('hidden');
+          return;
+        }
+        currentCourse = IRREGULAR_COURSE;
+      } else {
+        // teacher/admin/regular student → normal behavior
+        currentCourse = clickedCourse;
+      }
+
+      courseLabel.textContent = currentCourse;
+      coursePanel.classList.add('hidden');
+
+      // refresh sections + section dropdown
+      renderSectionCards();
+      populateSectionOptions();
+    });
+  });
+
+  // click outside to close
+  document.addEventListener('click', (e)=>{
+    if (!courseBtn.contains(e.target) && !coursePanel.contains(e.target)) {
+      coursePanel.classList.add('hidden');
+    }
+  });
+}
+
+
+
+/* helper: degree text for Add Section modal per course */
+function degreeForCourse(course){
+  switch(course){
+    case 'BIT Computer Technology':
+      return 'Bachelor in Industrial Technology';
+    case 'BTVT-ED Automotive Technology':
+      return 'BTVT-ED Automotive Technology';
+    case 'BTVT-ED Computer Programming':
+      return 'BTVT-ED Computer Programming';
+    case 'BTVT-ED Civil Technology':
+      return 'BTVT-ED Civil Technology';
+    case 'BTVT-ED Electrical Technology':
+      return 'BTVT-ED Electrical Technology';
+    case 'BTVT-ED Electronics Technology':
+      return 'BTVT-ED Electronics Technology';
+    case 'BTVT-ED Food & Service Management':
+      return 'BTVT-ED Food & Service Management';
+    case 'BTVT-ED Mechanical Technology':
+      return 'BTVT-ED Mechanical Technology';
+    default:
+      return 'Bachelor in Industrial Technology';
+  }
+}
+
 
 const signoutBtn = document.getElementById('signout-btn');
 const signoutModal = document.getElementById('signout-modal');
@@ -1172,22 +1456,33 @@ function applyRoleUI(){
   const addSchedBtn = document.getElementById('add-section-schedule-btn');
   const addRemBtn = document.getElementById('add-section-reminder-btn');
 
-  const addSectionBtn = document.getElementById('add-section-btn'); // NEW
-  const confirmChooseBtn = document.getElementById('confirm-choose-btn'); // NEW
+  const addSectionBtn = document.getElementById('add-section-btn');
+  const confirmChooseBtn = document.getElementById('confirm-choose-btn');
+  const courseWrap = document.getElementById('course-dropdown')?.parentElement || null;
 
   if (isStudent && !isIrregularStudent) {
     if (yearWrap) yearWrap.classList.add('hidden');
+    if (courseWrap) courseWrap.classList.add('hidden');
     if (headTitle) headTitle.textContent = 'Your Section';
     if (headSubtitle) headSubtitle.textContent = 'View your section schedule and student list.';
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
-    if (addStuBtn) addStuBtn.classList.remove('hidden'); // regular students may add once
+    if (addStuBtn) addStuBtn.classList.remove('hidden');
     if (addRemBtn) addRemBtn.classList.add('hidden');
     if (addSectionBtn) addSectionBtn.classList.add('hidden');
     if (confirmChooseBtn) confirmChooseBtn.classList.add('hidden');
   }
 
-  if (isIrregularStudent) {
-    // ▼ UPDATED: change text before + after confirmation
+    if (isIrregularStudent) {
+    // show course dropdown, but it is locked by setupCourseDropdown()
+    if (courseWrap) courseWrap.classList.remove('hidden');
+
+    // force label + currentCourse to their picked course (if any)
+    if (IRREGULAR_COURSE) {
+      const courseLabel = document.getElementById('course-selected');
+      if (courseLabel) courseLabel.textContent = IRREGULAR_COURSE;
+      currentCourse = IRREGULAR_COURSE;
+    }
+
     if (IRREGULAR_CONFIRMED.size > 0) {
       if (headTitle) headTitle.textContent = 'Your Section';
       if (headSubtitle) headSubtitle.textContent = 'View your section schedule and student list.';
@@ -1195,15 +1490,17 @@ function applyRoleUI(){
       confirmChooseBtn?.classList.add('hidden');
     } else {
       if (headTitle) headTitle.textContent = 'Choose Your Section';
-      if (headSubtitle) headSubtitle.textContent = 'Select a section.';
+      if (headSubtitle) headSubtitle.textContent = 'Select a section for your course.';
       yearWrap?.classList.remove('hidden');
-      confirmChooseBtn?.classList.add('hidden'); // shown when you actually enroll at least one
+      confirmChooseBtn?.classList.add('hidden');
     }
     if (addSectionBtn) addSectionBtn.classList.add('hidden');
   }
 
+
   if (isTeacher) {
     if (yearWrap) yearWrap.classList.remove('hidden');
+    if (courseWrap) courseWrap.classList.remove('hidden');
     if (addStuBtn) addStuBtn.classList.add('hidden');
     if (addSchedBtn) addSchedBtn.classList.add('hidden');
     if (addRemBtn) addRemBtn.classList.remove('hidden');
@@ -1213,10 +1510,11 @@ function applyRoleUI(){
 
   if (isAdmin) {
     if (yearWrap) yearWrap.classList.remove('hidden');
+    if (courseWrap) courseWrap.classList.remove('hidden');
     if (addStuBtn) addStuBtn.classList.remove('hidden');
     if (addSchedBtn) addSchedBtn.classList.remove('hidden');
     if (addRemBtn) addRemBtn.classList.remove('hidden');
-    if (addSectionBtn) addSectionBtn.classList.remove('hidden'); // show only for admin
+    if (addSectionBtn) addSectionBtn.classList.remove('hidden');
     if (confirmChooseBtn) confirmChooseBtn.classList.add('hidden');
   }
 }
@@ -1252,15 +1550,25 @@ function closeAddSection(){
 
 addSecBtn?.addEventListener('click', ()=>{
   if (!isAdmin) return;
+  if (!currentCourse) {
+    alert('Please select a course first.');
+    return;
+  }
   addSecForm.reset();
-  addSecDegree.value = 'Bachelor in Industrial Technology';
+  addSecDegree.value = degreeForCourse(currentCourse);
   addSecYearLabel.value = '';
   addSecTrack.value = '';
   addSecSection.value = '';
   addSecCode.value = '';
   addSecMismatch.classList.add('hidden');
+
+  // dynamic placeholder example based on course
+  const short = (COURSE_SHORT[currentCourse] || 'BIT');
+  addSecTitle.placeholder = `e.g. ${short.toLowerCase()} 1c-c or ${short.toUpperCase()} 2a`;
+
   openAddSection();
 });
+
 addSecClose?.addEventListener('click', closeAddSection);
 addSecCancel?.addEventListener('click', closeAddSection);
 
@@ -1279,7 +1587,7 @@ function checkYearMismatchUI(parsed){
 }
 
 addSecTitle?.addEventListener('input', ()=>{
-  const parsed = parseSectionTitle(addSecTitle.value);
+  const parsed = parseSectionTitle(addSecTitle.value, currentCourse);
   if (!parsed){
     addSecYearLabel.value = '';
     addSecTrack.value = '';
@@ -1295,14 +1603,23 @@ addSecTitle?.addEventListener('input', ()=>{
   checkYearMismatchUI(parsed);
 });
 
+
 addSecForm?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   if (!isAdmin) return;
-  const parsed = parseSectionTitle(addSecTitle.value);
+
+  const parsed = parseSectionTitle(addSecTitle.value, currentCourse);
+
   if (!parsed || !parsed.code){
-    alert('Please enter a valid title like "bit 1c" or "bit 1c-c".');
+    const course = currentCourse || DEFAULT_COURSE;
+    const short = (COURSE_SHORT[course] || 'BIT').toLowerCase();
+    // Example text: "e.g. bit 1c-c or BIT 2a" / "e.g. btvt-ed cp 1c-c or BTVT-ED CP 2a"
+    addSecMismatch.textContent =
+      `Please enter a valid title like "${short} 1c-c" or "${short.toUpperCase()} 2a".`;
+    addSecMismatch.classList.remove('hidden');
     return;
   }
+
   if (checkYearMismatchUI(parsed)) return;
 
   try{
@@ -1323,7 +1640,8 @@ addSecForm?.addEventListener('submit', async (e)=>{
           yearLabel: parsed.yearLabel,
           track: parsed.track,
           section: parsed.section,
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
+          course: currentCourse || DEFAULT_COURSE
         });
         await refreshCounts(parsed.code);
       }
@@ -1336,15 +1654,25 @@ addSecForm?.addEventListener('submit', async (e)=>{
         track: parsed.track,
         section: parsed.section,
         createdAt: serverTimestamp(),
-        meta: { studentCount: 0, subjectCount: 0 }
+        meta: { studentCount: 0, subjectCount: 0 },
+        course: currentCourse || DEFAULT_COURSE
       });
 
-      EXTRA_SECTIONS[parsed.yearLabel]?.add(parsed.code);
+      const yl = parsed.yearLabel;
+      EXTRA_SECTIONS[yl]?.add(parsed.code);
+      if (!EXTRA_SECTIONS_BY_COURSE[currentCourse || DEFAULT_COURSE]) {
+        EXTRA_SECTIONS_BY_COURSE[currentCourse || DEFAULT_COURSE] = {
+          '1st Year': new Set(),
+          '2nd Year': new Set(),
+          '3rd Year': new Set(),
+          '4th Year': new Set(),
+        };
+      }
+      EXTRA_SECTIONS_BY_COURSE[currentCourse || DEFAULT_COURSE][yl].add(parsed.code);
     }
 
     renderSectionCards();
     populateSectionOptions();
-
     closeAddSection();
   }catch(err){
     console.error(err);
@@ -1355,6 +1683,7 @@ addSecForm?.addEventListener('submit', async (e)=>{
     addSecText.textContent = 'Save';
   }
 });
+
 
 /* ====== Reminders (unchanged logic) ====== */
 const remModal   = document.getElementById('reminder-modal');
@@ -1626,7 +1955,6 @@ const confirmSave = document.getElementById('confirm-choose-save');
 const confirmText = document.getElementById('confirm-choose-text');
 const confirmSpin = document.getElementById('confirm-choose-loader');
 
-// NEW helper: allow student to remove their own enrollment (used by delete buttons in Confirm modal)
 async function unenrollFromSection(sectionId){
   try{
     const secRef = doc(db,'sections',sectionId);
@@ -1636,7 +1964,6 @@ async function unenrollFromSection(sectionId){
       await deleteDoc(d.ref);
     }
     IRREGULAR_ENROLLED.delete(sectionId);
-    // hide Confirm button if nothing left
     const cbtn = document.getElementById('confirm-choose-btn');
     cbtn?.classList.toggle('hidden', IRREGULAR_ENROLLED.size === 0);
   }catch(e){
@@ -1654,7 +1981,6 @@ function openConfirmModal(){
     document.getElementById('confirm-choose-name').textContent = one;
     document.getElementById('confirm-choose-desc').textContent = one && one !== '—' ? getDesc(one) : '—';
 
-    // ▼ NEW: single delete button
     const delBtnId = 'confirm-single-del';
     let del = document.getElementById(delBtnId);
     if (!del){
@@ -1675,7 +2001,6 @@ function openConfirmModal(){
     listWrap.classList.add('hidden');
     listWrap.classList.remove('rem-scroll-capped');
   } else {
-    // ▼ NEW: render list with a delete button per card
     listWrap.innerHTML = list.map(sec => `
       <div class="p-3 rounded-xl border border-emerald-100 bg-emerald-50/50 flex items-start justify-between gap-3">
         <div>
@@ -1688,7 +2013,6 @@ function openConfirmModal(){
     listWrap.classList.remove('hidden');
     singleWrap.classList.add('hidden');
 
-    // scrollable if more than 3
     const makeScrollable = list.length > 3;
     listWrap.classList.toggle('rem-scroll-capped', makeScrollable);
 
@@ -1696,7 +2020,6 @@ function openConfirmModal(){
       btn.addEventListener('click', async (e)=>{
         const sec = e.currentTarget.getAttribute('data-sec');
         await unenrollFromSection(sec);
-        // re-open modal to reflect current list
         closeConfirmModal();
         if (IRREGULAR_ENROLLED.size > 0) openConfirmModal();
       });
@@ -1725,14 +2048,12 @@ confirmSave?.addEventListener('click', async ()=>{
   confirmSpin.classList.remove('hidden');
   confirmText.textContent = 'Saving...';
 
-  // Persist selections (prefer actual enrollments; otherwise fall back to the single picked card)
   const preferredList = Array.from(
     IRREGULAR_ENROLLED.size ? IRREGULAR_ENROLLED : (IRREGULAR_PICK ? [IRREGULAR_PICK] : [])
   );
   await saveIrregularConfirmed(preferredList);
   IRREGULAR_CONFIRMED = new Set(preferredList);
 
-  // Update UI immediately
   closeConfirmModal();
   applyRoleUI();
   renderSectionCards();
@@ -1770,6 +2091,9 @@ async function renameSection(oldId, newParsed){
   const oldRef = doc(db,'sections', oldId);
   const newRef = doc(db,'sections', newParsed.code);
 
+  const oldSnap = await getDoc(oldRef);
+  const oldData = oldSnap.exists() ? oldSnap.data() || {} : {};
+
   await upsertSectionInfo(newParsed.code, {
     name: newParsed.code,
     degree: newParsed.degree,
@@ -1778,7 +2102,8 @@ async function renameSection(oldId, newParsed){
     track: newParsed.track,
     section: newParsed.section,
     createdAt: serverTimestamp(),
-    meta: { studentCount: 0, subjectCount: 0 }
+    meta: { studentCount: 0, subjectCount: 0 },
+    course: oldData.course || currentCourse || DEFAULT_COURSE
   });
 
   await copyDocs(oldRef, newRef, 'students');
@@ -1793,6 +2118,18 @@ async function renameSection(oldId, newParsed){
   if (oldYearLabel) EXTRA_SECTIONS[oldYearLabel].delete(oldId);
   EXTRA_SECTIONS[newParsed.yearLabel]?.add(newParsed.code);
 
+  const course = oldData.course || currentCourse || DEFAULT_COURSE;
+  if (!EXTRA_SECTIONS_BY_COURSE[course]) {
+    EXTRA_SECTIONS_BY_COURSE[course] = {
+      '1st Year': new Set(),
+      '2nd Year': new Set(),
+      '3rd Year': new Set(),
+      '4th Year': new Set(),
+    };
+  }
+  if (oldYearLabel) EXTRA_SECTIONS_BY_COURSE[course][oldYearLabel].delete(oldId);
+  EXTRA_SECTIONS_BY_COURSE[course][newParsed.yearLabel].add(newParsed.code);
+
   if (activeSection === oldId) activeSection = newParsed.code;
 }
 
@@ -1802,9 +2139,9 @@ async function init(){
     document.getElementById('mobile-menu')?.classList.toggle('hidden');
   });
 
-  // Load previously confirmed irregular choices BEFORE applying UI/rendering
   await loadIrregularConfirmed();
 
+  setupCourseDropdown();
   setupYearDropdown();
   applyRoleUI();
   renderSectionCards();
@@ -1812,4 +2149,3 @@ async function init(){
   setDayOptionsForYear();
 }
 init();
-
