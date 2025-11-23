@@ -3,13 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sections • SLSU Lucena BIT</title>
-<script>
-  (function () {
-    var r = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
-    document.documentElement.classList.add('role-' + r);
-  })();
-</script>
+<title>Sections • SLSU Lucena</title>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
@@ -182,23 +176,26 @@ tailwind.config = {
   }
 
   .rem-scroll-capped{ max-height: 360px !important; overflow-y: auto !important; }
+
+  /* NEW: highlight for chosen card in irregular mode */
   .card-picked { box-shadow: 0 24px 40px rgba(10,75,45,.18) !important; outline: 2px solid rgba(10,75,45,.35); outline-offset: 2px; }
-  .role-student #year-filter-wrap{ display:none !important; }
-  .role-student #add-section-btn{ display:none !important; }
-  .role-student #add-section-schedule-btn{ display:none !important; }
-  .role-student #add-section-reminder-btn{ display:none !important; }
-  .role-student #section-action-bar > *:not(#close-section-detail-btn){ display:none !important; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
+<script>
+(function(){
+  const r = (sessionStorage.getItem('auth_role') || localStorage.getItem('auth_role') || 'guest').toLowerCase();
+  document.body.classList.add('role-' + r);
+})();
+</script>
 
 <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
   <div class="px-6 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full"/>
-        <h1 class="text-xl font-bold">SLSU Lucena BIT Class Schedule Viewer</h1>
+        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
       </div>
       <div class="hidden md:flex items-center space-x-2">
         <a href="index.html"     class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition"><i class="ri-home-line"></i><span>Home</span></a>
@@ -250,10 +247,30 @@ tailwind.config = {
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-6">
           <h2 id="section-title" class="text-4xl font-bold text-gray-800 mb-2">Academic Sections</h2>
-          <p id="section-subtitle" class="text-base text-gray-600">Browse all available sections and access their schedules and student lists</p>
+          <p id="section-subtitle" class="text-base text-gray-600">Browse all available course sections and access their schedules and student lists.</p>
         </div>
         
         <div id="year-filter-wrap" class="mb-8 flex items-center gap-3 justify-start">
+
+          <!-- NEW COURSE DROPDOWN (same design as year dropdown) -->
+          <div class="w-full max-w-xs relative">
+            <button id="course-dropdown" class="w-full px-4 py-3 border border-gray-200 rounded-button bg-white text-sm flex items-center justify-between shadow-sm hover:shadow">
+              <span id="course-selected">Select course</span>
+              <span class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100"><i class="ri-arrow-down-s-line text-gray-500"></i></span>
+            </button>
+            <div id="course-options" class="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl p-2 hidden z-10">
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BIT Computer Technology</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Automotive Technology</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Computer Programming</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Civil Technology</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Electrical Technology</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Electronics Technology</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Food &amp; Service Management</div>
+              <div class="course-option px-4 py-2.5 rounded-xl hover:bg-primary/10 cursor-pointer text-sm">BTVT-ED Mechanical Technology</div>
+            </div>
+          </div>
+          <!-- END COURSE DROPDOWN -->
+
           <div class="w-full max-w-xs relative">
             <button id="year-dropdown" class="w-full px-4 py-3 border border-gray-200 rounded-button bg-white text-sm flex items-center justify-between shadow-sm hover:shadow">
               <span id="year-selected">3rd Year</span>
@@ -280,7 +297,14 @@ tailwind.config = {
           </button>
         </div>
 
-        <div id="sections-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <!-- SECTIONS GRID WITH EMPTY INDICATION -->
+        <div id="sections-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div id="sections-empty-state" class="col-span-full flex flex-col items-center justify-center text-center py-10 text-gray-500">
+            <i class="ri-book-2-line text-3xl mb-3 text-gray-400"></i>
+            <p class="font-semibold text-gray-700 mb-1">No sections to display yet.</p>
+            <p class="text-sm">Select a course and year level to display sections.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -387,6 +411,7 @@ tailwind.config = {
     </div>
   </div>
 
+  <!-- Student Modal (kept) -->
   <div id="student-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
       <div class="p-6 border-b border-gray-100">
@@ -432,6 +457,7 @@ tailwind.config = {
 
   <button id="add-schedule-btn" type="button" class="hidden"></button>
 
+  <!-- Schedule Modal (kept) -->
   <div id="schedule-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
       <div class="p-6 modal-head">
@@ -562,6 +588,7 @@ tailwind.config = {
     </div>
   </div>
 
+  <!-- Reminder Modals (kept) -->
   <div id="reminder-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-lg w-full overflow-hidden shadow-2xl">
       <div class="px-6 py-4 modal-head flex items-center justify-between">
@@ -657,6 +684,7 @@ tailwind.config = {
     </div>
   </div>
 
+  <!-- NEW: Confirm Choice Modal (Irregular) -->
   <div id="confirm-choose-modal" class="fixed inset-0 bg-black/50 z-[75] hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl max-w-sm w-full shadow-2xl overflow-hidden">
       <div class="px-5 py-4 modal-head flex items-center justify-between">
@@ -666,11 +694,14 @@ tailwind.config = {
         </button>
       </div>
       <div class="p-5 space-y-3">
+        <!-- CHANGED TEXT ONLY as requested -->
         <div class="text-sm text-gray-600">You Enrolled:</div>
+        <!-- original single preview (kept) -->
         <div id="confirm-choose-single" class="p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
           <div class="text-xl font-bold text-primary" id="confirm-choose-name">—</div>
           <div class="text-sm text-gray-700" id="confirm-choose-desc">—</div>
         </div>
+        <!-- new multi-list (added; hidden when only one) -->
         <div id="confirm-choose-list" class="space-y-2 hidden"></div>
 
         <div class="flex items-center justify-end gap-2 pt-2">
@@ -715,7 +746,7 @@ tailwind.config = {
         </div>
       </div>
       <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
-        <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
+        <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
       </div>
     </div>
   </div>
@@ -754,7 +785,9 @@ tailwind.config = {
   </div>
 </div>
 
+
 <script src="assets/js/profile.js"></script>
+<script src="assets/js/nav.js"></script>
 <script type="module" src="firebase-config.js"></script>
 <script type="module" src="assets/js/sections.js"></script>
 </body>
