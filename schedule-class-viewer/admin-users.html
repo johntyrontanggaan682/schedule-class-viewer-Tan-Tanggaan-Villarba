@@ -1,0 +1,1130 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>User Management • SLSU Lucena</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0A4B2D',
+            primarySoft: '#e5f4eb',
+            accentBlue: '#2563eb',
+            accentAmber: '#f59e0b',
+            accentPurple: '#8b5cf6'
+          },
+          borderRadius: { xl2: '1.25rem' },
+          boxShadow: { soft: '0 20px 60px rgba(15,23,42,.10)' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Remix Icons -->
+   <link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" />
+
+  <style>
+    :where([class^="ri-"])::before{content:"\f3c2"}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f5f7fb;}
+
+    /* ---------- Card polish ---------- */
+    .card{
+      border-radius:1.25rem;
+      background:linear-gradient(180deg,#ffffff,#fbfffb);
+      border:1px solid rgba(15,23,42,.06);
+      box-shadow:0 20px 60px rgba(15,23,42,.06);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      padding:1px;
+      border-radius:1.25rem;
+      opacity:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(59,130,246,.08),rgba(245,158,11,.10));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .card:hover::after{opacity:.9;}
+    .card:hover{transform:translateY(-2px);transition:transform .18s ease;}
+
+    .card-borderless{
+      border-radius:1.25rem;
+      background:linear-gradient(180deg,#ffffff,#f9fafb);
+      border:1px solid rgba(148,163,184,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .card-borderless:hover{box-shadow:0 18px 55px rgba(15,23,42,.08)}
+
+    /* Let Tailwind utility classes control heading sizes (match Academic Sections) */
+    .ud-header h2{ font-size: inherit; letter-spacing:.015em; }
+    .ud-header p{ font-size: inherit; }
+
+    [id^="stat-"]{ text-shadow:0 1px 0 rgba(255,255,255,.8); }
+
+    .sidebar-link{
+      border-radius:.95rem;padding:.55rem .9rem;display:flex;align-items:center;gap:.55rem;
+      font-size:.9rem;color:#64748b;cursor:pointer;transition:background .15s,color .15s,transform .15s;
+    }
+    .sidebar-link i{font-size:1.05rem;}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a;transform:translateX(1px)}
+    .sidebar-link.active{
+      background:linear-gradient(90deg,#e3f3e8,#f1f8f4);color:#14532d;font-weight:600;
+      box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);
+    }
+
+    .avatar-initials{
+      display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:999px;
+      font-size:.75rem;font-weight:600;box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);
+    }
+
+    .scroll-soft{scrollbar-color:rgba(148,163,184,.7) transparent;scrollbar-width:thin;}
+    .scroll-soft::-webkit-scrollbar{height:6px;width:6px;}
+    .scroll-soft::-webkit-scrollbar-thumb{background:#cbd5f5;border-radius:999px;}
+
+    .badge-role{
+      border-radius:999px;font-size:11px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px;font-weight:500;
+    }
+    .badge-status{border-radius:999px;font-size:11px;padding:2px 10px;font-weight:500;}
+
+    .header-accent{position:relative;padding-top:.5rem;}
+    .header-accent::after{
+      content:"";position:absolute;left:0;right:0;bottom:-8px;height:4px;border-radius:999px;
+      background:linear-gradient(90deg,#22c55e22,#10b98166,#22c55e22);filter:blur(.2px);
+    }
+    .filter-glow{ box-shadow:0 10px 30px rgba(16,185,129,.08); }
+
+    .filter-select,#page-size,#search-users{
+      background-image:linear-gradient(180deg,#fff,#f9fafb);
+      border:1px solid rgba(148,163,184,.45);
+      box-shadow:0 1px 0 rgba(255,255,255,.8), inset 0 1px 2px rgba(15,23,42,.04);
+      transition:border-color .15s, box-shadow .15s, transform .15s;
+    }
+    .filter-select:hover,#page-size:hover,#search-users:hover{
+      border-color:rgba(16,185,129,.55);
+      box-shadow:0 0 0 3px rgba(16,185,129,.12), inset 0 1px 2px rgba(15,23,42,.05);
+    }
+    .filter-select:focus,#page-size:focus,#search-users:focus{
+      outline:none;border-color:rgba(16,185,129,.8) !important;
+      box-shadow:0 0 0 4px rgba(16,185,129,.18), inset 0 1px 2px rgba(15,23,42,.06);
+      transform:translateY(-1px);
+    }
+
+    .data-grid{
+      border-collapse:separate;border-spacing:0;width:100%;font-size:0.875rem;
+    }
+    .data-grid thead th{
+      position:sticky;top:0;z-index:1;background:#f8fafc;color:#64748b;
+      font-size:0.75rem;text-transform:uppercase;letter-spacing:.04em;
+      border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-right:1px solid #e5e7eb;
+      padding:.6rem .75rem;text-align:left;
+    }
+    .data-grid thead th:first-child{border-left:1px solid #e2e8f0;border-top-left-radius:.75rem;}
+    .data-grid thead th:last-child{border-top-right-radius:.75rem;}
+    .data-grid tbody td{
+      border-right:1px solid #eef2f7;border-bottom:1px solid #eef2f7;padding:.65rem .8rem;vertical-align:middle;background:#fff;
+    }
+    .data-grid tbody td:first-child{border-left:1px solid #e5e7eb;}
+    .data-grid tbody tr:hover td{background:#f9fafb;}
+    #filter-dept,#filter-role,#filter-status {max-height: 140px !important;overflow-y: auto !important;}
+  </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+
+  <!-- Top navbar -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-primary text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="lucenalogo.jpg" alt="SLSU" class="w-11 h-11 rounded-full object-contain bg-white/80" />
+        <div>
+          <div class="font-semibold text-sm md:text-base leading-tight">SLSU Lucena · User Management</div>
+          <div class="text-[11px] md:text-xs opacity-80"> Class Schedule Viewer</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <!-- moved main layout to the LEFT and slightly reduced side padding -->
+  <div class="pt-20 max-w-7xl ml-0 mr-auto px-2 md:px-4 lg:px-6 flex gap-4">
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:block w-64 shrink-0">
+      <div class="card-borderless p-4 h-[calc(100vh-6rem)] sticky top-24 flex flex-col">
+
+        <!-- ADMIN BLOCK -->
+        <div id="admin-profile" class="flex items-center gap-3 mb-5 p-2 rounded-xl bg-primarySoft/40 border border-primarySoft/70 shadow-sm cursor-pointer hover:bg-primarySoft/70 transition">
+          <div id="admin-avatar" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xs font-semibold text-primary shadow-sm ring-2 ring-primary/20"></div>
+          <div class="flex flex-col justify-center text-left text-xs leading-tight">
+            <div id="admin-name" class="font-semibold text-slate-900 text-sm">Admin</div>
+            <div class="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] text-primary">
+              <i class="ri-shield-user-line text-[11px]"></i>
+              <span>Administrator</span>
+            </div>
+            <div id="admin-email" class="hidden text-[10px] text-slate-500"></div>
+          </div>
+        </div>
+        <input id="admin-photo-input" type="file" accept="image/*" class="hidden" />
+
+        <!-- nav links -->
+        <nav class="space-y-0.5 text-[13px]">
+          <a href="admin-dashboard.html" class="sidebar-link">
+            <i class="ri-dashboard-2-line"></i><span>Dashboard</span>
+          </a>
+          <a class="sidebar-link active">
+            <i class="ri-user-settings-line"></i><span>User Management</span>
+          </a>
+          <a href="admin-acad-sections.html" class="sidebar-link">
+            <i class="ri-layout-grid-line"></i><span>Academic Sections</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto pt-4 border-t border-slate-200/70 flex flex-col gap-2">
+          <button id="admin-home" class="w-full px-3 py-2 rounded-full border border-primary text-primary text-xs flex items-center justify-center gap-1.5 hover:bg-primary/5">
+            <i class="ri-home-4-line text-sm"></i><span>Home</span>
+          </button>
+          <button id="admin-signout" class="w-full px-3 py-2 rounded-full bg-primary text-white text-xs flex items-center justify-center gap-1.5 hover:bg-primary/90 shadow-soft">
+            <i class="ri-logout-box-r-line text-sm"></i><span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 pb-16 space-y-5">
+
+      <!-- Page header + stats -->
+      <section class="space-y-4">
+        <div class="header-accent">
+           <div class="flex items-center gap-2 text:[11px] text-slate-500 mb-1">
+            <a href="admin-dashboard.html" class="hover:underline">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700 font-medium">User Management</span>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <h1 class="text-base md:text-lg font-semibold text-slate-900">User Management</h1>
+              <p class="text-[11px] text-slate-500">Comprehensive directory of students, teachers, and administrators.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="grid gap-3 md:grid-cols-2">
+          <article class="card p-4 flex items-center justify-between">
+            <div>
+              <div class="text-[11px] uppercase tracking-wide text-slate-500">Total Users</div>
+              <div id="stat-total-users" class="mt-1 text-2xl font-bold text-primary">—</div>
+              <div class="text-[11px] text-emerald-600 mt-1 flex items-center gap-1">
+                <i class="ri-arrow-up-s-line text-base"></i><span>Directory size</span>
+              </div>
+            </div>
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <i class="ri-team-line text-lg"></i>
+            </div>
+          </article>
+
+          <article class="card p-4 flex items-center justify-between">
+            <div>
+              <div class="text-[11px] uppercase tracking-wide text-slate-500">Active Users</div>
+              <div id="stat-active-users" class="mt-1 text-2xl font-bold text-emerald-700">—</div>
+              <div class="text-[11px] text-slate-500 mt-1">Currently active accounts</div>
+            </div>
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <i class="ri-checkbox-circle-line text-lg"></i>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Search & filters -->
+      <section class="card filter-glow p-4 md:p-5 space-y-3">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div class="flex-1 flex items-center gap-2">
+            <div class="relative w-full md:w-96">
+              <i class="ri-search-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              <input id="search-users" type="text" placeholder="Search users…" class="w-full pl-8 pr-3 py-2 rounded-full text-sm bg-white filter-select" />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <div class="relative w-[170px]">
+              <select id="filter-role" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+                <option value="">All roles</option>
+                <option value="student">Students</option>
+                <option value="teacher">Teachers</option>
+                <option value="admin">Administrators</option>
+              </select>
+              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+            <div class="relative w-[170px]">
+              <select id="filter-dept" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+                <option value="">All departments/sections</option>
+              </select>
+              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+            <div class="relative w-[170px]">
+              <select id="filter-status" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+                <option value="">All status</option>
+                <option value="regular">Regular</option>
+                <option value="irregular">Irregular</option>
+                <option value="active">Active</option>
+              </select>
+              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+            <button id="btn-clear-filters" class="hidden text-[11px] text-slate-500 hover:text-primary flex items-center gap-1">
+              <i class="ri-eraser-line text-xs"></i><span>Clear filters</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="active-filters" class="flex flex-wrap gap-2 text-[11px] text-slate-600"></div>
+
+        <div id="bulk-panel" class="hidden mt-2 px-3 py-2 rounded-xl bg-primary text-white text-[11px] flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="bulk-count">0 users selected</span>
+            <button id="bulk-select-all" class="underline decoration-white/60 underline-offset-2">Select all</button>
+            <button id="bulk-clear" class="underline decoration-white/60 underline-offset-2">Clear selection</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="bulk-edit" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 flex items-center gap-1">
+              <i class="ri-edit-2-line text-xs"></i> <span>Edit</span>
+            </button>
+            <button id="bulk-delete" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 flex items-center gap-1">
+              <i class="ri-delete-bin-6-line text-xs"></i> <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- User directory table -->
+      <section class="card p-5 md:p-6">
+        <header class="ud-header flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-sm md:text-base font-semibold text-slate-900">User Directory</h2>
+            <p class="text-[11px] text-slate-500">List of all registered accounts in the system.</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span>Show</span>
+            <select id="page-size" class="rounded-full px-2.5 py-1.5 bg-white text-xs filter-select">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            <span>entries</span>
+          </div>
+        </header>
+
+        <!-- NO horizontal scroll -->
+        <div class="overflow-x-hidden scroll-soft rounded-xl border border-slate-200/80">
+          <table class="data-grid">
+            <thead>
+              <tr>
+                <th class="px-3 py-2"><input id="select-all-current" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/50"></th>
+                <th class="px-3 py-2">Name</th>
+                <th class="px-3 py-2">Role</th>
+                <th class="px-3 py-2">Course</th>
+                <th class="px-3 py-2">Department / Section</th>
+                <th class="px-3 py-2">Email</th>
+                <th class="px-3 py-2">Status</th>
+                <th class="px-3 py-2 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="user-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-[12px] text-slate-600">
+          <div id="page-info">Showing 0 users</div>
+          <div class="flex items-center gap-1">
+            <button id="page-prev" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="ri-arrow-left-s-line text-xs"></i><span>Previous</span>
+            </button>
+            <button id="page-next" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span>Next</span><i class="ri-arrow-right-s-line text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- User profile modal -->
+  <div id="user-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+    <div class="bg-white rounded-2xl shadow-soft w-full max-w-md p-6 relative">
+      <button id="user-modal-x" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-sm">
+        <i class="ri-close-line"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div id="user-modal-avatar" class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 font-semibold text-lg overflow-hidden relative">
+          <span id="user-modal-initials">AD</span>
+          <img id="user-modal-photo" src="" alt="" class="hidden absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div>
+          <div id="user-modal-name" class="text-sm font-semibold text-slate-900">User Name</div>
+          <div id="user-modal-email" class="text-[11px] text-slate-500">email@example.com</div>
+          <div class="mt-1 flex flex-wrap items-center gap-1.5">
+            <span id="user-modal-role" class="badge-role bg-emerald-50 text-emerald-700">Role</span>
+            <span id="user-modal-status" class="badge-status bg-emerald-100 text-emerald-700">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-slate-200 mb-4" />
+
+      <div class="grid grid-cols-2 gap-y-3 text-[11px]">
+        <div>
+          <div class="text-slate-500 mb-0.5">User ID</div>
+          <div id="user-modal-id" class="font-medium text-slate-900 text-[12px]">—</div>
+        </div>
+        <div>
+          <div class="text-slate-500 mb-0.5">Department / Section</div>
+          <div id="user-modal-dept" class="font-medium text-slate-900 text-[12px]">—</div>
+        </div>
+        <div>
+          <div class="text-slate-500 mb-0.5">Created At</div>
+          <div id="user-modal-created" class="font-medium text-slate-900 text-[12px]">—</div>
+        </div>
+        <div>
+          <div class="text-slate-500 mb-0.5">Last Login</div>
+          <div id="user-modal-login" class="font-medium text-slate-900 text-[12px]">—</div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2 text-xs">
+        <button id="user-modal-close" class="px-4 py-1.5 rounded-full bg-primary text-white font-medium hover:bg-primary/90">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div id="confirm-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+    <div class="bg-white rounded-2xl shadow-soft w-full max-w-sm p-5 relative">
+      <button id="confirm-close" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-sm">
+        <i class="ri-close-line"></i>
+      </button>
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+          <i class="ri-alert-line text-lg"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Delete user(s)</h3>
+          <p id="confirm-message" class="text-[12px] text-slate-600 mb-4">
+            Are you sure you want to delete these user(s)? This action cannot be undone.
+          </p>
+          <div class="flex justify-end gap-2 text-xs">
+            <button id="confirm-no" class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50">No</button>
+            <button id="confirm-yes" class="px-3 py-1.5 rounded-full bg-rose-600 text-white hover:bg-rose-700">Yes, delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase config -->
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  
+  <!-- Page logic -->
+  <script type="module">
+    import {
+      collection, collectionGroup, getDocs, doc, getDoc, query, where, orderBy, deleteDoc, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+    const { auth, db } = window.__FB;
+    const $ = (id) => document.getElementById(id);
+
+    const adminAvatar     = $("admin-avatar");
+    const adminName       = $("admin-name");
+    const adminEmail      = $("admin-email");
+    const adminProfile    = $("admin-profile");
+    const adminPhotoInput = $("admin-photo-input");
+    const btnSignout      = $("admin-signout");
+    const btnHome         = $("admin-home");
+
+    const statTotal   = $("stat-total-users");
+    const statActive  = $("stat-active-users");
+
+    const searchInput     = $("search-users");
+    const roleFilterSel   = $("filter-role");
+    const deptFilterSel   = $("filter-dept");
+    const statusFilterSel = $("filter-status");
+    const clearFiltersBtn = $("btn-clear-filters");
+    const activeFiltersEl = $("active-filters");
+
+    const bulkPanel        = $("bulk-panel");
+    const bulkCountEl      = $("bulk-count");
+    const bulkSelectAllBtn = $("bulk-select-all");
+    const bulkClearBtn     = $("bulk-clear");
+    const selectAllCurrent = $("select-all-current");
+    const bulkEditBtn      = $("bulk-edit");
+    const bulkDeleteBtn    = $("bulk-delete");
+
+    const tbody       = $("user-tbody");
+    const pageSizeSel = $("page-size");
+    const pageInfo    = $("page-info");
+    const pagePrev    = $("page-prev");
+    const pageNext    = $("page-next");
+
+    // profile modal
+    const userModal          = $("user-modal");
+    const userModalX         = $("user-modal-x");
+    const userModalClose     = $("user-modal-close");
+    const userModalAvatar    = $("user-modal-avatar");
+    const userModalInitials  = $("user-modal-initials");
+    const userModalPhoto     = $("user-modal-photo");
+    const userModalName      = $("user-modal-name");
+    const userModalEmail     = $("user-modal-email");
+    const userModalRole      = $("user-modal-role");
+    const userModalStatus    = $("user-modal-status");
+    const userModalId        = $("user-modal-id");
+    const userModalDept      = $("user-modal-dept");
+    const userModalCreated   = $("user-modal-created");
+    const userModalLogin     = $("user-modal-login");
+
+    // delete confirmation modal
+    const confirmModal   = $("confirm-modal");
+    const confirmMsgEl   = $("confirm-message");
+    const confirmYesBtn  = $("confirm-yes");
+    const confirmNoBtn   = $("confirm-no");
+    const confirmCloseBtn= $("confirm-close");
+
+    let ALL_USERS = [];
+    let FILTERED_USERS = [];
+    let CURRENT_PAGE = 1;
+    let PAGE_SIZE = parseInt(pageSizeSel.value || "10", 10);
+    const SELECTED_IDS = new Set();
+    let PENDING_DELETE_IDS = [];
+
+    // joins
+    let OWNER_SECTIONS = new Map();
+    let STUDENTID_SECTIONS = new Map();
+    let TEACHER_DEPT = new Map();
+    let IRREGULAR_SECTIONS = new Map();  // key can be uid OR email(lowercase) OR studentId
+
+    // live dropdown data
+    let LIVE_SECTIONS = [];
+    let LIVE_DEPTS    = [];
+
+    let USERS_UNSUBSCRIBE = null;
+    let SECTIONS_UNSUB = null;
+    let TEACHERS_UNSUB = null;
+
+    function initials(name){
+      return (name || "User").trim().split(/\s+/).slice(0,2).map(p => p[0]?.toUpperCase() || "").join("") || "U";
+    }
+
+    function toast(msg){
+      const el = document.createElement("div");
+      el.textContent = msg;
+      el.className = "fixed bottom-6 right-6 bg-primary text-white text-xs px-4 py-2 rounded-full shadow-soft z-[90]";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2600);
+    }
+
+    btnSignout.addEventListener("click", async () => {
+      try { await signOut(auth); } catch(e){}
+      sessionStorage.clear();
+      location.href = "about.html";
+    });
+
+    btnHome.addEventListener("click", () => { window.location.href = "index.html"; });
+
+    if (adminProfile && adminPhotoInput) {
+      adminProfile.addEventListener("click", () => { adminPhotoInput.click(); });
+      adminPhotoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          adminAvatar.innerHTML = "";
+          const img = document.createElement("img");
+          img.src = ev.target.result; img.alt = "Admin photo";
+          img.className = "w-10 h-10 rounded-full object-cover";
+          adminAvatar.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function normalizeRole(role){
+      const r = (role || "").toString().toLowerCase();
+      if (r.startsWith("stud")) return "Student";
+      if (r.startsWith("teach")) return "Teacher";
+      if (r.startsWith("admin")) return "Administrator";
+      return role || "User";
+    }
+
+    function normalizeStatus(status){
+      const s = (status || "").toString().toLowerCase();
+      if (s.includes("irregular")) return "Irregular";
+      if (s.includes("regular")) return "Regular";
+      if (s.includes("pending")) return "Pending";
+      if (s.includes("inactive") || s.includes("blocked") || s.includes("disabled")) return "Inactive";
+      if (s) return s.charAt(0).toUpperCase() + s.slice(1);
+      return "Active";
+    }
+
+    function statusClasses(status){
+      const s = normalizeStatus(status).toLowerCase();
+      if (s === "inactive") return "badge-status bg-rose-100 text-rose-700";
+      if (s === "pending" || s === "irregular") return "badge-status bg-amber-100 text-amber-700";
+      return "badge-status bg-emerald-100 text-emerald-700";
+    }
+
+    function roleClasses(role){
+      const r = normalizeRole(role).toLowerCase();
+      if (r === "student") return "badge-role bg-emerald-50 text-emerald-700";
+      if (r === "teacher") return "badge-role bg-sky-50 text-sky-700";
+      if (r === "administrator") return "badge-role bg-rose-50 text-rose-700";
+      return "badge-role bg-slate-100 text-slate-700";
+    }
+
+    function formatDateTime(ts){
+      if (!ts) return "—";
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return "—";
+      const opts = { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" };
+      return d.toLocaleString(undefined, opts);
+    }
+
+    async function buildOwnerAndStudentMaps(){
+      const ownerMap = new Map();
+      const idMap = new Map();
+      try{
+        const cg = collectionGroup(db, "students");
+        const snap = await getDocs(cg);
+        snap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          const parent = docSnap.ref.parent;
+          const sectionDoc = parent.parent;
+          const sidFallback = sectionDoc?.id || data.section || "";
+          const sectionsField = Array.isArray(data.sections) && data.sections.length
+            ? data.sections.filter(Boolean)
+            : [data.section || sidFallback].filter(Boolean);
+          const ownerId = (data.ownerId || "").toString().trim();
+          if (ownerId){
+            if (!ownerMap.has(ownerId)) ownerMap.set(ownerId, new Set());
+            const set = ownerMap.get(ownerId);
+            sectionsField.forEach(sec => { if (sec) set.add(sec); });
+          }
+          const studId = (data.studentId || data.id || "").toString().trim();
+          if (studId){
+            if (!idMap.has(studId)) idMap.set(studId, new Set());
+            const set = idMap.get(studId);
+            sectionsField.forEach(sec => { if (sec) set.add(sec); });
+          }
+        });
+      }catch(e){ console.error("buildOwnerAndStudentMaps failed", e); }
+      OWNER_SECTIONS = ownerMap;
+      STUDENTID_SECTIONS = idMap;
+    }
+
+    async function buildTeacherDeptMap(){
+      const map = new Map();
+      try{
+        const snap = await getDocs(collection(db, "teachers"));
+        snap.forEach(docSnap => {
+          const d = docSnap.data() || {};
+          const owner = (d.ownerId || "").trim();
+          if (!owner) return;
+          const dept = d.department || d.dept || d.t_dept || "";
+          if (dept) map.set(owner, dept);
+        });
+      }catch(e){ console.error("teacher dept fetch failed", e); }
+      TEACHER_DEPT = map;
+    }
+
+    async function buildIrregularSectionsMap(){
+      const map = new Map();
+      try{
+        const snap = await getDocs(collection(db, "irregular_choices"));
+        snap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          const arr = Array.isArray(data.sections) ? data.sections.filter(Boolean) : [];
+          if (!arr.length) return;
+          const key = (docSnap.id || "").toString().trim();
+          if (!key) return;
+          map.set(key, arr);
+          if (key.includes("@")) map.set(key.toLowerCase(), arr);
+          const uid = (data.uid || data.userId || "").toString().trim();
+          if (uid) map.set(uid, arr);
+          const email = (data.email || "").toString().trim().toLowerCase();
+          if (email) map.set(email, arr);
+          const studId = (data.studentId || "").toString().trim();
+          if (studId) map.set(studId, arr);
+        });
+      }catch(e){ console.error("irregular choices fetch failed", e); }
+      IRREGULAR_SECTIONS = map;
+    }
+
+    function startLiveSections(){
+      if (SECTIONS_UNSUB) SECTIONS_UNSUB();
+      SECTIONS_UNSUB = onSnapshot(collection(db, "sections"), (snap) => {
+        const set = new Set();
+        snap.forEach(d => {
+          const data = d.data() || {};
+          const codeRaw = data.name || d.id;
+          const code = String(codeRaw || "").trim();
+          if (code && code !== "${sec}") set.add(code);
+        });
+        LIVE_SECTIONS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+        updateFilterOptionsForRole();
+      });
+    }
+
+    function startLiveTeacherDepts(){
+      if (TEACHERS_UNSUB) TEACHERS_UNSUB();
+      TEACHERS_UNSUB = onSnapshot(collection(db, "teachers"), (snap) => {
+        const set = new Set();
+        snap.forEach(d => {
+          const data = d.data() || {};
+          const deptRaw = data.department || data.dept || data.t_dept || "";
+          const dept = String(deptRaw || "").trim();
+          if (dept && dept !== "${sec}") set.add(dept);
+        });
+        LIVE_DEPTS = Array.from(set).sort((a,b)=>a.localeCompare(b));
+        updateFilterOptionsForRole();
+      });
+    }
+
+    function buildDeptLabelFull(u){
+      const role = normalizeRole(u.role).toLowerCase();
+      if (role === "teacher") return TEACHER_DEPT.get(u.docId) || u.department || "—";
+
+      if (role === "student"){
+        const statusLower = normalizeStatus(u.status).toLowerCase();
+        const sectionsSet = new Set();
+        if (u.section) sectionsSet.add(u.section);
+        if (u.yearSection) sectionsSet.add(u.yearSection);
+        const fromOwnerSet = OWNER_SECTIONS.get(u.docId);
+        if (fromOwnerSet){ fromOwnerSet.forEach(sec => { if (sec) sectionsSet.add(sec); }); }
+        const sidKey = (u.studentId || "").toString().trim();
+        if (sidKey){
+          const fromIdSet = STUDENTID_SECTIONS.get(sidKey);
+          if (fromIdSet){ fromIdSet.forEach(sec => { if (sec) sectionsSet.add(sec); }); }
+        }
+
+        if (statusLower === "irregular"){
+          const tryKeys = [
+            u.docId,
+            (u.email || "").toString().trim().toLowerCase(),
+            (u.studentId || "").toString().trim()
+          ].filter(Boolean);
+          let irrArr = null;
+          for (const k of tryKeys){
+            if (IRREGULAR_SECTIONS.has(k)){ irrArr = IRREGULAR_SECTIONS.get(k); break; }
+          }
+
+          if (Array.isArray(irrArr) && irrArr.length){
+            const chosen = irrArr.map(s => String(s||"").trim()).filter(Boolean);
+            const seen = new Set();
+            const ordered = [];
+            chosen.forEach(sec => { if (sec && !seen.has(sec)){ seen.add(sec); ordered.push(sec); }});
+            sectionsSet.forEach(sec => { const s = String(sec||"").trim(); if (s && !seen.has(s)) ordered.push(s); });
+            return ordered.length ? ordered.join(" • ") : (u.section || u.yearSection || u.department || "—");
+          }
+          const fallback = Array.from(sectionsSet).filter(Boolean);
+          return fallback.length ? fallback.join(" • ") : (u.section || u.yearSection || u.department || "—");
+        }
+
+        const first = Array.from(sectionsSet).filter(Boolean);
+        [{
+	  "resource": "/c:/Users/John Tyron/CLONEE/schedule-class-viewer-Tan-Tanggaan-Villarba/schedule-class-viewer/admin-users.html",
+	  "owner": "_generated_diagnostic_collection_name_#1",
+	  "severity": 8,
+	  "message": "')' expected.",
+	  "source": "javascript",
+	  "startLineNumber": 744,
+	  "startColumn": 92,
+	  "endLineNumber": 744,
+	  "endColumn": 93,
+	  "origin": "extHost1"
+}]
+      }
+      return u.department || "—";
+    }
+
+    function buildDeptLabelPreview(u){
+      const role = normalizeRole(u.role).toLowerCase();
+      if (role === "student"){
+        const full = buildDeptLabelFull(u);
+        if (!full || full === "—") return "—";
+        const parts = full.split("•").map(s => s.trim()).filter(Boolean);
+        const statusLower = normalizeStatus(u.status).toLowerCase();
+        if (statusLower === "irregular" && parts.length > 1) return parts[0] + "...";
+        return parts.join(" • ");
+      }
+      if (role === "teacher") return TEACHER_DEPT.get(u.docId) || u.department || "—";
+      return u.department || "—";
+    }
+
+    function updateFilterOptionsForRole(){
+      const role = roleFilterSel.value;
+      let deptPlaceholder = "All departments/sections";
+      let options = [];
+
+      if (role === "student"){ deptPlaceholder = "All sections"; options = LIVE_SECTIONS.slice(); }
+      else if (role === "teacher"){ deptPlaceholder = "All departments"; options = LIVE_DEPTS.slice(); }
+      else { const set = new Set(); LIVE_SECTIONS.forEach(s=>set.add(s)); LIVE_DEPTS.forEach(d=>set.add(d));
+        options = Array.from(set).sort((a,b)=>a.localeCompare(b)); deptPlaceholder = "All departments/sections"; }
+
+      const prev = deptFilterSel.value;
+      deptFilterSel.innerHTML = `<option value="">${deptPlaceholder}</option>`;
+      options.forEach(d => { const opt = document.createElement("option"); opt.value = d; opt.textContent = d; deptFilterSel.appendChild(opt); });
+      if (prev && options.includes(prev)) deptFilterSel.value = prev;
+
+      if (role === "student"){
+        statusFilterSel.disabled = false;
+        statusFilterSel.innerHTML = `
+          <option value="">All status</option>
+          <option value="regular">Regular</option>
+          <option value="irregular">Irregular</option>
+          <option value="active">Active</option>`;
+        if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
+      } else if (role === "teacher"){
+        statusFilterSel.innerHTML = `<option value="active">Active</option>`;
+        statusFilterSel.value = "active"; statusFilterSel.disabled = true;
+      } else {
+        statusFilterSel.disabled = false;
+        statusFilterSel.innerHTML = `
+          <option value="">All status</option>
+          <option value="regular">Regular</option>
+          <option value="irregular">Irregular</option>
+          <option value="active">Active</option>`;
+        if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
+      }
+    }
+
+    function openUserModal(u){
+      userModalInitials.textContent = (u.name || "U").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("");
+      if (u.photoURL){
+        userModalPhoto.src = u.photoURL; userModalPhoto.classList.remove("hidden"); userModalInitials.classList.add("hidden");
+      } else {
+        userModalPhoto.src = ""; userModalPhoto.classList.add("hidden"); userModalInitials.classList.remove("hidden");
+      }
+      userModalName.textContent  = u.name || "Unknown User";
+      userModalEmail.textContent = u.email || "—";
+      userModalRole.textContent  = normalizeRole(u.role);
+      userModalRole.className    = roleClasses(u.role);
+      userModalStatus.textContent = normalizeStatus(u.status);
+      userModalStatus.className   = statusClasses(u.status);
+      const idLabel = u.studentId || u.employeeId || u.userCode || u.docId || "—";
+      userModalId.textContent = idLabel;
+      const fullDept = buildDeptLabelFull(u) || "—";
+      if (!fullDept || fullDept === "—"){ userModalDept.textContent = "—"; }
+      else {
+        const parts = fullDept.split("•").map(s => s.trim()).filter(Boolean);
+        userModalDept.innerHTML = parts.length > 1
+          ? parts.map((p, idx) => idx < parts.length - 1 ? `${p},` : p).join("<br>")
+          : parts[0];
+      }
+      userModalCreated.textContent = formatDateTime(u.createdAt || null);
+      userModalLogin.textContent   = u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "Never";
+      userModal.classList.remove("hidden"); userModal.classList.add("flex");
+    }
+    function closeUserModal(){ userModal.classList.add("hidden"); userModal.classList.remove("flex"); }
+    [userModalX, userModalClose].forEach(btn => { if (btn) btn.addEventListener("click", closeUserModal); });
+    if (userModal){ userModal.addEventListener("click", (e) => { if (e.target === userModal) closeUserModal(); }); }
+
+    function renderFilterChips(){
+      activeFiltersEl.innerHTML = "";
+      const chips = [];
+      const qText = searchInput.value.trim();
+      if (qText) chips.push({ type:"search", label:`Search: "${qText}"` });
+      if (roleFilterSel.value){
+        const labelMap = { student:"Students", teacher:"Teachers", admin:"Administrators" };
+        chips.push({ type:"role", label:`Role: ${labelMap[roleFilterSel.value] || roleFilterSel.value}` });
+      }
+      if (deptFilterSel.value) chips.push({ type:"dept", label:`Dept/Section: ${deptFilterSel.value}` });
+      if (statusFilterSel.value){
+        const label = statusFilterSel.options[statusFilterSel.selectedIndex]?.textContent || statusFilterSel.value;
+        chips.push({ type:"status", label:`Status: ${label}` });
+      }
+      chips.forEach(chip => {
+        const span = document.createElement("button");
+        span.className = "flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700";
+        span.innerHTML = `<span>${chip.label}</span><i class="ri-close-line text-[10px]"></i>`;
+        span.addEventListener("click", () => {
+          if (chip.type === "search") searchInput.value = "";
+          if (chip.type === "role") { roleFilterSel.value = ""; updateFilterOptionsForRole(); }
+          if (chip.type === "dept") deptFilterSel.value = "";
+          if (chip.type === "status") statusFilterSel.value = "";
+          applyFilters();
+        });
+        activeFiltersEl.appendChild(span);
+      });
+      clearFiltersBtn.classList.toggle("hidden", chips.length === 0);
+    }
+
+    function applyFilters(){
+      const term = searchInput.value.trim().toLowerCase();
+      const roleFilter = roleFilterSel.value;
+      const deptFilter = deptFilterSel.value;
+      const statusFilter = statusFilterSel.value;
+
+      FILTERED_USERS = ALL_USERS.filter(u => {
+        if (term){
+          const hay = [u.name, u.email, u.role, buildDeptLabelFull(u), u.studentId, u.employeeId, u.userCode, u.course].filter(Boolean).join(" ").toLowerCase();
+          if (!hay.includes(term)) return false;
+        }
+        if (roleFilter){
+          const r = (u.role || "").toString().toLowerCase();
+          if (roleFilter === "student" && !r.startsWith("stud")) return false;
+          if (roleFilter === "teacher" && !r.startsWith("teach")) return false;
+          if (roleFilter === "admin" && !r.startsWith("admin")) return false;
+        }
+        if (deptFilter){
+          const d = buildDeptLabelFull(u); if (!d) return false;
+          const parts = d.split("•").map(s => s.trim());
+          if (!parts.includes(deptFilter)) return false;
+        }
+        if (statusFilter){
+          const s = normalizeStatus(u.status).toLowerCase();
+          if (s !== statusFilter.toLowerCase()) return false;
+        }
+        return true;
+      });
+
+      CURRENT_PAGE = 1;
+      renderFilterChips();
+      renderTable();
+    }
+
+    function renderTable(){
+      tbody.innerHTML = "";
+      if (!FILTERED_USERS.length){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="8" class="px-4 py-6 text-center text-[11px] text-slate-400">No users match the current filters.</td>`;
+        tbody.appendChild(tr);
+        pageInfo.textContent = "Showing 0 users";
+        selectAllCurrent.checked = false;
+        updateBulkBar();
+        return;
+      }
+      PAGE_SIZE = parseInt(pageSizeSel.value || "10", 10);
+      const total = FILTERED_USERS.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (CURRENT_PAGE > totalPages) CURRENT_PAGE = totalPages;
+      const start = (CURRENT_PAGE - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, total);
+      const pageItems = FILTERED_USERS.slice(start, end);
+      pageInfo.textContent = `Showing ${start + 1} to ${end} of ${total} users`;
+      pagePrev.disabled = CURRENT_PAGE <= 1;
+      pageNext.disabled = CURRENT_PAGE >= totalPages;
+
+      pageItems.forEach(u => {
+        const tr = document.createElement("tr");
+        const isSelected = SELECTED_IDS.has(u.docId);
+        const avatarHtml = u.photoURL
+          ? `<img src="${u.photoURL}" alt="" class="w-8 h-8 rounded-full object-cover" />`
+          : `<div class="avatar-initials bg-emerald-50 text-emerald-700 w-8 h-8 text-[12px]">${(u.name||"U").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("")}</div>`;
+        const deptPreview = buildDeptLabelPreview(u) || "—";
+        const courseText = (u.course || "").toString().trim() || "—";
+        const idLabel = u.studentId || u.employeeId || u.userCode || "";
+        tr.innerHTML = `
+          <td><input type="checkbox" class="user-select w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/50" data-id="${u.docId}" ${isSelected ? "checked" : ""} /></td>
+          <td>
+            <button class="flex items-center gap-2 min-w-0 text-left w-full user-row-open" data-id="${u.docId}">
+              ${avatarHtml}
+              <span class="min-w-0">
+                <div class="text-[13px] font-medium text-slate-900 truncate">${u.name || "Unknown User"}</div>
+                <div class="text-[12px] text-slate-500 truncate">${idLabel || u.docId}</div>
+              </span>
+            </button>
+          </td>
+          <td><span class="${roleClasses(u.role)}">${normalizeRole(u.role)}</span></td>
+          <td><div class="text-[12px] text-slate-700 truncate max-w-[160px]">${courseText}</div></td>
+          <td><div class="text-[12px] text-slate-700 truncate max-w-[220px]">${deptPreview}</div></td>
+          <td><div class="text-[12px] text-slate-700 truncate max-w-[240px]">${u.email || "—"}</div></td>
+          <td><span class="${statusClasses(u.status)}">${normalizeStatus(u.status)}</span></td>
+          <td class="text-right"><button class="px-2.5 py-1 rounded-full border border-slate-200 text-[12px] text-slate-700 hover:border-primary/60 hover:text-primary user-row-open" data-id="${u.docId}">View</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll(".user-select").forEach(cb => {
+        cb.addEventListener("change", (e) => {
+          const id = e.target.getAttribute("data-id");
+          if (!id) return;
+          if (e.target.checked) SELECTED_IDS.add(id); else SELECTED_IDS.delete(id);
+          updateBulkBar();
+        });
+      });
+      tbody.querySelectorAll(".user-row-open").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const id = e.currentTarget.getAttribute("data-id");
+          const user = ALL_USERS.find(u => u.docId === id);
+          if (user) openUserModal(user);
+        });
+      });
+
+      const allIdsThisPage = pageItems.map(u => u.docId);
+      const selectedCountForPage = allIdsThisPage.filter(id => SELECTED_IDS.has(id)).length;
+      selectAllCurrent.checked = selectedCountForPage === allIdsThisPage.length && allIdsThisPage.length > 0;
+      updateBulkBar();
+    }
+
+    function updateBulkBar(){
+      const count = SELECTED_IDS.size;
+      if (!count){
+        bulkPanel.classList.add("hidden");
+        bulkCountEl.textContent = "0 users selected";
+        if (bulkEditBtn) bulkEditBtn.classList.add("hidden");
+        if (bulkDeleteBtn) bulkDeleteBtn.classList.add("hidden");
+        return;
+      }
+      bulkPanel.classList.remove("hidden");
+      bulkCountEl.textContent = `${count} user${count!==1?"s":""} selected`;
+      if (bulkDeleteBtn) bulkDeleteBtn.classList.remove("hidden");
+      if (bulkEditBtn){
+        if (count === 1){
+          const onlyId = Array.from(SELECTED_IDS)[0];
+          const u = ALL_USERS.find(x => x.docId === onlyId);
+          const isAdmin = u && normalizeRole(u.role).toLowerCase() === "administrator";
+          if (isAdmin) bulkEditBtn.classList.remove("hidden"); else bulkEditBtn.classList.add("hidden");
+        } else {
+          bulkEditBtn.classList.add("hidden");
+        }
+      }
+    }
+
+    selectAllCurrent.addEventListener("change", () => {
+      if (!FILTERED_USERS.length) return;
+      PAGE_SIZE = parseInt(pageSizeSel.value || "10", 10);
+      const total = FILTERED_USERS.length;
+      const start = (CURRENT_PAGE - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, total);
+      const pageItems = FILTERED_USERS.slice(start, end);
+      const ids = pageItems.map(u => u.docId);
+      if (selectAllCurrent.checked) ids.forEach(id => SELECTED_IDS.add(id)); else ids.forEach(id => SELECTED_IDS.delete(id));
+      renderTable();
+    });
+    bulkSelectAllBtn.addEventListener("click", () => { FILTERED_USERS.forEach(u => SELECTED_IDS.add(u.docId)); renderTable(); });
+    bulkClearBtn.addEventListener("click", () => { SELECTED_IDS.clear(); renderTable(); });
+
+    function openConfirmModal(){
+      const ids = Array.from(SELECTED_IDS); if (!ids.length) return;
+      PENDING_DELETE_IDS = ids;
+      if (ids.length === 1){
+        const u = ALL_USERS.find(x => x.docId === ids[0]);
+        let text = `Are you sure you want to delete ${u?.name || u?.email || ids[0]}? This action cannot be undone.`;
+        if (u?.name && u?.email) text = `Are you sure you want to delete ${u.name} (${u.email})? This action cannot be undone.`;
+        confirmMsgEl.textContent = text;
+      } else {
+        confirmMsgEl.textContent = `Are you sure you want to delete ${ids.length} users? This action cannot be undone.`;
+      }
+      confirmModal.classList.remove("hidden"); confirmModal.classList.add("flex");
+    }
+    function closeConfirmModal(){ confirmModal.classList.add("hidden"); confirmModal.classList.remove("flex"); PENDING_DELETE_IDS = []; }
+    if (bulkDeleteBtn) bulkDeleteBtn.addEventListener("click", openConfirmModal);
+    if (confirmNoBtn) confirmNoBtn.addEventListener("click", closeConfirmModal);
+    if (confirmCloseBtn) confirmCloseBtn.addEventListener("click", closeConfirmModal);
+    if (confirmModal){ confirmModal.addEventListener("click", (e) => { if (e.target === confirmModal) closeConfirmModal(); }); }
+    if (confirmYesBtn){
+      confirmYesBtn.addEventListener("click", async () => {
+        const ids = [...PENDING_DELETE_IDS];
+        closeConfirmModal();
+        try {
+          await Promise.all(ids.map(id => deleteDoc(doc(db, "users", id))));
+          const idSet = new Set(ids);
+          ALL_USERS = ALL_USERS.filter(u => !idSet.has(u.docId));
+          ids.forEach(id => SELECTED_IDS.delete(id));
+          applyFilters();
+          const total = ALL_USERS.length;
+          const activeCount = ALL_USERS.filter(u => normalizeStatus(u.status).toLowerCase() === "active").length;
+          statTotal.textContent  = String(total);
+          statActive.textContent = String(activeCount);
+          toast("Selected users deleted.");
+        } catch (e){ console.error(e); toast("Failed to delete some users."); }
+      });
+    }
+
+    ["keyup","change"].forEach(ev => { searchInput.addEventListener(ev, () => applyFilters()); });
+    roleFilterSel.addEventListener("change", () => { updateFilterOptionsForRole(); applyFilters(); });
+    [deptFilterSel, statusFilterSel].forEach(sel => { sel.addEventListener("change", applyFilters); });
+    clearFiltersBtn.addEventListener("click", () => {
+      searchInput.value = ""; roleFilterSel.value = ""; updateFilterOptionsForRole();
+      deptFilterSel.value = ""; statusFilterSel.value = ""; applyFilters();
+    });
+
+    async function loadUsers(){
+      const usersCol = collection(db, "users");
+      const qRef = query(usersCol, orderBy("name"));
+      if (USERS_UNSUBSCRIBE){ USERS_UNSUBSCRIBE(); USERS_UNSUBSCRIBE = null; }
+      USERS_UNSUBSCRIBE = onSnapshot(qRef, (snap) => {
+        const list = [];
+        snap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          const createdAt = data.createdAt?.toMillis?.() || null;
+          const lastLoginAt =
+            data.lastLogin?.toMillis?.() ||
+            data.lastLoginAt?.toMillis?.() ||
+            data.lastLoginTime?.toMillis?.() ||
+            data.lastSignInAt?.toMillis?.() ||
+            data.last_sign_in?.toMillis?.() || null;
+
+          list.push({
+            docId: docSnap.id, name: data.name || data.fullName || "Unnamed User",
+            email: data.email || "", role: data.role || "", status: data.status || "Active",
+            studentId: (data.studentId || "").toString().trim(),
+            employeeId: data.employeeId || data.empId || "", userCode: data.userCode || "",
+            department: data.department || data.dept || data.t_dept || "",
+            section: data.section || data.yearSection || "", yearSection: data.yearSection || "",
+            course: data.course || "",
+            createdAt, lastLoginAt, photoURL: data.photoURL || data.avatarUrl || ""
+          });
+        });
+        ALL_USERS = list.map(u => ({ ...u }));
+        const total = ALL_USERS.length;
+        const activeCount = ALL_USERS.filter(u => normalizeStatus(u.status).toLowerCase() === "active").length;
+        statTotal.textContent   = String(total);
+        statActive.textContent  = String(activeCount);
+        updateFilterOptionsForRole();
+        FILTERED_USERS = [...ALL_USERS];
+        renderFilterChips();
+        renderTable();
+      }, (error) => { console.error("Users snapshot error:", error); });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user){ location.href = "about.html"; return; }
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        const data = snap.exists() ? snap.data() : {};
+        const role = (data.role || "guest").toLowerCase();
+        adminAvatar.textContent = (data.name || user.displayName || "Admin").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("");
+        adminName.textContent   = data.name || user.displayName || "Admin User";
+        if (adminEmail) adminEmail.textContent = data.email || user.email || "";
+        if (role !== "admin"){ alert("Access denied. Admin only."); location.href="index.html"; return; }
+        startLiveSections(); startLiveTeacherDepts();
+        await Promise.all([buildOwnerAndStudentMaps(), buildTeacherDeptMap(), buildIrregularSectionsMap()]);
+        await loadUsers();
+        setInterval(async () => {
+          await Promise.all([buildOwnerAndStudentMaps(), buildTeacherDeptMap(), buildIrregularSectionsMap()]);
+          renderTable();
+        }, 30000);
+      } catch (e){
+        console.error(e);
+        startLiveSections(); startLiveTeacherDepts();
+        await Promise.all([buildOwnerAndStudentMaps(), buildTeacherDeptMap(), buildIrregularSectionsMap()]);
+        await loadUsers();
+      }
+    });
+
+  </script>
+</body>
+</html>
