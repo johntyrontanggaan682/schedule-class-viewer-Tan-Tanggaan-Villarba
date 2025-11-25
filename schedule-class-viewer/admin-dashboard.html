@@ -1,0 +1,1427 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard • SLSU Lucena</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0A4B2D',
+            primarySoft: '#e5f4eb',
+            accentBlue: '#2563eb',
+            accentAmber: '#f59e0b',
+            accentPurple: '#8b5cf6'
+          },
+          borderRadius: {
+            xl2: '1.25rem'
+          },
+          boxShadow: {
+            soft: '0 20px 60px rgba(15,23,42,.10)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
+
+  <!-- Remix Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" />
+
+  <style>
+    :where([class^="ri-"])::before{content:"\f3c2"}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f5f7fb;}
+
+    /* ---------- Card polish ---------- */
+    .card{
+      border-radius:1.25rem;
+      background:
+        linear-gradient(180deg,#ffffff,#fbfffb);
+      border:1px solid rgba(15,23,42,.06);
+      box-shadow:0 18px 55px rgba(15,23,42,.06);
+      position:relative;
+      overflow:hidden;
+    }
+    /* allow overflow only on the Academic Sections card */
+    .card-overflow-visible{
+      overflow:visible;
+      z-index:20;
+      /* removed z-index so header stays on top */
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      padding:1px;
+      border-radius:1.25rem;
+      opacity:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(59,130,246,.08),rgba(245,158,11,.10));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .card:hover::after{opacity:.9;}
+    .card:hover{transform:translateY(-2px);transition:transform .18s ease;}
+
+    .card-borderless{
+      border-radius:1.25rem;
+      background:linear-gradient(180deg,#ffffff,#f9fafb);
+      border:1px solid rgba(148,163,184,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .card-borderless:hover{box-shadow:0 18px 55px rgba(15,23,42,.08)}
+
+    .metric-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 22px 60px rgba(15,23,42,.09);
+      border-color:rgba(10,75,45,.30);
+      transition:.18s;
+    }
+
+    .card h2{
+      letter-spacing:.015em;
+    }
+    [id^="metric-"]{
+      text-shadow:0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .sidebar-link{
+      border-radius:.95rem;
+      padding:.55rem .9rem;
+      display:flex;align-items:center;gap:.55rem;
+      font-size:.9rem;color:#64748b;cursor:pointer;
+      transition:background .15s,color .15s,transform .15s;
+    }
+    .sidebar-link i{font-size:1.05rem;}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a;transform:translateX(1px)}
+    .sidebar-link.active{
+      background:linear-gradient(90deg,#e3f3e8,#f1f8f4);
+      color:#14532d;font-weight:600;
+      box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);
+    }
+    .avatar-initials{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:2rem;height:2rem;border-radius:999px;font-size:.75rem;font-weight:600;
+      box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);
+    }
+
+    .scroll-soft{scrollbar-color:rgba(148,163,184,.7) transparent;scrollbar-width:thin;}
+    .scroll-soft::-webkit-scrollbar{height:6px;width:6px;}
+    .scroll-soft::-webkit-scrollbar-thumb{background:#cbd5f5;border-radius:999px;}
+
+    .analytics-bg{
+      background:
+        radial-gradient(circle at 0 0, rgba(16,185,129,0.16), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(245,158,11,0.16), transparent 55%),
+        linear-gradient(180deg,#ffffff,#f9fafb);
+      border:1px solid rgba(148,163,184,.35);
+      backdrop-filter:saturate(1.05);
+    }
+
+    /* ---------- Dropdown (year filter select base, still hidden) ---------- */
+    #year-filter{
+      background-image:
+        linear-gradient(180deg,#fff,#f9fafb);
+      border:1px solid rgba(148,163,184,.45);
+      box-shadow:0 1px 0 rgba(255,255,255,.8), inset 0 1px 2px rgba(15,23,42,.04);
+      transition:border-color .15s, box-shadow .15s, transform .15s;
+    }
+    #year-filter:hover{
+      border-color:rgba(16,185,129,.55);
+      box-shadow:0 0 0 3px rgba(16,185,129,.12), inset 0 1px 2px rgba(15,23,42,.05);
+    }
+    #year-filter:focus{
+      outline:none;
+      border-color:rgba(16,185,129,.8) !important;
+      box-shadow:0 0 0 4px rgba(16,185,129,.18), inset 0 1px 2px rgba(15,23,42,.06);
+      transform:translateY(-1px);
+    }
+
+    .section-bar{height:6px;border-radius:999px;overflow:hidden;background:#eef2f7}
+    .section-bar > div{filter:saturate(1.05)}
+
+    #activity-list li{
+      border-radius:.75rem;
+      padding:.35rem .4rem;
+    }
+    #activity-list li:hover{
+      background:#f8fafc;
+    }
+
+    /* NEW: header accent for page top title/breadcrumb (same style as other tabs) */
+    .header-accent{position:relative;padding-top:.5rem;}
+    .header-accent::after{
+      content:"";position:absolute;left:0;right:0;bottom:-8px;height:4px;border-radius:999px;
+      background:linear-gradient(90deg,#22c55e22,#10b98166,#22c55e22);
+      filter:blur(.2px);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Top navbar -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-primary text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="lucenalogo.jpg" alt="SLSU" class="w-11 h-11 rounded-full object-contain bg-white/80" />
+        <div>
+          <div class="font-semibold text-sm md:text-base leading-tight">SLSU Lucena · Dashboard</div>
+          <div class="text-[11px] md:text-xs opacity-80"> Class Schedule Viewer</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="pt-20 max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex gap-5">
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:block w-64 shrink-0">
+      <div class="card-borderless p-4 h-[calc(100vh-6rem)] sticky top-24 flex flex-col">
+
+        <!-- ADMIN BLOCK (top) -->
+        <div id="admin-profile" class="flex items-center gap-3 mb-5 p-2 rounded-xl bg-primarySoft/40 border border-primarySoft/70 shadow-sm cursor-pointer hover:bg-primarySoft/70 transition">
+          <div id="admin-avatar" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xs font-semibold text-primary shadow-sm ring-2 ring-primary/20"></div>
+          <div class="flex flex-col justify-center text-left">
+            <div id="admin-name" class="text-sm font-semibold text-slate-900 leading-tight">Admin</div>
+            <div class="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] text-primary">
+              <i class="ri-shield-user-line text-[11px]"></i>
+              <span>Administrator</span>
+            </div>
+          </div>
+        </div>
+        <input id="admin-photo-input" type="file" accept="image/*" class="hidden" />
+
+        <!-- nav links -->
+        <nav class="space-y-0.5 text-[13px]">
+          <a class="sidebar-link active">
+            <i class="ri-dashboard-2-line"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="admin-users.html" class="sidebar-link">
+            <i class="ri-user-settings-line"></i><span>User Management</span>
+          </a>
+            <a href="admin-acad-sections.html" class="sidebar-link">
+            <i class="ri-layout-grid-line"></i><span>Academic Sections</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto pt-4 border-t border-slate-200/70 flex flex-col gap-2">
+          <button id="admin-home" class="w-full px-3 py-2 rounded-full border border-primary text-primary text-xs flex items-center justify-center gap-1.5 hover:bg-primary/5">
+            <i class="ri-home-4-line text-sm"></i>
+            <span>Home</span>
+          </button>
+          <button id="admin-signout" class="w-full px-3 py-2 rounded-full bg-primary text-white text-xs flex items-center justify-center gap-1.5 hover:bg-primary/90 shadow-soft">
+            <i class="ri-logout-box-r-line text-sm"></i>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 pb-14 space-y-6">
+
+      <!-- NEW: Top indicator/breadcrumb for Dashboard -->
+      <section class="header-accent">
+        <div class="flex items-center gap-2 text:[11px] text-slate-500 mb-1">
+          <span class="text-slate-700 font-medium">Dashboard</span>
+        </div>
+        <h1 class="text-lg md:text-xl font-semibold text-slate-900">Dashboard</h1>
+      </section>
+
+      <!-- metrics -->
+      <section class="grid gap-4 md:grid-cols-3">
+        <article class="card metric-card p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xs uppercase tracking-wide text-slate-500">Total Students</h2>
+              <div id="metric-total-students" class="mt-1 text-2xl font-bold text-primary">—</div>
+              <p class="mt-1 text-[11px] text-emerald-600 flex items-center gap-1">
+                <i class="ri-arrow-up-s-line text-base"></i>
+                <span>Live count from all sections</span>
+              </p>
+            </div>
+            <div class="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <i class="ri-user-3-line text-lg"></i>
+            </div>
+          </div>
+        </article>
+
+        <article class="card metric-card p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xs uppercase tracking-wide text-slate-500">Active Teachers</h2>
+              <div id="metric-total-teachers" class="mt-1 text-2xl font-bold text-primary">—</div>
+              <p class="mt-1 text-[11px] text-emerald-700">From <code class="font-mono text-[11px]">teachers</code> collection</p>
+            </div>
+            <div class="w-9 h-9 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600">
+              <i class="ri-user-star-line text-lg"></i>
+            </div>
+          </div>
+        </article>
+
+        <article class="card metric-card p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xs uppercase tracking-wide text-slate-500">System Status</h2>
+              <div id="metric-system-status" class="mt-1 text-2xl font-bold text-emerald-600">Online</div>
+              <p class="mt-1 text-[11px] text-slate-500">All systems operational</p>
+            </div>
+            <div class="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <i class="ri-shield-check-line text-lg"></i>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Academic sections overview -->
+      <section class="card card-overflow-visible p-4 md:p-5 space-y-4">
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 class="text-base md:text-lg font-semibold text-slate-900">Academic Sections Overview</h2>
+          </div>
+
+          <!-- FILTERS: COURSE + YEAR (students-page-like style) -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <div class="text-[11px] text-slate-500 hidden md:block">Filter by course &amp; year</div>
+
+            <!-- Course filter -->
+            <div class="relative">
+              <!-- hidden select to keep JS simple -->
+              <select id="course-filter" class="hidden">
+                <option value="">Select Course</option>
+                <option value="BIT Computer Technology">BIT Computer Technology</option>
+                <option value="BTVT-ED Automotive Technology">BTVT-ED Automotive Technology</option>
+                <option value="BTVT-ED Computer Programming">BTVT-ED Computer Programming</option>
+                <option value="BTVT-ED Civil Technology">BTVT-ED Civil Technology</option>
+                <option value="BTVT-ED Electrical Technology">BTVT-ED Electrical Technology</option>
+                <option value="BTVT-ED Electronics Technology">BTVT-ED Electronics Technology</option>
+                <option value="BTVT-ED Food &amp; Service Management">BTVT-ED Food &amp; Service Management</option>
+                <option value="BTVT-ED Mechanical Technology">BTVT-ED Mechanical Technology</option>
+              </select>
+
+              <div class="relative min-w-[11rem]">
+                <i class="ri-book-2-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <button
+                  id="course-filter-btn"
+                  type="button"
+                  class="pl-9 pr-3 py-2 rounded-full border border-slate-200 text-xs text-slate-700 bg-white shadow-sm flex items-center justify-between gap-2 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary appearance-none w-full"
+                >
+                  <span id="course-filter-label" class="truncate">Select Course</span>
+                  <i class="ri-arrow-down-s-line text-slate-400 text-xs pointer-events-none"></i>
+                </button>
+
+                <div
+                  id="course-filter-menu"
+                  class="hidden absolute right-0 mt-1 w-56 max-h-60 overflow-auto bg-white border border-slate-200 rounded-xl shadow-lg text-xs z-30"
+                >
+                  
+                  <button data-value="BIT Computer Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BIT Computer Technology</button>
+                  <button data-value="BTVT-ED Automotive Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Automotive Technology</button>
+                  <button data-value="BTVT-ED Computer Programming" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Computer Programming</button>
+                  <button data-value="BTVT-ED Civil Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Civil Technology</button>
+                  <button data-value="BTVT-ED Electrical Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Electrical Technology</button>
+                  <button data-value="BTVT-ED Electronics Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Electronics Technology</button>
+                  <button data-value="BTVT-ED Food &amp; Service Management" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Food &amp; Service Management</button>
+                  <button data-value="BTVT-ED Mechanical Technology" class="block w-full text-left px-3 py-2 hover:bg-slate-50">BTVT-ED Mechanical Technology</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Year filter (UI same vibe as Students page) -->
+            <div class="relative">
+              <!-- keep original select for existing JS, but hide it -->
+              <select
+                id="year-filter"
+                class="hidden"
+              >
+                <option value="">All year levels</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+
+              <div class="relative min-w-[9rem]">
+                <i class="ri-filter-3-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <button
+                  id="year-filter-btn"
+                  type="button"
+                  class="pl-9 pr-3 py-2 rounded-full border border-slate-200 text-xs text-slate-700 bg-white shadow-sm flex items-center justify-between gap-2 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary appearance-none w-full"
+                >
+                  <span id="year-filter-label" class="truncate">Year levels</span>
+                  <i class="ri-arrow-down-s-line text-slate-400 text-xs pointer-events-none"></i>
+                </button>
+
+                <div
+                  id="year-filter-menu"
+                  class="hidden absolute right-0 mt-1 w-40 max-h-60 overflow-auto bg-white border border-slate-200 rounded-xl shadow-lg text-xs z-30"
+                >
+                  
+                  <button data-value="1" class="block w-full text-left px-3 py-2 hover:bg-slate-50">1st Year</button>
+                  <button data-value="2" class="block w-full text-left px-3 py-2 hover:bg-slate-50">2nd Year</button>
+                  <button data-value="3" class="block w-full text-left px-3 py-2 hover:bg-slate-50">3rd Year</button>
+                  <button data-value="4" class="block w-full text-left px-3 py-2 hover:bg-slate-50">4th Year</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div id="sections-grid" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3 scroll-soft">
+          <div class="text-xs text-slate-400 col-span-full" id="sections-empty">Select course and year level to view sections…</div>
+        </div>
+      </section>
+
+      <!-- lower grid: analytics + recent things -->
+      <section class="grid gap-4 lg:grid-cols-3 items-stretch">
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <!-- Student Status Analytics -->
+          <article class="card analytics-bg p-4 md:p-5 h-full">
+            <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-900">Student Status Analytics</h2>
+                <p class="text-[11px] text-slate-500">Regular vs Irregular across all sections</p>
+              </div>
+            </header>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="card-borderless p-3 border border-emerald-100 bg-emerald-50/40">
+                <div class="text-xs text-slate-600">Regular Students</div>
+                <div id="metric-regular-students" class="mt-1 text-2xl font-semibold text-slate-900">—</div>
+              </div>
+              <div class="card-borderless p-3 border border-amber-100 bg-amber-50/40">
+                <div class="text-xs text-slate-600">Irregular Students</div>
+                <div id="metric-irregular-students" class="mt-1 text-2xl font-semibold text-slate-900">—</div>
+              </div>
+            </div>
+
+            <div class="h-[220px]">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </article>
+
+          <!-- Recent Students + Teachers -->
+          <div class="grid gap-4 md:grid-cols-2">
+            <!-- Recent Students -->
+            <article class="card p-4 md:p-5 h-full">
+              <header class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-semibold text-slate-900">Recent Students</h2>
+                <a href="students.html" class="text-[11px] text-primary hover:underline">View All</a>
+              </header>
+              <div class="space-y-3 text-[12px]" id="recent-students">
+                <div class="text-slate-400 text-[11px]">Loading…</div>
+              </div>
+            </article>
+
+            <!-- Recent Teachers -->
+            <article class="card p-4 md:p-5 h-full">
+              <header class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-semibold text-slate-900">Recent Teachers</h2>
+                <a href="teachers.html" class="text-[11px] text-primary hover:underline">View All</a>
+              </header>
+              <div class="space-y-2 text-[12px]" id="recent-teachers">
+                <div class="text-slate-400 text-[11px]">Loading…</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <article class="card p-4 md:p-5 h-full flex flex-col">
+          <header class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-900">Recent Activity</h2>
+            <button id="btn-view-log" class="text-[11px] text-primary hover:underline">View All</button>
+          </header>
+          <ul id="activity-list" class="space-y-2 text-[12px] text-slate-700 flex-1 overflow-y-auto scroll-soft pr-1"></ul>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Student Detail Modal -->
+  <div id="student-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+    <div class="bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 relative">
+      <button id="student-modal-x" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-sm">
+        <i class="ri-close-line"></i>
+      </button>
+
+      <h2 class="text-sm font-semibold text-slate-900 mb-4">View Student Details</h2>
+
+      <div class="flex flex-col items-center text-center mb-4">
+        <div
+          id="modal-student-avatar"
+          class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 font-semibold text-xl mb-3 overflow-hidden relative"
+        >
+          <span id="modal-student-initials">MS</span>
+          <img id="modal-student-photo" src="" alt="" class="hidden absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div class="text-sm font-semibold text-slate-900" id="modal-student-name">Maria Santos</div>
+        <div class="text-[12px] text-slate-500" id="modal-student-id">2023-001234</div>
+      </div>
+
+      <hr class="border-slate-200 mb-4" />
+
+      <div class="grid grid-cols-2 gap-y-3 text-xs">
+        <div>
+          <div class="text-slate-500 mb-0.5">Section</div>
+          <div class="font-medium text-slate-900 text-[13px]" id="modal-student-section">BIT Section A</div>
+        </div>
+        <div>
+          <div class="text-slate-500 mb-0.5">Status</div>
+          <div id="modal-student-status" class="font-medium text-emerald-600 text-[13px]">Active</div>
+        </div>
+        <div class="col-span-2">
+          <div class="text-slate-500 mb-0.5">Email</div>
+          <div class="font-medium text-slate-900 text-[13px]" id="modal-student-email">student@example.com</div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between text-xs">
+        <button id="student-modal-cancel" class="text-slate-500 hover:text-slate-700">Cancel</button>
+        <button
+          id="student-modal-close"
+          class="px-4 py-1.5 rounded-full bg-primary text-white font-medium text-xs hover:bg-primary/90"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Detail Modal -->
+  <div id="teacher-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/40 px-4">
+    <div class="bg-white rounded-2xl shadow-soft w-full max-w-sm p-6 relative">
+      <button id="teacher-modal-x" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-sm">
+        <i class="ri-close-line"></i>
+      </button>
+
+      <h2 class="text-sm font-semibold text-slate-900 mb-4">View Teacher Details</h2>
+
+      <div class="flex flex-col items-center text-center mb-4">
+        <div
+          id="modal-teacher-avatar"
+          class="w-16 h-16 rounded-full bg-sky-50 flex items-center justify-center text-sky-700 font-semibold text-xl mb-3 overflow-hidden relative"
+        >
+          <span id="modal-teacher-initials">AB</span>
+          <img id="modal-teacher-photo" src="" alt="" class="hidden absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div class="text-sm font-semibold text-slate-900" id="modal-teacher-name">Teacher Name</div>
+        <div class="text-[12px] text-slate-500" id="modal-teacher-dept-sub">Department</div>
+      </div>
+
+      <hr class="border-slate-200 mb-4" />
+
+      <div class="grid grid-cols-2 gap-y-3 text-xs">
+        <div>
+          <div class="text-slate-500 mb-0.5">Department</div>
+          <div class="font-medium text-slate-900 text-[13px]" id="modal-teacher-dept">—</div>
+        </div>
+        <div>
+          <div class="text-slate-500 mb-0.5">Office</div>
+          <div class="font-medium text-slate-900 text-[13px]" id="modal-teacher-office">—</div>
+        </div>
+        <div class="col-span-2">
+          <div class="text-slate-500 mb-0.5">Assigned Subjects</div>
+          <div class="font-medium text-slate-900 text-[13px]" id="modal-teacher-subjects">—</div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between text-xs">
+        <button id="teacher-modal-cancel" class="text-slate-500 hover:text-slate-700">Cancel</button>
+        <button
+          id="teacher-modal-close"
+          class="px-4 py-1.5 rounded-full bg-primary text-white font-medium text-xs hover:bg-primary/90"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase config -->
+  <script type="module" src="assets/js/firebase-config.js"></script>
+
+  <!-- Dashboard logic -->
+  <script type="module">
+    import {
+      collection,
+      collectionGroup,
+      doc,
+      getDoc,
+      getDocs,
+      query,
+      orderBy,
+      limit,
+      addDoc,
+      serverTimestamp,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+    import {
+      onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+    const { auth, db } = window.__FB;
+    const $ = (id) => document.getElementById(id);
+
+    const metricTotalStudents  = $("metric-total-students");
+    const metricTotalTeachers  = $("metric-total-teachers");
+    const metricRegular        = $("metric-regular-students");
+    const metricIrregular      = $("metric-irregular-students");
+
+    const sectionsGrid   = $("sections-grid");
+    const yearFilterSel  = $("year-filter");
+    const courseFilterSel = $("course-filter");
+    const recentStudents = $("recent-students");
+    const recentTeachers = $("recent-teachers");
+    const activityList   = $("activity-list");
+
+    const adminAvatar    = $("admin-avatar");
+    const adminName      = $("admin-name");
+    const adminEmail     = $("admin-email");
+    const adminProfile   = $("admin-profile");
+    const adminPhotoInput= $("admin-photo-input");
+    const btnSignout     = $("admin-signout");
+    const btnHome        = $("admin-home");
+
+    // student modal
+    const studentModal         = $("student-modal");
+    const modalStudentInitials = $("modal-student-initials");
+    const modalStudentPhoto    = $("modal-student-photo");
+    const modalStudentName     = $("modal-student-name");
+    const modalStudentId       = $("modal-student-id");
+    const modalStudentSection  = $("modal-student-section");
+    const modalStudentStatus   = $("modal-student-status");
+    const modalStudentEmail    = $("modal-student-email");
+    const modalBtnClose        = $("student-modal-close");
+    const modalBtnCancel       = $("student-modal-cancel");
+    const modalBtnX            = $("student-modal-x");
+
+    // teacher modal
+    const teacherModal         = $("teacher-modal");
+    const modalTeacherInitials = $("modal-teacher-initials");
+    const modalTeacherPhoto    = $("modal-teacher-photo");
+    const modalTeacherName     = $("modal-teacher-name");
+    const modalTeacherDeptSub  = $("modal-teacher-dept-sub");
+    const modalTeacherDept     = $("modal-teacher-dept");
+    const modalTeacherOffice   = $("modal-teacher-office");
+    const modalTeacherSubjects = $("modal-teacher-subjects");
+    const modalTeacherBtnClose  = $("teacher-modal-close");
+    const modalTeacherBtnCancel = $("teacher-modal-cancel");
+    const modalTeacherBtnX      = $("teacher-modal-x");
+
+    let statusChart = null;
+    let SECTION_META = {};
+    let SECTION_IDS  = [];
+    let ACTIVITY_CACHE = [];
+    let activityUnsub = null;
+
+    function initials(name){
+      return (name || "Admin").trim().split(/\s+/).slice(0,2).map(x => x[0]?.toUpperCase() || "").join("") || "AD";
+    }
+
+    function toast(msg){
+      const el = document.createElement("div");
+      el.textContent = msg;
+      el.className = "fixed bottom-6 right-6 bg-primary text-white text-xs px-4 py-2 rounded-full shadow-soft z-[80]";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2600);
+    }
+
+    btnSignout.addEventListener("click", async () => {
+      try { await signOut(auth); } catch(e){}
+      sessionStorage.clear();
+      location.href = "about.html";
+    });
+
+    btnHome.addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+
+    // profile picture change
+    if (adminProfile && adminPhotoInput) {
+      adminProfile.addEventListener("click", () => {
+        adminPhotoInput.click();
+      });
+
+      adminPhotoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          adminAvatar.innerHTML = "";
+          const img = document.createElement("img");
+          img.src = ev.target.result;
+          img.alt = "Admin photo";
+          img.className = "w-10 h-10 rounded-full object-cover";
+          adminAvatar.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function buildStatusChart(regularCount, irregularCount){
+      const ctx = $("statusChart");
+      if (statusChart) statusChart.destroy();
+      statusChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: ["Regular", "Irregular"],
+          datasets: [{
+            data: [regularCount, irregularCount],
+            borderWidth: 1,
+            backgroundColor: ["#10b981","#f59e0b"],
+            hoverBackgroundColor: ["#10b981","#f59e0b"]
+          }]
+        },
+        options: {
+          plugins: { legend: { display: true, position: "bottom" } },
+          cutout: "68%",
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    // year level helper
+    function getYearLevelForSection(id, data){
+      if (data.yearLevel) return String(data.yearLevel);
+      if (data.year) return String(data.year);
+      const name = (data.name || data.sectionName || id || "").toString();
+
+      let m = name.match(/\b([1-4])(?:st|nd|rd|th)?\s*year\b/i);
+      if (m) return m[1];
+
+      m = name.match(/\bBIT\s*([1-4])/i);
+      if (m) return m[1];
+
+      m = name.match(/\b([1-4])[A-D]\b/i);
+      if (m) return m[1];
+
+      return "";
+    }
+
+    function sectionCard(sectionId, data){
+      const total   = data.total || 0;
+      const regular = data.regular || 0;
+      const irregular = data.irregular || 0;
+      const regPercent = total ? ((regular/total)*100).toFixed(1) : 0;
+      const irrPercent = total ? ((irregular/total)*100).toFixed(1) : 0;
+      const name = data.name || data.sectionName || sectionId;
+      const code = data.code || sectionId;
+      const course = data.course || "Bachelor in Industrial Technology";
+      const yearLevel = getYearLevelForSection(sectionId, data);
+
+      const colors = ["bg-sky-50","bg-emerald-50","bg-purple-50","bg-amber-50","bg-rose-50"];
+      const colorChip = colors[Math.floor(Math.random()*colors.length)];
+
+      const wrapper = document.createElement("article");
+      wrapper.className = "card-borderless p-4 flex flex-col gap-3 bg-gradient-to-b from-white to-emerald-50/10 border border-slate-200/80 hover:border-emerald-300 hover:shadow-soft transition";
+
+      wrapper.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl ${colorChip} flex items-center justify-center text-xs font-bold text-slate-800">
+              ${code.split(" ").pop()}
+            </div>
+            <div class="text-xs">
+              <div class="font-semibold text-slate-900 text-sm">${name}</div>
+              <div class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                <i class="ri-book-2-line text-[12px]"></i>
+                <span>${course}</span>
+              </div>
+              ${yearLevel ? `<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-[10px] text-emerald-700">
+                  <i class="ri-graduation-cap-line mr-1 text-[11px]"></i>${yearLevel} Year
+                </div>` : ""}
+            </div>
+          </div>
+          <span class="text-[11px] text-slate-400 flex items-center gap-1">
+            <i class="ri-group-line text-xs"></i>${total}
+          </span>
+        </div>
+
+        <div class="text-[11px] text-slate-600 grid grid-cols-2 gap-x-4 gap-y-1 mt-1">
+          <div class="flex justify-between">
+            <span>Total Students</span>
+            <span class="font-semibold text-slate-900">${total}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Regular</span>
+            <span class="font-semibold text-emerald-700">${regular}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Irregular</span>
+            <span class="font-semibold text-amber-600">${irregular}</span>
+          </div>
+        </div>
+
+        <div class="mt-1.5">
+          <div class="section-bar flex">
+            <div style="width:${regPercent}%" class="bg-emerald-500"></div>
+            <div style="width:${irrPercent}%" class="bg-amber-400"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+            <span>${regPercent}% Regular</span>
+            <span>${irrPercent}% Irregular</span>
+          </div>
+        </div>
+
+        <div class="mt-3 flex items-center justify-start gap-2">
+          <button data-section="${sectionId}" data-year="${yearLevel||''}" class="btn-view-details text-[11px] px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 flex items-center gap-1.5 hover:border-primary/60 hover:text-primary">
+            <i class="ri-eye-line text-xs"></i><span>View Details</span>
+          </button>
+        </div>
+      `;
+      /* route to Academic Sections tab (same window), no new page */
+      wrapper.querySelector(".btn-view-details").addEventListener("click", (e)=>{
+        const sid = e.currentTarget.getAttribute("data-section");
+        const yr  = e.currentTarget.getAttribute("data-year") || "";
+        try{
+          sessionStorage.setItem("open_section_doc_id", sid);
+          if (yr) sessionStorage.setItem("open_section_year", yr);
+        }catch(_){}
+        location.href = `admin-acad-sections.html?open=${encodeURIComponent(sid)}`;
+      });
+
+      return wrapper;
+    }
+
+    function renderSectionsForYear(yearValue){
+  const sectionsGrid   = $("sections-grid");
+  const courseValue    = courseFilterSel ? courseFilterSel.value : "";
+
+  sectionsGrid.innerHTML = "";
+
+  // No sections in DB
+  if (!SECTION_IDS.length){
+    const msg = document.createElement("div");
+    msg.className = "text-xs text-slate-400 col-span-full";
+    msg.textContent = "No sections found.";
+    sectionsGrid.appendChild(msg);
+    return;
+  }
+
+  // ⚠ NEW: do NOT show any cards until a year is selected
+  if (!yearValue){
+    const msg = document.createElement("div");
+    msg.className = "text-xs text-slate-400 col-span-full";
+    msg.textContent = "Select a year level to view sections…";
+    sectionsGrid.appendChild(msg);
+    return;
+  }
+
+  const filtered = SECTION_IDS.filter(id => {
+    const meta = SECTION_META[id] || {};
+    const year = getYearLevelForSection(id, meta);
+
+    // must match selected year
+    if (year !== yearValue) return false;
+
+    // optional course filter
+    if (courseValue) {
+      const sectionCourse = meta.course || "BIT Computer Technology";
+      if (sectionCourse !== courseValue) return false;
+    }
+
+    return true;
+  });
+
+  if (!filtered.length){
+    const msg = document.createElement("div");
+    msg.className = "text-xs text-slate-400 col-span-full";
+    msg.textContent = courseValue
+      ? "No sections for this course and year level."
+      : "No sections for this year level.";
+    sectionsGrid.appendChild(msg);
+    return;
+  }
+
+  filtered.forEach(id => {
+    sectionsGrid.appendChild(sectionCard(id, SECTION_META[id]));
+  });
+}
+
+    // -------- Recent Activity (style + real-time) --------
+    function formatTimeAgo(msDiff){
+      const sec = Math.floor(msDiff / 1000);
+      if (sec < 60) return "Just now";
+      const min = Math.floor(sec / 60);
+      if (min < 60) return `${min} minute${min !== 1 ? "s" : ""} ago`;
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return `${hr} hour${hr !== 1 ? "s" : ""} ago`;
+      const day = Math.floor(hr / 24);
+      return `${day} day${day !== 1 ? "s" : ""} ago`;
+    }
+
+    function activityIcon(type){
+      const t = (type || "").toLowerCase();
+      if (t.includes("student")) return { icon:"ri-user-add-line", bg:"bg-emerald-50", text:"text-emerald-600" };
+      if (t.includes("schedule")) return { icon:"ri-calendar-check-line", bg:"bg-sky-50", text:"text-sky-600" };
+      if (t.includes("status")) return { icon:"ri-refresh-line", bg:"bg-amber-50", text:"text-amber-600" };
+      if (t.includes("warning") || t.includes("alert")) return { icon:"ri-alert-line", bg:"bg-rose-50", text:"text-rose-600" };
+      return { icon:"ri-information-line", bg:"bg-slate-100", text:"text-slate-600" };
+    }
+
+    function activityTitle(act){
+      if (act.title) return act.title;
+      const t = (act.type || "").toString().trim();
+      if (!t) return "Activity";
+      const normalized = t.replace(/[_\-]+/g," ").replace(/\s+/g," ").trim();
+      return normalized.split(" ").map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(" ");
+    }
+
+    function renderActivities(){
+      activityList.innerHTML = "";
+      if (!ACTIVITY_CACHE.length){
+        const li = document.createElement("li");
+        li.className = "text-[11px] text-slate-400";
+        li.textContent = "No recent activity.";
+        activityList.appendChild(li);
+        return;
+      }
+
+      const now = Date.now();
+      ACTIVITY_CACHE.slice(0, 20).forEach(act => {
+        const diff = now - act.timestamp;
+        const timeLabel = formatTimeAgo(diff);
+        const iconCfg = activityIcon(act.type);
+        const title = activityTitle(act);
+        const secondary = act.details || act.message || act.actor || "";
+
+        const li = document.createElement("li");
+        li.className = "flex items-start gap-2";
+        li.innerHTML = `
+          <span class="mt-0.5 w-6 h-6 rounded-full ${iconCfg.bg} ${iconCfg.text} flex items-center justify-center text-xs">
+            <i class="${iconCfg.icon}"></i>
+          </span>
+          <div class="flex-1 min-w-0">
+            <p class="text-[12px] font-medium text-slate-900 truncate">${title}</p>
+            ${secondary ? `<p class="text-[11px] text-slate-500 truncate">${secondary}</p>` : ""}
+            <p class="text-[11px] text-slate-400">${timeLabel}</p>
+          </div>
+        `;
+        activityList.appendChild(li);
+      });
+    }
+
+    async function loadActivities(){
+      if (activityUnsub) activityUnsub();
+      return new Promise((resolve) => {
+        const qRef = query(
+          collectionGroup(db, "activity"),
+          orderBy("timestamp", "desc"),
+          limit(30)
+        );
+        activityUnsub = onSnapshot(
+          qRef,
+          (snap) => {
+            const arr = [];
+            snap.forEach(d => {
+              const data = d.data() || {};
+              arr.push({
+                id: d.id,
+                type: data.type || "info",
+                title: data.title || data.summary || "",
+                message: data.message || "",
+                details: data.details || "",
+                section: data.section || data.sectionId || "",
+                actor: data.actor || data.userName || "",
+                timestamp: data.timestamp?.toMillis?.() || Date.now()
+              });
+            });
+            ACTIVITY_CACHE = arr;
+            renderActivities();
+            resolve();
+          },
+          (e) => {
+            console.error("activities load failed", e);
+            ACTIVITY_CACHE = [];
+            renderActivities();
+            resolve();
+          }
+        );
+      });
+    }
+
+    // helper for other pages to log activity
+    window.logActivity = async function({ sectionId = null, type = "info", message = "", details = "", actor = null, role = null }){
+      try{
+        const colRef = sectionId
+          ? collection(db, "sections", sectionId, "activity")
+          : collection(db, "global_activity");
+        await addDoc(colRef, {
+          type, message, details, sectionId: sectionId || null,
+          actor: actor || null, role: role || null,
+          timestamp: serverTimestamp()
+        });
+      } catch (e){
+        console.error("logActivity failed", e);
+      }
+    };
+
+    function openStudentModal(stu){
+      if (!stu) return;
+      modalStudentInitials.textContent = (stu.name || " ").split(/\s+/).map(s=>s[0]).slice(0,2).join("").toUpperCase() || "ST";
+      modalStudentName.textContent     = stu.name || "Unknown Student";
+      modalStudentId.textContent       = stu.id || "No ID";
+
+      if (stu.photoURL) {
+        modalStudentPhoto.src = stu.photoURL;
+        modalStudentPhoto.classList.remove("hidden");
+        modalStudentInitials.classList.add("hidden");
+      } else {
+        modalStudentPhoto.src = "";
+        modalStudentPhoto.classList.add("hidden");
+        modalStudentInitials.classList.remove("hidden");
+      }
+
+      const sectionsArr = (stu.sections && stu.sections.length
+        ? stu.sections
+        : [stu.section]).filter(Boolean);
+
+      const sectionsLabel = sectionsArr.length
+        ? sectionsArr.map((s, idx) => idx < sectionsArr.length - 1 ? (s + ",") : s).join("<br>")
+        : "";
+
+      modalStudentSection.innerHTML = sectionsLabel || "—";
+
+      modalStudentStatus.textContent = stu.status || "—";
+      const statusLower = (stu.status || "").toLowerCase();
+      modalStudentStatus.className =
+        "font-medium text-[13px] " +
+        (statusLower.includes("irregular") ? "text-amber-600" : "text-emerald-600");
+
+      modalStudentEmail.textContent = stu.email || "—";
+
+      studentModal.classList.remove("hidden");
+      studentModal.classList.add("flex");
+    }
+
+    function closeStudentModal(){
+      studentModal.classList.add("hidden");
+      studentModal.classList.remove("flex");
+    }
+
+    if (modalBtnClose)  modalBtnClose.addEventListener("click", closeStudentModal);
+    if (modalBtnCancel) modalBtnCancel.addEventListener("click", closeStudentModal);
+    if (modalBtnX)      modalBtnX.addEventListener("click", closeStudentModal);
+    if (studentModal){
+      studentModal.addEventListener("click", (e) => {
+        if (e.target === studentModal) closeStudentModal();
+      });
+    }
+
+    function openTeacherModal(teacher){
+      if (!teacher) return;
+      modalTeacherInitials.textContent = (teacher.name || " ").split(/\s+/).map(s=>s[0]).slice(0,2).join("").toUpperCase() || "TC";
+      modalTeacherName.textContent     = teacher.name || "Unnamed Teacher";
+
+      if (teacher.photoURL) {
+        modalTeacherPhoto.src = teacher.photoURL;
+        modalTeacherPhoto.classList.remove("hidden");
+        modalTeacherInitials.classList.add("hidden");
+      } else {
+        modalTeacherPhoto.src = "";
+        modalTeacherPhoto.classList.add("hidden");
+        modalTeacherInitials.classList.remove("hidden");
+      }
+
+      const deptLabel = teacher.dept || teacher.department || "—";
+      modalTeacherDeptSub.textContent = deptLabel;
+      modalTeacherDept.textContent    = deptLabel;
+      modalTeacherOffice.textContent  = teacher.office || "—";
+
+      const subjectsArr = Array.isArray(teacher.subjects) ? teacher.subjects.filter(Boolean) : [];
+      modalTeacherSubjects.textContent = subjectsArr.length ? subjectsArr.join(", ") : "—";
+
+      teacherModal.classList.remove("hidden");
+      teacherModal.classList.add("flex");
+    }
+
+    function closeTeacherModal(){
+      teacherModal.classList.add("hidden");
+      teacherModal.classList.remove("flex");
+    }
+
+    if (modalTeacherBtnClose)  modalTeacherBtnClose.addEventListener("click", closeTeacherModal);
+    if (modalTeacherBtnCancel) modalTeacherBtnCancel.addEventListener("click", closeTeacherModal);
+    if (modalTeacherBtnX)      modalTeacherBtnX.addEventListener("click", closeTeacherModal);
+    if (teacherModal){
+      teacherModal.addEventListener("click", (e) => {
+        if (e.target === teacherModal) closeTeacherModal();
+      });
+    }
+
+    async function buildStudentUserIndex(){
+      const index = {};
+      try {
+        const snap = await getDocs(collection(db, "users"));
+        snap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          const role = (data.role || "").toString().toLowerCase();
+          if (role === "student") {
+            const sid = (data.studentId || "").toString().trim();
+            if (!sid) return;
+            index[sid] = {
+              email:    data.email || "",
+              name:     data.name || "",
+              section:  data.section || "",
+              status:   data.status || "",
+              photoURL: data.photoURL || data.avatarUrl || ""
+            };
+          }
+        });
+      } catch (e) {
+        console.error("student user index load failed", e);
+      }
+      return index;
+    }
+
+    async function buildTeacherUserIndex(){
+      const index = {};
+      try {
+        const snap = await getDocs(collection(db, "users"));
+        snap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          const role = (data.role || "").toString().toLowerCase();
+          if (role === "teacher") {
+            index[docSnap.id] = {
+              name:    data.name || "",
+              email:   data.email || "",
+              photoURL: data.photoURL || data.avatarUrl || ""
+            };
+          }
+        });
+      } catch (e) {
+        console.error("teacher user index load failed", e);
+      }
+      return index;
+    }
+
+    async function loadDashboard(){
+      try {
+        const studentUserIndex = await buildStudentUserIndex();
+        const teacherUserIndex = await buildTeacherUserIndex();
+
+        // sections
+        const sectionsSnap = await getDocs(collection(db, "sections"));
+        const sectionMeta = {};
+        const sectionIds = [];
+
+        sectionsSnap.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          sectionMeta[docSnap.id] = {
+            ...data,
+            total: 0,
+            regular: 0,
+            irregular: 0
+          };
+          sectionIds.push(docSnap.id);
+        });
+
+        SECTION_META = sectionMeta;
+        SECTION_IDS  = sectionIds;
+
+        // students per section
+        let totalStudents = 0;
+        let regularStudents = 0;
+        let irregularStudents = 0;
+        const recentStudentsArr = [];
+
+        for (const sid of sectionIds) {
+          try {
+            const stuSnap = await getDocs(collection(db, "sections", sid, "students"));
+            stuSnap.forEach(docSnap => {
+              const data = docSnap.data() || {};
+
+              if (!sectionMeta[sid]) {
+                sectionMeta[sid] = { name: sid, total: 0, regular: 0, irregular: 0 };
+              }
+              totalStudents++;
+              sectionMeta[sid].total++;
+
+              const typeRaw = (data.type || data.status || data.enrollmentType || "").toString().toLowerCase();
+              const isIrregular = typeRaw.includes("irregular");
+
+              if (isIrregular){
+                irregularStudents++;
+                sectionMeta[sid].irregular++;
+              } else {
+                regularStudents++;
+                sectionMeta[sid].regular++;
+              }
+
+              const sectionsField = Array.isArray(data.sections) && data.sections.length
+                ? data.sections
+                : [data.section || sid].filter(Boolean);
+
+              recentStudentsArr.push({
+                name:  data.name || data.fullName || "Unknown Student",
+                section: data.section || sid,
+                sections: sectionsField,
+                id: (data.studentId || data.id || "").toString().trim(),
+                status: isIrregular ? "Irregular" : "Regular",
+                email: data.email || data.emailAddress || data.contactEmail || "",
+                ownerId: data.ownerId || "",
+                createdAt: data.createdAt?.toMillis?.() || 0,
+                photoURL: data.photoURL || ""
+              });
+            });
+          } catch(e){
+            console.error("students load failed for section", sid, e);
+          }
+        }
+
+        // merge duplicates
+        const mergedMap = new Map();
+        recentStudentsArr.forEach(stu => {
+          const key = (stu.ownerId && stu.ownerId.trim())
+            || (stu.id ? `id:${stu.id}` : `name:${stu.name}`);
+          const baseSections = (Array.isArray(stu.sections) && stu.sections.length
+            ? stu.sections
+            : (stu.section ? [stu.section] : []));
+          const existing = mergedMap.get(key);
+          if (!existing) {
+            mergedMap.set(key, { ...stu, sections: [...new Set(baseSections)] });
+          } else {
+            const combined = new Set([ ...(existing.sections || []), ...baseSections ]);
+            existing.sections = Array.from(combined);
+            if ((stu.createdAt || 0) > (existing.createdAt || 0)) Object.assign(existing, stu);
+          }
+        });
+
+        const mergedStudents = Array.from(mergedMap.values());
+        mergedStudents.sort((a,b)=> (b.createdAt || 0) - (a.createdAt || 0));
+        const recentTop = mergedStudents.slice(0,4);
+
+        metricTotalStudents.textContent = totalStudents || "0";
+        metricRegular.textContent       = regularStudents || "0";
+        metricIrregular.textContent     = irregularStudents || "0";
+        buildStatusChart(regularStudents, irregularStudents);
+
+        renderSectionsForYear(yearFilterSel.value);
+
+        // Recent students (max 4)
+        recentStudents.innerHTML = "";
+        if (!recentTop.length){
+          recentStudents.innerHTML = `<div class="text-[11px] text-slate-400">No recent students.</div>`;
+        } else {
+          recentTop.forEach(stu => {
+            const el = document.createElement("div");
+            el.className = "flex items-center justify-between gap-2 py-2";
+
+            const sectionsArr = (stu.sections && stu.sections.length
+              ? stu.sections
+              : [stu.section]).filter(Boolean);
+
+            let sectionsLabel = sectionsArr.join(", ");
+            const avatarHtml = stu.photoURL
+              ? `<img src="${stu.photoURL}" class="w-8 h-8 rounded-full object-cover" alt="Student Photo"/>`
+              : `<div class="avatar-initials bg-emerald-50 text-emerald-700">${(stu.name || " ").split(/\s+/).map(s=>s[0]).slice(0,2).join("").toUpperCase()}</div>`;
+
+            el.innerHTML = `
+              <div class="flex items-center gap-2 flex-1 min-w-0">
+                ${avatarHtml}
+                <div class="min-w-0">
+                  <div class="text-xs font-medium text-slate-800 max-w-[200px] truncate">${stu.name}</div>
+                  <div class="text-[11px] text-slate-500 max-w-[200px] truncate">${stu.id || "No ID"} • ${sectionsLabel || stu.section || "No section"}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <span class="px-2 py-0.5 rounded-full text-[10px] ${stu.status === "Irregular" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}">${stu.status}</span>
+                <button class="text-primary text-[11px] underline btn-view-student">View</button>
+              </div>
+            `;
+            const viewBtn = el.querySelector(".btn-view-student");
+            viewBtn.addEventListener("click", () => openStudentModal(stu));
+            recentStudents.appendChild(el);
+          });
+        }
+
+        // TEACHERS (max 4)
+        try {
+          const teachersSnap = await getDocs(
+            query(collection(db, "teachers"), orderBy("createdAt", "desc"), limit(4))
+          );
+          const teachersArr = [];
+          teachersSnap.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            teachersArr.push({
+              name: data.name || data.fullName || "Unnamed Teacher",
+              dept: data.department || "IT Department",
+              office: data.office || "—",
+              subjects: Array.isArray(data.subjects) ? data.subjects : [],
+              status: (data.status || "Active").toString(),
+              id: docSnap.id,
+              photoURL: data.photoURL || ""
+            });
+          });
+          document.getElementById("metric-total-teachers").textContent = teachersArr.length || "0";
+
+          recentTeachers.innerHTML = "";
+          if (!teachersArr.length){
+            recentTeachers.innerHTML = `<div class="text-[11px] text-slate-400">No teachers yet.</div>`;
+          } else {
+            teachersArr.forEach(t => {
+              const el = document.createElement("div");
+              el.className = "flex items-center justify-between gap-2";
+              const statusLower = t.status.toLowerCase();
+              const statusClass = statusLower.includes("offline") || statusLower.includes("inactive")
+                ? "bg-rose-100 text-rose-700"
+                : "bg-emerald-100 text-emerald-700";
+
+              const subjectsArr = Array.isArray(t.subjects) ? t.subjects.filter(Boolean) : [];
+              let subjectsPreview = "No subjects";
+              if (subjectsArr.length === 1) subjectsPreview = subjectsArr[0];
+              else if (subjectsArr.length > 1) subjectsPreview = subjectsArr[0] + "...";
+
+              const avatarHtml = t.photoURL
+                ? `<img src="${t.photoURL}" class="w-8 h-8 rounded-full object-cover" alt="Teacher Photo"/>`
+                : `<div class="avatar-initials bg-sky-50 text-sky-700">${(t.name || " ").split(/\s+/).map(s=>s[0]).slice(0,2).join("").toUpperCase()}</div>`;
+
+              el.innerHTML = `
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  ${avatarHtml}
+                  <div class="min-w-0">
+                    <div class="text-xs font-medium text-slate-800 max-w-[200px] truncate">${t.name}</div>
+                    <div class="text-[11px] text-slate-500 max-w-[200px] truncate">${t.dept}</div>
+                    <div class="text-[11px] text-slate-400 max-w-[200px] truncate">${subjectsPreview}</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] ${statusClass}">${t.status}</span>
+                  <button class="text-primary text-[11px] underline btn-view-teacher">View</button>
+                </div>
+              `;
+              const viewBtn = el.querySelector(".btn-view-teacher");
+              viewBtn.addEventListener("click", () => openTeacherModal(t));
+              recentTeachers.appendChild(el);
+            });
+          }
+        } catch(e){
+          console.error("teachers load failed", e);
+          document.getElementById("metric-total-teachers").textContent = "0";
+          recentTeachers.innerHTML = `<div class="text-[11px] text-slate-400">Unable to load teachers.</div>`;
+        }
+
+        await loadActivities();
+
+      } catch (err) {
+        console.error("Dashboard load error", err);
+        toast("Some dashboard data could not be loaded.");
+      }
+    }
+
+    // ------- Simple dropdown wiring for course + year filters -------
+    function setupFilterDropdown({ btnId, menuId, labelId, selectEl, isYear }) {
+      const btn = document.getElementById(btnId);
+      const menu = document.getElementById(menuId);
+      const label = document.getElementById(labelId);
+      if (!btn || !menu || !label || !selectEl) return;
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+      });
+
+      menu.addEventListener("click", (e) => {
+        const item = e.target.closest("button[data-value]");
+        if (!item) return;
+        const value = item.getAttribute("data-value") || "";
+        const text  = item.textContent.trim();
+
+        selectEl.value = value;
+        label.textContent = text || (isYear ? "All year levels" : "All courses");
+        menu.classList.add("hidden");
+
+        // re-render sections when filter changes
+        if (isYear) {
+          renderSectionsForYear(selectEl.value);
+        } else {
+          renderSectionsForYear(yearFilterSel.value);
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    }
+
+    setupFilterDropdown({
+      btnId: "course-filter-btn",
+      menuId: "course-filter-menu",
+      labelId: "course-filter-label",
+      selectEl: courseFilterSel,
+      isYear: false
+    });
+
+    setupFilterDropdown({
+      btnId: "year-filter-btn",
+      menuId: "year-filter-menu",
+      labelId: "year-filter-label",
+      selectEl: yearFilterSel,
+      isYear: true
+    });
+    // --------------------------------------------------------------
+
+    // Auth guard — only admins
+    onAuthStateChanged(auth, async (user) => {
+      if (!user){
+        location.href = "about.html";
+        return;
+      }
+      try{
+        const snap = await getDoc(doc(db, "users", user.uid));
+        const data = snap.exists() ? snap.data() : {};
+        const role = (data.role || "guest").toLowerCase();
+
+        adminAvatar.textContent = (data.name || user.displayName || "Admin").split(/\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+        adminName.textContent   = data.name || user.displayName || "Admin User";
+        if (adminEmail) {
+          adminEmail.textContent  = data.email || user.email || "—";
+        }
+
+        if (role !== "admin"){
+          alert("Access denied. Admin only.");
+          location.href = "index.html";
+          return;
+        }
+        await loadDashboard();
+      }catch(e){
+        console.error(e);
+        await loadDashboard();
+      }
+    });
+
+    yearFilterSel.addEventListener("change", () => {
+      renderSectionsForYear(yearFilterSel.value);
+    });
+
+    $("btn-view-log").addEventListener("click", () => {
+      toast("For detailed logs you can build a separate activity page later.");
+    });
+
+    // refresh relative times every minute
+    setInterval(() => {
+      if (ACTIVITY_CACHE.length) renderActivities();
+    }, 60000);
+  </script>
+</body>
+</html>
