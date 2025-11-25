@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Academic Sections • SLSU Lucena</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0A4B2D',
+            primarySoft: '#e5f4eb',
+            accentBlue: '#2563eb',
+            accentAmber: '#f59e0b',
+            accentPurple: '#8b5cf6'
+          },
+          borderRadius: { xl2: '1.25rem' },
+          boxShadow: { soft: '0 20px 60px rgba(15,23,42,.10)' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Remix Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" />
+  <link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
+
+  <style>
+    :where([class^="ri-"])::before{content:"\f3c2"}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f5f7fb;}
+    .card{border-radius:1.25rem;background:linear-gradient(180deg,#ffffff,#fbfffb);border:1px solid rgba(15,23,42,.06);box-shadow:0 18px 55px rgba(15,23,42,.06);position:relative;overflow:hidden;}
+    .card::after{content:"";position:absolute;inset:0;padding:1px;border-radius:1.25rem;opacity:0;background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(59,130,246,.08),rgba(245,158,11,.10));-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite: xor;mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask-composite: exclude;pointer-events:none;transition:opacity .18s ease;}
+    .card:hover::after{opacity:.9;} .card:hover{transform:translateY(-2px);transition:transform .18s ease;}
+    .card-borderless{border-radius:1.25rem;background:linear-gradient(180deg,#ffffff,#f9fafb);border:1px solid rgba(148,163,184,.25);position:relative;overflow:hidden;}
+    .card-borderless:hover{box-shadow:0 18px 55px rgba(15,23,42,.08)}
+    .sidebar-link{border-radius:.95rem;padding:.55rem .9rem;display:flex;align-items:center;gap:.55rem;font-size:.9rem;color:#64748b;cursor:pointer;transition:background .15s,color .15s,transform .15s;}
+    .sidebar-link i{font-size:1.05rem;}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a;transform:translateX(1px)}
+    .sidebar-link.active{background:linear-gradient(90deg,#e3f3e8,#f1f8f4);color:#14532d;font-weight:600;box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);}
+    .avatar-initials{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:999px;font-size:.75rem;font-weight:600;box-shadow:inset 0 0 0 1px rgba(16,185,129,.25);}
+    .scroll-soft{scrollbar-color:rgba(148,163,184,.7) transparent;scrollbar-width:thin;}
+    .scroll-soft::-webkit-scrollbar{height:6px;width:6px;}
+    .scroll-soft::-webkit-scrollbar-thumb{background:#cbd5f5;border-radius:999px;}
+    .pill-select{background-image:linear-gradient(180deg,#fff,#f9fafb);border:1px solid rgba(148,163,184,.45);box-shadow:0 1px 0 rgba(255,255,255,.8), inset 0 1px 2px rgba(15,23,42,.04);transition:border-color .15s, box-shadow .15s, transform .15s;}
+    .pill-select:hover{border-color:rgba(16,185,129,.55);box-shadow:0 0 0 3px rgba(16,185,129,.12), inset 0 1px 2px rgba(15,23,42,.05);}
+    .pill-select:focus{outline:none;border-color:rgba(16,185,129,.8)!important;box-shadow:0 0 0 4px rgba(16,185,129,.18), inset 0 1px 2px rgba(15,23,42,.06);transform:translateY(-1px);}
+    .section-bar{height:6px;border-radius:999px;overflow:hidden;background:#eef2f7}
+    .section-bar > div{filter:saturate(1.05)}
+    .header-accent{position:relative;padding-top:.5rem;}
+    .header-accent::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:4px;border-radius:999px;background:linear-gradient(90deg,#22c55e22,#10b98166,#22c55e22);filter:blur(.2px);}
+    .badge{font-size:10px;border-radius:999px;padding:.125rem .5rem;}
+    .badge.reg{background:#d1fae5;color:#065f46}
+    .badge.irr{background:#fde68a;color:#92400e}
+    .table{width:100%;font-size:12px}
+    .table th{font-weight:600;color:#334155;text-align:left;border-bottom:1px solid #e2e8f0;padding:10px}
+    .table td{border-bottom:1px solid #eef2f7;padding:10px;color:#334155}
+    .pill{border-radius:9999px;padding:.25rem .6rem;border:1px solid #e5e7eb;background:#fff;font-size:11px}
+    .tab-active{color:#0A4B2D;font-weight:600;border-bottom:2px solid #0A4B2D;}
+    .crumb-current{ color:#334155; font-weight:600; }
+    .live-dot{display:inline-block;width:8px;height:8px;border-radius:9999px;background:#10b981;margin-right:6px;animation: pulse 1.2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+    .slot-live{border-color:#10b981;background:#ecfdf5;}
+    .slot-upcoming{border-color:#93c5fd;background:#f0f9ff;}
+    .slot-past{opacity:.75;}
+    /* tiny polish for the two metrics */
+    .metric-2{
+      background:linear-gradient(180deg,#ffffff,#f7fffb);
+      border:1px solid rgba(16,185,129,.22);
+      box-shadow:0 12px 36px rgba(16,185,129,.10), inset 0 1px 0 rgba(255,255,255,.8);
+    }
+    /* match rounded inputs like on students page */
+    .rounded-button{border-radius:8px;}
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Top navbar -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-primary text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="lucenalogo.jpg" alt="SLSU" class="w-11 h-11 rounded-full object-contain bg-white/80" />
+        <div>
+          <div class="font-semibold text-sm md:text-base leading-tight">SLSU Lucena · Academic Sections</div>
+          <div class="text-[11px] md:text-xs opacity-80"> Class Schedule Viewer</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="pt-20 max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex gap-5">
+    <!-- Sidebar -->
+    <aside class="hidden lg:block w-64 shrink-0">
+      <div class="card-borderless p-4 h-[calc(100vh-6rem)] sticky top-24 flex flex-col">
+        <div id="admin-profile" class="flex items-center gap-3 mb-5 p-2 rounded-xl bg-primarySoft/40 border border-primarySoft/70 shadow-sm cursor-pointer hover:bg-primarySoft/70 transition">
+          <div id="admin-avatar" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xs font-semibold text-primary shadow-sm ring-2 ring-primary/20"></div>
+          <div class="flex flex-col justify-center text-left">
+            <div id="admin-name" class="text-sm font-semibold text-slate-900 leading-tight">Admin</div>
+            <div class="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] text-primary">
+              <i class="ri-shield-user-line text-[11px]"></i><span>Administrator</span>
+            </div>
+          </div>
+        </div>
+        <input id="admin-photo-input" type="file" accept="image/*" class="hidden" />
+
+        <nav class="space-y-0.5 text-[13px]">
+          <a href="admin-dashboard.html" class="sidebar-link"><i class="ri-dashboard-2-line"></i><span>Dashboard</span></a>
+          <a href="admin-users.html" class="sidebar-link"><i class="ri-user-settings-line"></i><span>User Management</span></a>
+          <a class="sidebar-link active"><i class="ri-layout-grid-line"></i><span>Academic Sections</span></a>
+        </nav>
+
+        <div class="mt-auto pt-4 border-t border-slate-200/70 flex flex-col gap-2">
+          <button id="admin-home" class="w-full px-3 py-2 rounded-full border border-primary text-primary text-xs flex items-center justify-center gap-1.5 hover:bg-primary/5"><i class="ri-home-4-line text-sm"></i><span>Home</span></button>
+          <button id="admin-signout" class="w-full px-3 py-2 rounded-full bg-primary text-white text-xs flex items-center justify-center gap-1.5 hover:bg-primary/90 shadow-soft"><i class="ri-logout-box-r-line text-sm"></i><span>Sign out</span></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 pb-16 space-y-6">
+
+      <!-- Breadcrumb -->
+      <section class="header-accent">
+        <div class="flex items-center gap-2 text:[11px] text-slate-500 mb-1">
+          <a href="admin-dashboard.html" class="hover:underline">Dashboard</a>
+          <span>/</span>
+          <a id="crumb-back" href="#" class="hover:underline">Academic Sections</a>
+          <span id="crumb-detail" class="hidden">
+            <span>/</span>
+            <span class="text-slate-700 font-medium" id="crumb-section">Section</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- QUICK TOOLS -->
+      <section id="tools-card" class="card p-4 md:p-5">
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+          <h3 class="text-sm font-semibold text-slate-900">Quick Tools</h3>
+        </header>
+
+        <div class="grid gap-3 md:grid-cols-3">
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-medium text-slate-600 mb-1.5">Search sections</label>
+            <div class="relative">
+              <i class="ri-search-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input id="section-search" type="text" placeholder="Search by name or code" class="w-full pl-9 pr-3 py-2 rounded-full text-xs bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 items-end">
+            <div class="relative">
+              <label class="block text-[11px] font-medium text-slate-600 mb-1.5">Sort by</label>
+              <select id="sort-by" class="w-full pl-3 pr-8 py-2 rounded-full text-xs bg-white appearance-none pill-select">
+                <option value="name-asc">Name (A–Z)</option>
+                <option value="students-desc">Students (High–Low)</option>
+                <option value="students-asc">Students (Low–High)</option>
+              </select>
+              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-[34px] pointer-events-none"></i>
+            </div>
+            <div class="flex items-end">
+              <button id="btn-export" class="w-full px-4 py-2 rounded-full bg-primary text-white text-xs hover:bg-primary/90 flex items-center justify-center gap-1.5">
+                <i class="ri-download-2-line text-sm"></i><span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="search-results" class="mt-4 hidden">
+          <div class="text-[11px] text-slate-500 mb-2">Search results</div>
+          <div id="search-grid" class="grid gap-3 md:grid-cols-2 xl:grid-cols-3"></div>
+        </div>
+      </section>
+
+      <!-- Academic Sections Overview (GRID VIEW) -->
+      <section id="overview-card" class="card p-4 md:p-5 space-y-4">
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 class="text-base md:text-lg font-semibold text-slate-900">Academic Sections Overview</h2>
+            <div id="summary" class="mt-1 text-[11px] text-slate-500">
+              Sections: — • Students: — (Regular — • Irregular —)
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="text-[11px] text-slate-500 hidden md:block">Filter by year</div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <!-- Course filter dropdown -->
+              <div class="relative">
+                <i class="ri-book-2-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <select id="course-filter" class="pl-8 pr-8 py-2.5 border border-gray-300 rounded-button text-xs text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary appearance-none">
+                  <option value="">Select Course</option>
+                  <option value="BIT Computer Technology">BIT Computer Technology</option>
+                  <option value="BTVT-ED Automotive Technology">BTVT-ED Automotive Technology</option>
+                  <option value="BTVT-ED Computer Programming">BTVT-ED Computer Programming</option>
+                  <option value="BTVT-ED Civil Technology">BTVT-ED Civil Technology</option>
+                  <option value="BTVT-ED Electrical Technology">BTVT-ED Electrical Technology</option>
+                  <option value="BTVT-ED Electronics Technology">BTVT-ED Electronics Technology</option>
+                  <option value="BTVT-ED Food &amp; Service Management">BTVT-ED Food &amp; Service Management</option>
+                  <option value="BTVT-ED Mechanical Technology">BTVT-ED Mechanical Technology</option>
+                </select>
+                <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              </div>
+              <!-- Year level dropdown -->
+              <div class="relative">
+                <i class="ri-filter-3-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <select id="year-filter" class="pl-8 pr-8 py-2.5 border border-gray-300 rounded-button text-xs text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary appearance-none">
+                  <option value="">All year levels</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
+                <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div id="sections-grid" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3 scroll-soft">
+          <div class="text-xs text-slate-400 col-span-full" id="sections-empty">Select year level to view sections…</div>
+        </div>
+      </section>
+
+      <!-- SECTION DETAILS (INLINE PANEL) -->
+      <section id="details-card" class="card p-5 md:p-6 space-y-4 hidden">
+        <header class="flex items-center justify-between">
+          <div>
+            <h1 id="d-title" class="text-xl md:text-2xl font-semibold text-slate-900">BIT Section</h1>
+            <div class="text-[12px] text-slate-500 mt-1" id="d-subtitle">Bachelor in Industrial Technology</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="d-year-pill" class="pill text-slate-700">—</span>
+            <button id="btn-tab-sudents" class="pill hover:border-primary hover:text-primary">Students</button>
+            <button id="btn-tab-schedule" class="pill hover:border-primary hover:text-primary">Schedule</button>
+          </div>
+        </header>
+
+        <!-- Two metrics -->
+        <div class="grid gap-3 md:grid-cols-2">
+          <div class="p-4 rounded-xl metric-2">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-500">Total Enrolled</div>
+                <div id="d-m-total" class="text-2xl font-bold text-primary mt-1">—</div>
+              </div>
+              <div class="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                <i class="ri-user-3-line text-lg"></i>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 rounded-xl metric-2">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-500">Status Breakdown</div>
+                <div class="mt-1 text-sm"><span id="d-m-regular" class="font-semibold">—</span> Regular • <span id="d-m-irregular" class="font-semibold">—</span> Irregular</div>
+              </div>
+              <div class="w-9 h-9 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                <i class="ri-pie-chart-2-line text-lg"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 border-b border-slate-200 text-[13px]">
+          <nav class="flex items-center gap-6">
+            <button id="tab-btn-students" class="tab-active py-2">Students</button>
+            <button id="tab-btn-schedule" class="py-2">Schedule</button>
+          </nav>
+        </div>
+
+        <!-- Students tab -->
+        <section id="tab-students" class="p-1">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-sm font-semibold text-slate-900">Students</div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-slate-500">Filter</span>
+              <select id="d-filter-type" class="pill">
+                <option value="">All Students</option>
+                <option value="Regular">Regular</option>
+                <option value="Irregular">Irregular</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-auto">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>ID Number</th>
+                  <th>Status</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody id="d-students-body">
+                <tr><td colspan="4" class="py-6 text-center text-slate-400">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Schedule tab -->
+        <section id="tab-schedule" class="p-1 hidden">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-sm font-semibold text-slate-900">Class Schedule</div>
+            <div id="live-clock" class="text-[11px] text-slate-500"></div>
+          </div>
+          <div id="d-sched-wrap" class="space-y-3">
+            <div class="text-slate-400 text-[12px]">Loading…</div>
+          </div>
+        </section>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Firebase config -->
+  <script type="module" src="assets/js/firebase-config.js"></script>
+
+  <!-- Page Logic -->
+  <script type="module">
+    import {
+      collection, collectionGroup, getDocs, doc, getDoc, onSnapshot, query, where
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+    const { auth, db } = window.__FB;
+    const $ = (id) => document.getElementById(id);
+
+    const adminAvatar = $("admin-avatar");
+    const adminName   = $("admin-name");
+    const adminEmail  = $("admin-email");
+    const adminProfile= $("admin-profile");
+    const adminPhotoInput = $("admin-photo-input");
+    const btnSignout  = $("admin-signout");
+    const btnHome     = $("admin-home");
+
+    const yearFilter   = $("year-filter");
+    const courseFilter = $("course-filter");
+    const sectionsGrid = $("sections-grid");
+    const sectionSearch= $("section-search");
+    const searchWrap   = $("search-results");
+    const searchGrid   = $("search-grid");
+    const btnExport    = $("btn-export");
+    const sortBySel    = $("sort-by");
+    const summaryEl    = $("summary");
+
+    const toolsCard    = $("tools-card");
+    const overviewCard = $("overview-card");
+    const detailsCard  = $("details-card");
+    const crumbDetail  = $("crumb-detail");
+    const crumbSection = $("crumb-section");
+    const crumbBack    = $("crumb-back");
+
+    // Details UI refs
+    const dTitle=$("d-title"), dSubtitle=$("d-subtitle"), dYearPill=$("d-year-pill");
+    const dMTotal=$("d-m-total"), dMReg=$("d-m-regular"), dMIrr=$("d-m-irregular");
+    const dFilterType=$("d-filter-type"), dStudentsBody=$("d-students-body"), dSchedWrap=$("d-sched-wrap");
+    const tabBtnStudents=$("tab-btn-students"), tabBtnSchedule=$("tab-btn-schedule");
+    const tabStudents=$("tab-students"), tabSchedule=$("tab-schedule");
+    const liveClock = $("live-clock");
+
+    // Data stores
+    let SECTION_META = {};
+    let SECTION_IDS  = [];
+    let STUDENT_COUNTS = {};
+    let SCHEDULE_COUNT = {};
+
+    // details state
+    let CURRENT_SECTION_ID=null;
+    let CURRENT_SECTION_CODE="";
+    let UNSUB_STUDENTS=null, UNSUB_SCHEDULES=null;
+    let ALL_STUDENTS = [];
+    let LAST_SCHEDULE_GROUPS = {};
+    let LIVE_TIMER = null;
+
+    // Helpers
+    const initials = (name) => (name||"").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("") || "S";
+    const normYearKey = (v) => { const m=String(v||"").match(/[1-4]/); return m? m[0] : ""; };
+    const toOrdinal=(n)=>{const s=String(n),a=s.slice(-1),b=s.slice(-2);if(b==='11'||b==='12'||b==='13')return s+'th';if(a==='1')return s+'st';if(a==='2')return s+'nd';if(a==='3')return s+'rd';return s+'th';};
+    const to12h=(hhmm)=>{if(!hhmm)return"";let[h,m]=hhmm.split(":").map(Number);const ap=h>=12?"PM":"AM";h=h%12; if(h===0)h=12; return `${h}:${String(m).padStart(2,"0")} ${ap}`;};
+    const dayNames=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const minutesFromHHMM=(s)=>{ if(!s||!s.includes(":")) return null; const [h,m]=s.split(":").map(n=>parseInt(n,10)); if(Number.isNaN(h)||Number.isNaN(m)) return null; return h*60+m; };
+
+    function nowState(){
+      const now=new Date();
+      const dayIndex=now.getDay();
+      const dayName=dayNames[dayIndex];
+      const mins=now.getHours()*60+now.getMinutes();
+      const timeLabel=`${to12h(String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0"))}`;
+      return {dayName, mins, timeLabel};
+    }
+
+    function toast(msg){
+      const el=document.createElement("div");
+      el.textContent=msg;
+      el.className="fixed bottom-6 right-6 bg-primary text-white text-xs px-4 py-2 rounded-full shadow-soft z-[90]";
+      document.body.appendChild(el); setTimeout(()=>el.remove(),2600);
+    }
+
+    function getYearLevelForSection(id, data){
+      if (data.yearLevel) return String(data.yearLevel);
+      if (data.year) return String(data.year);
+      const name=(data.name||data.sectionName||data.code||id||"").toString();
+      let m=name.match(/\b([1-4])(?:st|nd|rd|th)?\s*year\b/i); if(m) return m[1];
+      m=name.match(/\bBIT\s*([1-4])/i); if(m) return m[1];
+      m=name.match(/\b([1-4])[A-D]\b/i); if(m) return m[1];
+      return "";
+    }
+
+    // UPDATED: normalize course like dashboard (default BIT Computer Technology)
+    function getCourseForSection(data){
+      const course = data && data.course ? String(data.course) : "";
+      // mirror dashboard behavior: missing course treated as BIT Computer Technology :contentReference[oaicite:1]{index=1}
+      return course || "BIT Computer Technology";
+    }
+
+    /* ------- Cards ------- */
+    function sectionCard(sectionId, data){
+      const meta = { total:0, regular:0, irregular:0, ...STUDENT_COUNTS[sectionId] };
+      const total = meta.total, regular = meta.regular, irregular = meta.irregular;
+      const regPercent = total ? ((regular/total)*100).toFixed(1) : 0;
+      const irrPercent = total ? ((irregular/total)*100).toFixed(1) : 0;
+
+      const name = data.name || data.sectionName || sectionId;
+      const code = data.code || sectionId;
+      const course = data.course || "Bachelor in Industrial Technology";
+      const yearLevel = getYearLevelForSection(sectionId, data);
+      const schedCount = SCHEDULE_COUNT[sectionId] || 0;
+
+      const colors=["bg-sky-50","bg-emerald-50","bg-purple-50","bg-amber-50","bg-rose-50"];
+      const chip = colors[Math.floor(Math.random()*colors.length)];
+
+      const el=document.createElement("article");
+      el.className="card-borderless p-4 flex flex-col gap-3 bg-gradient-to-b from-white to-emerald-50/10 border border-slate-200/80 hover:border-emerald-300 hover:shadow-soft transition";
+
+      const schedHref = `schedules.html?section=${encodeURIComponent(code)}&year=${encodeURIComponent(yearLevel||'')}` + `#section=${encodeURIComponent(code)}`;
+
+      el.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl ${chip} flex items-center justify-center text-xs font-bold text-slate-800">${code.split(" ").pop()}</div>
+            <div class="text-xs">
+              <div class="font-semibold text-slate-900 text-sm">${name}</div>
+              <div class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                <i class="ri-book-2-line text-[12px]"></i><span>${course}</span>
+              </div>
+              ${yearLevel ? `<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-[10px] text-emerald-700">
+                  <i class="ri-graduation-cap-line mr-1 text-[11px]"></i>${yearLevel} Year
+                </div>` : ""}
+            </div>
+          </div>
+          <span class="text-[11px] text-slate-400 flex items-center gap-1"><i class="ri-group-line text-xs"></i>${total}</span>
+        </div>
+
+        <div class="text-[11px] text-slate-600 grid grid-cols-2 gap-x-4 gap-y-1 mt-1">
+          <div class="flex justify-between"><span>Total Students</span><span class="font-semibold text-slate-900">${total}</span></div>
+          <div class="flex justify-between"><span>Regular</span><span class="font-semibold text-emerald-700">${regular}</span></div>
+          <div class="flex justify-between"><span>Irregular</span><span class="font-semibold text-amber-600">${irregular}</span></div>
+          <div class="flex justify-between"><span>Schedules</span><span class="font-semibold text-slate-900">${schedCount}</span></div>
+        </div>
+
+        <div class="mt-1.5">
+          <div class="section-bar flex">
+            <div style="width:${regPercent}%" class="bg-emerald-500"></div>
+            <div style="width:${irrPercent}%" class="bg-amber-400"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+            <span>${regPercent}% Regular</span><span>${irrPercent}% Irregular</span>
+          </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <button data-doc="${sectionId}" class="btn-view-details text-[11px] px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 flex items-center gap-1.5 hover:border-primary/60 hover:text-primary">
+            <i class="ri-eye-line text-xs"></i><span>View Details</span>
+          </button>
+          <a href="${schedHref}" data-jump-section="${encodeURIComponent(code)}" data-jump-year="${encodeURIComponent(yearLevel||'')}" class="btn-view-schedule text-[11px] px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 flex items-center gap-1.5 hover:border-primary/60 hover:text-primary">
+            <i class="ri-calendar-schedule-line text-xs"></i><span>View Schedule</span>
+          </a>
+        </div>
+      `;
+
+      el.querySelector('.btn-view-details')?.addEventListener('click', ()=> openDetails(sectionId));
+      el.querySelector('.btn-view-schedule')?.addEventListener('click', (e)=>{
+        try{
+          const sec = decodeURIComponent(e.currentTarget.getAttribute('data-jump-section')||'');
+          const yr  = decodeURIComponent(e.currentTarget.getAttribute('data-jump-year')||'');
+          sessionStorage.setItem('jump_section_code', sec);
+          if (yr) sessionStorage.setItem('jump_section_year', yr);
+        }catch(_){}
+      });
+      return el;
+    }
+
+    function resetToSelectMessage(){
+      sectionsGrid.innerHTML = "";
+      const msg = document.createElement("div");
+      msg.className = "text-xs text-slate-400 col-span-full";
+      msg.textContent = "Select year level to view sections…";
+      sectionsGrid.appendChild(msg);
+      summaryEl.textContent = "Sections: — • Students: — (Regular — • Irregular —)";
+    }
+
+    function summaryUpdate(ids){
+      let sections = ids.length;
+      let total=0, regular=0, irregular=0;
+      ids.forEach(id=>{
+        const c = STUDENT_COUNTS[id] || {total:0,regular:0,irregular:0};
+        total += c.total; regular += c.regular; irregular += c.irregular;
+      });
+      summaryEl.textContent = `Sections: ${sections} • Students: ${total} (Regular ${regular} • Irregular ${irregular})`;
+    }
+
+    // rebuild year options whenever course or section data changes
+    function buildYearOptionsForCourse(){
+      if (!yearFilter) return;
+      const selectedCourse = courseFilter ? courseFilter.value : "";
+      const yearSet = new Set();
+
+      SECTION_IDS.forEach(id => {
+        const data = SECTION_META[id] || {};
+        const course = getCourseForSection(data);
+        if (selectedCourse && course !== selectedCourse) return;
+        const yKey = normYearKey(getYearLevelForSection(id, data));
+        if (yKey) yearSet.add(yKey);
+      });
+
+      const prevValue = normYearKey(yearFilter.value);
+
+      yearFilter.innerHTML = "";
+
+      const optAll = document.createElement("option");
+      optAll.value = "";
+      optAll.textContent = "All year levels";
+      yearFilter.appendChild(optAll);
+
+      const baseYears = ["1","2","3","4"];
+      const yearsToUse = yearSet.size ? baseYears.filter(y => yearSet.has(y)) : baseYears;
+
+      yearsToUse.forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = `${toOrdinal(Number(y))} Year`;
+        yearFilter.appendChild(opt);
+      });
+
+      if (prevValue && yearsToUse.includes(prevValue)) {
+        yearFilter.value = prevValue;
+      } else {
+        yearFilter.value = "";
+      }
+    }
+
+    function renderSectionsForYear(){
+      const y = normYearKey(yearFilter.value);
+      const c = courseFilter ? courseFilter.value : "";
+      const q = (sectionSearch.value||"").trim().toLowerCase();
+
+      if (!y){
+        resetToSelectMessage();
+        return;
+      }
+
+      let filtered = SECTION_IDS.filter(id => {
+        const data = SECTION_META[id] || {};
+        const course = getCourseForSection(data);
+        if (c && course !== c) return false;
+        return normYearKey(getYearLevelForSection(id, data)) === y;
+      });
+
+      if (q){
+        filtered = filtered.filter(id=>{
+          const d = SECTION_META[id] || {};
+          const name = (d.name || d.sectionName || id || "").toLowerCase();
+          const code = (d.code || id || "").toLowerCase();
+          return name.includes(q) || code.includes(q);
+        });
+      }
+
+      const sortBy = sortBySel.value;
+      filtered.sort((a,b)=>{
+        const A = SECTION_META[a] || {}, B = SECTION_META[b] || {};
+        const ya = parseInt(getYearLevelForSection(a, A)||0, 10);
+        const yb = parseInt(getYearLevelForSection(b, B)||0, 10);
+        const ca = STUDENT_COUNTS[a]?.total || 0;
+        const cb = STUDENT_COUNTS[b]?.total || 0;
+
+        if (sortBy === "students-desc"){
+          if (yb !== ya) return yb - ya;
+          if (cb !== ca) return cb - ca;
+          const an = (A.name || A.sectionName || a || "").toLowerCase();
+          const bn = (B.name || B.sectionName || b || "").toLowerCase();
+          return an.localeCompare(bn);
+        }
+        if (sortBy === "students-asc"){
+          if (ya !== yb) return ya - yb;
+          if (ca !== cb) return ca - cb;
+          const an = (A.name || A.sectionName || a || "").toLowerCase();
+          const bn = (B.name || B.sectionName || b || "").toLowerCase();
+          return an.localeCompare(bn);
+        }
+        const an = (A.name || A.sectionName || a || "").toLowerCase();
+        const bn = (B.name || B.sectionName || b || "").toLowerCase();
+        return an.localeCompare(bn);
+      });
+
+      sectionsGrid.innerHTML = "";
+      if (!filtered.length){
+        const msg = document.createElement("div");
+        msg.className = "text-xs text-slate-400 col-span-full";
+        msg.textContent = "No sections match the current filters.";
+        sectionsGrid.appendChild(msg);
+      } else {
+        filtered.forEach(id => sectionsGrid.appendChild(sectionCard(id, SECTION_META[id]||{})));
+      }
+      summaryUpdate(filtered);
+    }
+
+    function applySearch(){
+      const queryTxt = (sectionSearch.value||"").trim().toLowerCase();
+      const y = normYearKey(yearFilter.value);
+
+      if (!y){
+        resetToSelectMessage();
+      } else {
+        renderSectionsForYear();
+      }
+
+      if (!queryTxt){
+        searchWrap.classList.add("hidden");
+        searchGrid.innerHTML = "";
+        return;
+      }
+      const results = SECTION_IDS.filter(id=>{
+        const d = SECTION_META[id] || {};
+        const name = (d.name || d.sectionName || id || "").toLowerCase();
+        const code = (d.code || id || "").toLowerCase();
+        return name.includes(queryTxt) || code.includes(queryTxt);
+      });
+      searchGrid.innerHTML = "";
+      if (!results.length){
+        searchGrid.innerHTML = `<div class="text-[11px] text-slate-400 col-span-full">No matches.</div>`;
+      }else{
+        results.slice(0,12).forEach(id => searchGrid.appendChild(sectionCard(id, SECTION_META[id]||{})));
+      }
+      searchWrap.classList.remove("hidden");
+    }
+
+    function exportCSV(currentOnly=false){
+      let ids = SECTION_IDS.slice();
+
+      if (currentOnly){
+        const y = normYearKey(yearFilter.value);
+        const c = courseFilter ? courseFilter.value : "";
+        const q = (sectionSearch.value||"").trim().toLowerCase();
+
+        if (!y){
+          ids = [];
+        } else {
+          ids = ids.filter(id=>{
+            const d = SECTION_META[id] || {};
+            const course = getCourseForSection(d);
+            if (c && course !== c) return false;
+            if (normYearKey(getYearLevelForSection(id,d)) !== y) return false;
+            if (q){
+              const name = (d.name || d.sectionName || id || "").toLowerCase();
+              const code = (d.code || id || "").toLowerCase();
+              if (!name.includes(q) && !code.includes(q)) return false;
+            }
+            return true;
+          });
+        }
+      }
+
+      const rows = [["Section ID","Name","Code","Course","Year Level","Total","Regular","Irregular","Schedules"]];
+      ids.forEach(id=>{
+        const d = SECTION_META[id] || {};
+        const c = STUDENT_COUNTS[id] || { total:0, regular:0, irregular:0 };
+        rows.push([
+          id,
+          (d.name || d.sectionName || id).replace(/,/g," "),
+          (d.code || id).replace(/,/g," "),
+          (d.course || "Bachelor in Industrial Technology").replace(/,/g," "),
+          getYearLevelForSection(id,d),
+          c.total||0, c.regular||0, c.irregular||0,
+          SCHEDULE_COUNT[id]||0
+        ]);
+      });
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = currentOnly ? "sections_filtered.csv" : "sections.csv";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast(currentOnly ? "Exported sections_filtered.csv" : "Exported sections.csv");
+    }
+
+    function setCrumbHighlight(isOverview){
+      if (!crumbBack) return;
+      if (isOverview){ crumbBack.classList.add('crumb-current'); }
+      else { crumbBack.classList.remove('crumb-current'); }
+    }
+
+    /* ------- AUTO-OPEN helpers ------- */
+    function findSectionIdByIntent(openKey){
+      if (!openKey) return null;
+      if (SECTION_IDS.includes(openKey)) return openKey;
+      const want = openKey.toLowerCase().trim();
+      for (const sid of SECTION_IDS){
+        const meta = SECTION_META[sid] || {};
+        const code = (meta.code || "").toString().toLowerCase().trim();
+        if (code && code === want) return sid;
+      }
+      for (const sid of SECTION_IDS){
+        const meta = SECTION_META[sid] || {};
+        const name = (meta.name || meta.sectionName || "").toString().toLowerCase().trim();
+        if (name && name === want) return sid;
+      }
+      return null;
+    }
+
+    function attemptOpenFromIntent(){
+      const params = new URLSearchParams(location.search);
+      const qOpen = params.get('open');
+
+      const sDoc = sessionStorage.getItem('open_section_doc_id') || "";
+      const sCode = sessionStorage.getItem('open_section_code') || "";
+
+      const openKey = qOpen || sDoc || sCode;
+      const targetId = findSectionIdByIntent(openKey);
+
+      if (!targetId) return false;
+
+      const yr = params.get('year') || sessionStorage.getItem('open_section_year') || '';
+      if (yr){
+        const yKey = String(yr).match(/[1-4]/)?.[0] || '';
+        if (yKey) yearFilter.value = yKey;
+      }
+
+      openDetails(targetId);
+
+      try{
+        sessionStorage.removeItem('open_section_doc_id');
+        sessionStorage.removeItem('open_section_code');
+        sessionStorage.removeItem('open_section_year');
+        if (qOpen) history.replaceState({}, '', 'admin-acad-sections.html');
+      }catch(_){}
+
+      return true;
+    }
+
+    async function loadStudentCounts(){
+      const counts = {};
+      for (const sid of SECTION_IDS){
+        try{
+          const stuSnap = await getDocs(collection(db,"sections",sid,"students"));
+          let total=0, regular=0, irregular=0;
+          stuSnap.forEach(d=>{
+            const dt = d.data() || {};
+            total++;
+            const raw = (dt.type || dt.status || dt.enrollmentType || "").toString().toLowerCase();
+            if (raw.includes("irregular")) irregular++; else regular++;
+          });
+          counts[sid] = { total, regular, irregular };
+        }catch(e){
+          counts[sid] = { total:0, regular:0, irregular:0 };
+        }
+      }
+      STUDENT_COUNTS = counts;
+    }
+
+    async function loadScheduleCounts(){
+      const map = {};
+      try{
+        const snap = await getDocs(collectionGroup(db, "schedules"));
+        snap.forEach(docSnap=>{
+          const data = docSnap.data() || {};
+          const parentSectionId = docSnap.ref.parent?.parent?.id || "";
+          const secId = (data.sectionId || data.section || data.sectionCode || parentSectionId || "").toString().trim();
+          if (!secId) return;
+          map[secId] = (map[secId]||0)+1;
+        });
+      }catch(e){}
+      SCHEDULE_COUNT = map;
+    }
+
+    function startSectionsListener(){
+      onSnapshot(collection(db,"sections"), async (snap)=>{
+        SECTION_META = {};
+        SECTION_IDS = [];
+
+        snap.forEach(docSnap=>{
+          const data = docSnap.data() || {};
+          const label = String(data.name || data.sectionName || docSnap.id || "").trim();
+          if (!label || label === "${sec}") return;
+          SECTION_META[docSnap.id] = data;
+          SECTION_IDS.push(docSnap.id);
+        });
+
+        await Promise.all([ loadStudentCounts(), loadScheduleCounts() ]);
+
+        // rebuild year options whenever sections change
+        buildYearOptionsForCourse();
+
+        toolsCard.classList.remove("hidden");
+        overviewCard.classList.remove("hidden");
+        detailsCard.classList.add("hidden");
+        crumbDetail.classList.add("hidden");
+        setCrumbHighlight(true);
+
+        if (!attemptOpenFromIntent()){
+          if (!searchWrap.classList.contains("hidden")) applySearch();
+          const y = normYearKey(yearFilter.value);
+          if (y) renderSectionsForYear(); else resetToSelectMessage();
+        }
+      }, (e)=> {
+        console.error("sections listener failed", e);
+        SECTION_META = {}; SECTION_IDS = [];
+        resetToSelectMessage();
+      });
+    }
+
+    /* ------- Details (inline) ------- */
+    function yearFromCode(code){
+      const m = (code||"").match(/BIT\s*([1-4])/i);
+      return m ? Number(m[1]) : null;
+    }
+
+    // UPDATED: subtitle now shows the selected course name automatically
+    function renderDetailsHeader(){
+      const meta = SECTION_META[CURRENT_SECTION_ID] || {};
+      const code = meta.code || CURRENT_SECTION_ID;
+      const yr = getYearLevelForSection(CURRENT_SECTION_ID, meta) || yearFromCode(code) || "";
+      const courseLabel = meta.course || "Bachelor in Industrial Technology";
+      dTitle.textContent = code || "Section";
+      dSubtitle.textContent = yr ? `${courseLabel} – ${toOrdinal(yr)} Year` : courseLabel;
+      dYearPill.textContent = yr ? `${toOrdinal(yr)} Year` : "—";
+      crumbSection.textContent = code || "Section";
+    }
+
+    function renderStudentsTable(){
+      const want = dFilterType.value;
+      const list = want ? ALL_STUDENTS.filter(s => (s.type||"").toLowerCase() === want.toLowerCase()) : ALL_STUDENTS.slice();
+
+      if (!list.length){
+        dStudentsBody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-400">No students yet.</td></tr>';
+        return;
+      }
+      dStudentsBody.innerHTML = list.map(s => `
+        <tr>
+          <td class="whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center text-[10px] font-semibold">
+                ${(s.name||" ").split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase()}
+              </div>
+              <div class="min-w-0">
+                <div class="font-medium text-slate-800 truncate">${s.name || "—"}</div>
+                <div class="text-[11px] text-slate-500 truncate">${CURRENT_SECTION_CODE || CURRENT_SECTION_ID}</div>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap">${s.id || "—"}</td>
+          <td class="whitespace-nowrap">
+            <span class="badge ${String(s.type||'').toLowerCase()==='irregular'?'irr':'reg'}">${s.type || "Regular"}</span>
+          </td>
+          <td class="truncate max-w-[240px]">${s.email || "—"}</td>
+        </tr>
+      `).join("");
+    }
+
+    function describeSlotStatus(startStr, endStr, todayMins){
+      const s = minutesFromHHMM(startStr);
+      const e = minutesFromHHMM(endStr);
+      if (s==null || e==null) return {state:"unknown", label:""};
+      if (todayMins >= s && todayMins < e){
+        const left = e - todayMins;
+        const minsLeft = `${left} min left`;
+        return {state:"live", label: minsLeft};
+      } else if (todayMins < s){
+        const inMins = s - todayMins;
+        const soon = inMins <= 30 ? `starts in ${inMins} min` : `starts at ${to12h(startStr)}`;
+        return {state:"upcoming", label: soon};
+      } else {
+        return {state:"past", label:"ended"};
+      }
+    }
+
+    function renderSchedule(groups){
+      LAST_SCHEDULE_GROUPS = groups;
+      const {dayName, mins, timeLabel} = nowState();
+      if (liveClock) liveClock.textContent = `Now: ${timeLabel}`;
+
+      const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      let any = false;
+      dSchedWrap.innerHTML = "";
+      days.forEach(d=>{
+        const arr = (groups[d] || []).slice().sort((a,b)=>{
+          const sa = minutesFromHHMM(a.start || a.startTime || "");
+          const sb = minutesFromHHMM(b.start || b.startTime || "");
+          return (sa??0) - (sb??0);
+        });
+        if (!arr.length) return;
+        any = true;
+
+        const isToday = d === dayName;
+        const dayBlock = document.createElement("div");
+        dayBlock.innerHTML = `
+          <div class="font-semibold ${isToday ? 'text-emerald-700' : 'text-primary'} mb-1">
+            ${d} ${isToday ? '<span class="ml-2 text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Today</span>' : ''}
+          </div>
+          <div class="grid md:grid-cols-2 gap-2">
+            ${arr.map(it => {
+              const start = it.start || it.startTime || "";
+              const end   = it.end   || it.endTime   || "";
+              const status = isToday ? describeSlotStatus(start, end, mins) : {state:"", label:""};
+              const cls = status.state === 'live' ? 'slot-live' : status.state === 'upcoming' ? 'slot-upcoming' : status.state === 'past' ? 'slot-past' : '';
+              const statusChip = status.state === 'live'
+                ? `<div class="text-[11px] text-emerald-700 mt-1 flex items-center"><span class="live-dot"></span>Live now • ${status.label}</div>`
+                : status.state === 'upcoming'
+                  ? `<div class="text-[11px] text-slate-600 mt-1">Upcoming • ${status.label}</div>`
+                  : '';
+              return `
+                <div class="p-3 rounded-xl border ${cls ? cls : 'border-emerald-100'} ${cls ? '' : 'bg-emerald-50/50'}">
+                  <div class="text-sm font-semibold ${status.state==='past' ? 'text-slate-500' : 'text-emerald-700'}">${it.subject || "—"}</div>
+                  <div class="text-xs text-slate-600 mt-0.5"><i class="ri-time-line mr-1"></i>${to12h(start)} – ${to12h(end)}</div>
+                  <div class="text-xs text-slate-600 mt-0.5"><i class="ri-map-pin-line mr-1"></i>${it.room || "—"} • <i class="ri-user-3-line ml-1 mr-1"></i>${it.teacher || "—"}</div>
+                  ${statusChip}
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+        dSchedWrap.appendChild(dayBlock);
+      });
+      if (!any){
+        dSchedWrap.innerHTML = `<div class="text-slate-400 text-[12px]">No schedule yet.</div>`;
+      }
+    }
+
+    function startLiveTicker(){
+      stopLiveTicker();
+      LIVE_TIMER = setInterval(()=>{
+        if (!detailsCard.classList.contains('hidden')) {
+          renderSchedule(LAST_SCHEDULE_GROUPS || {});
+        }
+      }, 30000);
+    }
+    function stopLiveTicker(){
+      if (LIVE_TIMER){ clearInterval(LIVE_TIMER); LIVE_TIMER=null; }
+    }
+
+    // enrich student emails live from users collection by studentId if missing
+    async function enrichStudentEmails(students){
+      const need = Array.from(new Set(students.filter(s=>!s.email && s.id).map(s=>s.id)));
+      if (!need.length) return students;
+      const chunks = [];
+      for (let i=0;i<need.length;i+=10) chunks.push(need.slice(i,i+10));
+
+      const idToEmail = {};
+      for (const chunk of chunks){
+        try{
+          const qRef = query(collection(db,'users'), where('studentId','in', chunk));
+          const snap = await getDocs(qRef);
+          snap.forEach(d=>{
+            const u = d.data() || {};
+            const sid = (u.studentId || "").toString();
+            if (sid) idToEmail[sid] = u.email || "";
+          });
+        }catch(e){}
+      }
+      students.forEach(s => { if (!s.email && s.id && idToEmail[s.id]) s.email = idToEmail[s.id]; });
+      return students;
+    }
+
+    function openDetails(sectionId){
+      toolsCard.classList.add("hidden");
+      overviewCard.classList.add("hidden");
+      detailsCard.classList.remove("hidden");
+      crumbDetail.classList.remove("hidden");
+      setCrumbHighlight(false);
+
+      CURRENT_SECTION_ID = sectionId;
+      const meta = SECTION_META[sectionId] || {};
+      CURRENT_SECTION_CODE = meta.code || sectionId;
+
+      renderDetailsHeader();
+
+      if (UNSUB_STUDENTS) { UNSUB_STUDENTS(); UNSUB_STUDENTS=null; }
+      if (UNSUB_SCHEDULES) { UNSUB_SCHEDULES(); UNSUB_SCHEDULES=null; }
+      stopLiveTicker();
+
+      // Students listener + email enrichment
+      UNSUB_STUDENTS = onSnapshot(collection(doc(db,"sections",sectionId),"students"), (snap)=>{
+        (async ()=>{
+          const arr = [];
+          snap.forEach(d=>{
+            const data = d.data() || {};
+            arr.push({
+              id: data.studentId || data.id || "",
+              name: data.name || data.fullName || "Unnamed",
+              type: data.type || data.status || "Regular",
+              email: data.email || ""
+            });
+          });
+          await enrichStudentEmails(arr);
+
+          ALL_STUDENTS = arr;
+
+          const total = arr.length;
+          const reg   = arr.filter(s=>String(s.type||"").toLowerCase()!=="irregular").length;
+          const irr   = total - reg;
+
+          dMTotal.textContent = total;
+          dMReg.textContent   = reg;
+          dMIrr.textContent   = irr;
+
+          renderStudentsTable();
+        })();
+      });
+
+      // Schedules listener
+      UNSUB_SCHEDULES = onSnapshot(collection(doc(db,"sections",sectionId),"schedules"), (snap)=>{
+        const groups = {};
+        snap.forEach(d=>{
+          const data = d.data() || {};
+          const day = data.day || "—";
+          (groups[day] = groups[day] || []).push({
+            subject: data.subject || "",
+            day,
+            start: data.start || data.startTime || "",
+            end:   data.end   || data.endTime   || "",
+            room: data.room || "",
+            teacher: data.teacher || ""
+          });
+        });
+        renderSchedule(groups);
+        startLiveTicker();
+      });
+
+      // default tab
+      tabBtnStudents.classList.add("tab-active");
+      tabBtnSchedule.classList.remove("tab-active");
+      tabStudents.classList.remove("hidden");
+      tabSchedule.classList.add("hidden");
+      const { timeLabel } = nowState();
+      if (liveClock) liveClock.textContent = `Now: ${timeLabel}`;
+    }
+
+    function backToOverview(){
+      if (UNSUB_STUDENTS) { try{UNSUB_STUDENTS();}catch(_){} UNSUB_STUDENTS=null; }
+      if (UNSUB_SCHEDULES) { try{UNSUB_SCHEDULES();}catch(_){} UNSUB_SCHEDULES=null; }
+      stopLiveTicker();
+      CURRENT_SECTION_ID = null;
+      CURRENT_SECTION_CODE = "";
+      LAST_SCHEDULE_GROUPS = {};
+
+      detailsCard.classList.add("hidden");
+      toolsCard.classList.remove("hidden");
+      overviewCard.classList.remove("hidden");
+      crumbDetail.classList.add("hidden");
+      setCrumbHighlight(true);
+
+      const y = normYearKey(yearFilter.value);
+      if (y) renderSectionsForYear(); else resetToSelectMessage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectTab(which){
+      const studentActive = which === "students";
+      tabBtnStudents.classList.toggle("tab-active", studentActive);
+      tabBtnSchedule.classList.toggle("tab-active", !studentActive);
+      tabStudents.classList.toggle("hidden", !studentActive);
+      tabSchedule.classList.toggle("hidden", studentActive);
+      if (!studentActive) { renderSchedule(LAST_SCHEDULE_GROUPS || {}); }
+    }
+    document.getElementById("tab-btn-students").addEventListener("click", ()=>selectTab("students"));
+    document.getElementById("tab-btn-schedule").addEventListener("click", ()=>selectTab("schedule"));
+    document.getElementById("btn-tab-sudents")?.addEventListener("click", ()=>selectTab("students"));
+    document.getElementById("btn-tab-schedule")?.addEventListener("click", ()=>selectTab("schedule"));
+    dFilterType.addEventListener("change", renderStudentsTable);
+
+    crumbBack.addEventListener("click", (e)=>{ e.preventDefault(); backToOverview(); });
+
+    // Auth guard + init
+    onAuthStateChanged(auth, async (user)=>{
+      if (!user){ location.href="about.html"; return; }
+      try{
+        const snap=await getDoc(doc(db,"users",user.uid));
+        const data=snap.exists()? snap.data() : {};
+        const role=(data.role||"guest").toLowerCase();
+
+        adminAvatar.textContent = initials(data.name || user.displayName || "Admin");
+        adminName.textContent   = data.name || user.displayName || "Admin User";
+        if (adminEmail) adminEmail.textContent = data.email || user.email || "—";
+
+        if (role!=="admin"){ alert("Access denied. Admin only."); location.href="index.html"; return; }
+        startSectionsListener();
+      }catch(e){
+        console.error(e);
+        startSectionsListener();
+      }
+    });
+
+    // Profile change (preview only)
+    if (adminProfile && adminPhotoInput){
+      adminProfile.addEventListener("click", ()=>adminPhotoInput.click());
+      adminPhotoInput.addEventListener("change",(e)=>{
+        const file=e.target.files[0]; if(!file) return;
+        const r=new FileReader();
+        r.onload=(ev)=>{
+          adminAvatar.innerHTML="";
+          const img=document.createElement("img");
+          img.src=ev.target.result; img.alt="Admin photo"; img.className="w-10 h-10 rounded-full object-cover";
+          adminAvatar.appendChild(img);
+        };
+        r.readAsDataURL(file);
+      });
+    }
+
+    btnSignout?.addEventListener("click", async ()=>{ try{await signOut(auth);}catch(e){} sessionStorage.clear(); location.href="about.html"; });
+    btnHome?.addEventListener("click", ()=>{ window.location.href="index.html"; });
+
+    yearFilter.addEventListener("change", renderSectionsForYear);
+    sortBySel.addEventListener("change", renderSectionsForYear);
+
+    // when course changes, rebuild years and re-render
+    courseFilter?.addEventListener("change", ()=>{
+      buildYearOptionsForCourse();
+      renderSectionsForYear();
+    });
+
+    let searchDebounce = null;
+    sectionSearch.addEventListener("input", ()=>{
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(()=>applySearch(), 180);
+    });
+
+    btnExport.addEventListener("click", ()=>exportCSV(true));
+  </script>
+</body>
+</html>
