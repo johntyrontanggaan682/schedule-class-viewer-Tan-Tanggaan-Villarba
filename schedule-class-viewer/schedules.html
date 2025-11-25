@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedules • SLSU Lucena BIT</title>
+  <title>Schedules • SLSU Lucena</title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -20,7 +20,68 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
   <style>:where([class^="ri-"])::before{content:"\f3c2";}</style>
 
+  <!-- 🔒 Early role class to prevent flash of admin/teacher UI -->
+  <script>
+    (function(){
+      try{
+        var r=(sessionStorage.getItem('auth_role')||'guest').toLowerCase();
+        document.documentElement.classList.add('role-'+r);
+      }catch(_){}
+    })();
+  </script>
+
   <style>
+    
+    /* ========= 👇 NEW: gently dim overall UI visibility (requested) ========= */
+    :root{ --ui-dim: .94; } /* lower = more dim; tweaked lightly */
+    #browse-card,
+    #pick-year-empty,
+    #single-table-container,
+    #section-card-container,
+    #all-sections-stack,
+    #student-today-panel { opacity: var(--ui-dim); }
+
+    /* ========= 👇 NEW: light table design polish (requested) ========= */
+    /* Sticky first column (Time) for easier scanning */
+    #single-table-container table th:first-child,
+    #single-table-container table td:first-child{
+      position: sticky; left: 0;
+      background: linear-gradient(180deg,#ffffff 0%, #fbfbfb 100%);
+      z-index: 5; /* sits above row cells */
+      box-shadow: inset -1px 0 0 #e5e7eb;
+    }
+    /* Slightly clearer grid lines */
+    #single-table-container tbody td{ border-bottom: 1px solid #e9ecef; }
+    #single-table-container tbody tr:last-child td{ border-bottom: 0; }
+
+    /* Nicer scroll for the table area */
+    #single-table-container .overflow-x-auto{
+      scrollbar-width: thin;
+      scrollbar-color: rgba(10,75,45,.35) rgba(10,75,45,.08);
+    }
+    #single-table-container .overflow-x-auto::-webkit-scrollbar{ height:10px; width:10px; }
+    #single-table-container .overflow-x-auto::-webkit-scrollbar-track{ background: rgba(10,75,45,.06); border-radius: 9999px; }
+    #single-table-container .overflow-x-auto::-webkit-scrollbar-thumb{
+      background: rgba(10,75,45,.45);
+      border-radius: 9999px; border: 2px solid rgba(10,75,45,.06);
+    }
+
+    /* Header pill refinement */
+    #single-table-container thead .inline-block{
+      border-radius: 9999px;
+      backdrop-filter: saturate(120%);
+    }
+
+    /* Hover lift on cells (subtle) */
+    #single-table-container tbody td > div.rounded{
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    #single-table-container tbody td > div.rounded:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(10,75,45,.16);
+    }
+    /* ========= 👆 end of "bit design" additions ========= */
+
     @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0);} }
     .fade-in { animation: fadeIn .25s ease-out both; }
 
@@ -29,13 +90,13 @@
     body:not(.year-picked) #all-sections-stack { display: none !important; }
     body:not(.year-picked) #filters-gated { display: none !important; }
 
-    .blob { position:absolute; filter: blur(24px); opacity:.35; pointer-events:none; }
-    .blob-1 { width:180px; height:180px; left:-30px; top:-30px; background: radial-gradient(circle at 30% 30%, rgba(10,75,45,.35), transparent 60%); }
-    .blob-2 { width:220px; height:220px; right:-40px; bottom:-40px; background: radial-gradient(circle at 70% 70%, rgba(10,75,45,.35), transparent 60%); }
+    .blob { position:absolute; filter: blur(24px); opacity:.30; pointer-events:none; } /* slightly dimmer blobs */
+    .blob-1 { width:180px; height:180px; left:-30px; top:-30px; background: radial-gradient(circle at 30% 30%, rgba(10,75,45,.30), transparent 60%); }
+    .blob-2 { width:220px; height:220px; right:-40px; bottom:-40px; background: radial-gradient(circle at 70% 70%, rgba(10,75,45,.30), transparent 60%); }
 
     #schedule-table-body td { line-height: 1.3; }
 
-    .role-student #student-today-panel{ position: absolute; top: 45%; right: 20px; margin-right: 10px; z-index:30; }
+    .role-student #student-today-panel{ position: absolute; top: 40%; right: 20px; margin-right: 10px; z-index:30; }
     .role-student #single-table-container,
     .role-student #section-card-container,
     .role-student #all-sections-stack{ margin-right: 300px; }
@@ -43,8 +104,9 @@
 
     #hero-wrap{ display:flex; flex-direction:column; align-items:center; text-align:center; gap: 1.25rem; margin-bottom: 0.5rem; }
 
-    #student-today-panel .today-card { box-shadow: 0 8px 24px rgba(10,75,45,.12); border-radius: 1rem; overflow: hidden; border: 1px solid rgba(10,75,45,.12); background: #ffffff; }
-    #student-today-panel .today-head { background: linear-gradient(90deg, rgba(10,75,45,.06) 0%, #ffffff 70%); border-bottom: 1px solid rgba(10,75,45,.10); position: sticky; top: 5; z-index: 1; }
+    #student-today-panel .today-card { box-shadow: 0 8px 24px rgba(10,75,45,.10); border-radius: 1rem; overflow: hidden; border: 1px solid rgba(10,75,45,.12); background: #ffffff; }
+    /* FIX: align/sticky header properly */
+    #student-today-panel .today-head { background: linear-gradient(90deg, rgba(10,75,45,.06) 0%, #ffffff 70%); border-bottom: 1px solid rgba(10,75,45,.10); position: sticky; top: 0; z-index: 1; }
     #student-today-list .rounded-xl{ position: relative; overflow: hidden; background: linear-gradient(135deg,rgba(10,75,45,.05) 0%, #ffffff 82%) !important; border: 1px solid rgba(10,75,45,.18) !important; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     #student-today-list .rounded-xl::before{ content:""; position:absolute; inset:0 0 0 0; pointer-events:none; background: radial-gradient(120px 60px at -20px 10px, rgba(10,75,45,.15), transparent 60%); opacity:.6; }
     #student-today-list .rounded-xl::after{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background: linear-gradient(#0A4B2D,#0D5C38); }
@@ -56,6 +118,20 @@
     #single-table-container tbody tr:hover td:first-child{ position: relative; }
     #single-table-container tbody tr:hover td:first-child::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:#0A4B2D; border-radius:2px; }
     #single-table-container tbody tr{ box-shadow: inset 0 -1px 0 #e5e7eb; }
+
+    /* ✨ Extra: make time cell text pop a bit on row hover */
+    #single-table-container tbody tr:hover td:first-child{
+      color:#083B24; font-weight:700;
+    }
+
+    /* ✨ Extra: lift the lesson pill a little on hover */
+    #single-table-container tbody td > div.rounded{
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    #single-table-container tbody td > div.rounded:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(10,75,45,.18);
+    }
 
     @keyframes emeraldGlow {
       0%{ box-shadow: 0 0 0 0 rgba(10,75,45,.18), 0 12px 30px rgba(10,75,45,.10); }
@@ -76,18 +152,39 @@
 
     #single-table-container { box-shadow: 0 10px 28px rgba(10,75,45,.08); }
     #single-table-container .overflow-x-auto { background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%); }
-    #single-table-container thead { box-shadow: inset 0 -2px 0 rgba(255,255,255,.2); }
+
+    /* Scroll bounds */
+    #single-table-container .overflow-x-auto{
+      max-height: 540px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    #single-table-container thead { box-shadow: inset 0 -2px 0 rgba(255,255,255,.2); position: sticky; top: 0; }
     #single-table-container tbody tr{ box-shadow: none !important; }
     #single-table-container tbody td{ border-bottom: 2px solid #e5e7eb; }
     #single-table-container tbody tr:last-child td{ border-bottom-width: 0; }
     #single-table-container tbody tr:hover td{ background-color: rgba(10,75,45,.07); }
 
-    /* highlight today's column */
-    th.today-col, td.today-col{ background-color: rgba(10,75,45,.10) !important; }
+    /* ✅ highlight today's column — gray */
+    th.today-col, td.today-col{ background-color: rgba(0,0,0,.06) !important; }
     th.today-col{ box-shadow: inset 0 -2px 0 rgba(255,255,255,.25); }
-    td.today-col{ position: relative; outline: 2px solid rgba(10,75,45,.10); outline-offset: -2px; }
+    td.today-col{ position: relative; outline: 2px solid rgba(0,0,0,.08); outline-offset: -2px; }
 
-    /* ======== Reminders card (scrollable + light design) ======== */
+    /* ✨ Extra: column hover highlight */
+    #single-table-container th.col-hover,
+    #single-table-container td.col-hover{
+      background-color: rgba(10,75,45,.08) !important;
+    }
+    #single-table-container th.col-hover{
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,.35);
+    }
+    #single-table-container td.col-hover{
+      outline: 2px dashed rgba(10,75,45,.12);
+      outline-offset: -2px;
+    }
+
+    /* Reminders card */
     .rem-card{
       background:linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%);
       border:1px solid rgba(10,75,45,.12);
@@ -98,10 +195,11 @@
         linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%) padding-box,
         linear-gradient(135deg, rgba(10,75,45,.35), rgba(13,92,56,.25)) border-box;
       box-shadow: 0 12px 26px rgba(10,75,45,.14), 0 2px 0 rgba(10,75,45,.05) inset;
+       overflow: hidden;
     }
     .rem-card::after{ 
-      content:""; position:absolute; left:14px; right:14px; top:8px; height:6px;
-      background: linear-gradient(90deg, rgba(10,75,45,.18), rgba(10,75,45,0));
+      content:""; position:absolute; left:14px; right:14px; top:8px;
+      height:6px; background: linear-gradient(90deg, rgba(10,75,45,.18), rgba(10,75,45,0));
       filter: blur(10px); opacity:.35; pointer-events:none;
     }
     .rem-head{ position:sticky; top:0; z-index:1; padding:10px 12px; background:linear-gradient(90deg, rgba(10,75,45,.10) 0%, #ffffff 70%); border-bottom:1px solid rgba(10,75,45,.10); backdrop-filter:saturate(120%) blur(2px); }
@@ -150,7 +248,7 @@
     #rem-view-modal > div{
       border:1.5px solid transparent;
       background:
-        linear-gradient(180deg,#ffffff 0%,#fbfbfb 100%) padding-box,
+        linear-gradient(180deg,#ffffff 0%,#fbfbf9 100%) padding-box,
         linear-gradient(135deg, rgba(10,75,45,.35), rgba(13,92,56,.25)) border-box;
       box-shadow: 0 18px 36px rgba(10,75,45,.18);
     }
@@ -163,6 +261,98 @@
       font-weight:600; color:#083B24;
     }
     #rv-notes{ color:#0a3220; }
+
+    /* ==== selectable cells ==== */
+    .ir-pickable{ cursor: pointer; border:1px solid transparent; transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease; }
+    .ir-pickable:hover{ border-color: rgba(10,75,45,.25); box-shadow: 0 6px 16px rgba(10,75,45,.10); }
+
+    /* Before SAVE: green + circle */
+    .ir-picked{
+      border-color:#0A4B2D !important; box-shadow: 0 0 0 2px rgba(10,75,45,.25);
+      position: relative;
+    }
+    .ir-picked::after{
+      content:""; position:absolute; right:6px; top:6px; width:14px; height:14px; border-radius:9999px;
+      background: linear-gradient(#0A4B2D,#0D5C38);
+    }
+
+    /* AFTER SAVE (locked): keep green highlight, NO circle */
+    .ir-saved{
+      border-color:#0A4B2D !important; box-shadow: 0 0 0 2px rgba(10,75,45,.25);
+    }
+
+    /* ✅ ADDED: when locked, completely disable clicking/hover on pickables */
+    .ir-locked .ir-pickable {
+  pointer-events: none !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+   .ir-locked .ir-pickable:hover {
+  border-color: #0A4B2D !important;
+  box-shadow: none !important;
+}
+
+
+    /* Save bar */
+    #irreg-save-bar{
+      position: fixed; right: 20px; bottom: 18px; z-index: 60;
+      display: none;
+      transition: transform .18s ease, opacity .18s ease;
+      transform-origin: bottom right;
+      min-width: 360px;
+      max-width: calc(100% - 48px);
+    }
+    /* improved save bar visuals */
+    #irreg-save-bar-inner{ display:flex; align-items:center; gap:12px; }
+    #irreg-save-bar .save-preview{
+      width:44px; height:44px; border-radius:10px; overflow:hidden; flex:0 0 44px;
+      background: linear-gradient(135deg,#0A4B2D,#0D5C38);
+      display:flex; align-items:center; justify-content:center; color:white; font-weight:700;
+      box-shadow: 0 8px 20px rgba(10,75,45,.14);
+    }
+    #irreg-save-bar .save-buttons{ margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+    /* Confirm modal */
+    #irreg-confirm-modal{ backdrop-filter: blur(2px); }
+
+    /* 🚫 Immediately hide non-student views when logged in as student (no flicker) */
+    html.role-student #browse-card,
+    html.role-student #pick-year-empty,
+    html.role-student #filters-gated,
+    html.role-student #year-filter-wrap { display: none !important; }
+    html.role-student #student-today-panel { display:block !important; }
+    html.role-student #student-metrics { display:grid !important; }
+
+    /* ✅ NEW: subtle hint for irregulars to pick at least one subject */
+    #irreg-pick-hint{
+      display:none;
+    }
+    .role-student #irreg-pick-hint{
+      margin-right: 299px;
+    }
+    /* Conflict modal style */
+    #conflict-modal { z-index: 80; }
+    #conflict-modal .conflict-card { max-width: 520px; width: 100%; border-radius: 12px; overflow: hidden; }
+    #conflict-modal .conflict-title { color: #083B24; font-weight: 700; }
+    #conflict-modal .conflict-body { color: #0A3220; }
+    #conflict-modal .conflict-meta { font-size: 13px; color:#065b3a; background: rgba(10,75,45,.06); padding:8px 10px; border-radius:8px; display:inline-block; margin-top:8px; }
+
+    #single-table-container { box-shadow: 0 10px 28px rgba(10,75,45,.08); }
+    #browse-card{
+      position: relative;
+      z-index: 40;   /* higher than the table header */
+    }
+
+    #day-filter-options,
+    #year-filter-options{
+      z-index: 50;   /* dropdown itself is on top of everything */
+    }
+
+    /* 🔽 NEW: Course filter visibility – hidden for students, visible for teacher/admin */
+    .role-student #course-filter-wrap{
+      display:none !important;
+    }
   </style>
 </head>
 <body class="bg-white min-h-screen">
@@ -182,7 +372,7 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
-        <h1 class="text-lg font-bold">SLSU Lucena BIT Class Schedule Viewer</h1>
+        <h1 class="text-lg font-bold">SLSU Lucena Class Schedule Viewer</h1>
       </div>
       <div class="hidden md:flex items-center space-x-6 text-sm">
         <a href="index.html"     class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-home-line"></i><span>Home</span></a>
@@ -221,7 +411,7 @@
         <a href="sections.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
         <a href="schedules.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-calendar-line"></i><span>Schedules</span></a>
         <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Students</span></a>
-        <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+        <a href="teachers.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Teachers</span></a>
         <a href="profile.html"   class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Profile</span></a>
       </div>
     </div>
@@ -263,10 +453,44 @@
           </div>
         </div>
 
+        <!-- ✅ NEW: Hint that shows only for irregular students until they pick at least one subject -->
+        <div id="irreg-pick-hint" class="mb-4">
+          <div class="flex items-start gap-3 p-3 rounded-xl border border-emerald-200 bg-emerald-50/100 text-emerald-1100 text-sm">
+            <i class="ri-hand-pointer-line text-lg mt-0.5"></i>
+            <div>
+              <div class="font-semibold">Pick a subject schedule</div>
+              <div class="text-[12px] opacity-80">Click a subject in table to pick it. This hint disappears after you pick at least one.</div>
+            </div>
+          </div>
+        </div>
+        <!-- end hint -->
+
         <div id="browse-card" class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
           <div class="p-5 border-b border-gray-200">
             <h3 class="text-sm font-semibold text-gray-800 mb-3">Browse by Section</h3>
-            <div class="mb-3">
+
+            <!-- 🔽 NEW: Course + Year filters row (course first, then year) -->
+            <div class="mb-3 flex flex-wrap gap-4">
+              <!-- Course filter (for teacher/admin) -->
+              <div class="relative w-60" id="course-filter-wrap">
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">Course</label>
+                <button id="course-filter-dropdown" class="w-full px-3.5 py-2 border border-gray-300 rounded-button bg-white text-left text-xs flex items-center justify-between">
+                  <span id="course-filter-selected">Select Course</span>
+                  <i class="ri-arrow-down-s-line text-gray-400"></i>
+                </button>
+                <div id="course-filter-options" class="absolute left-0 top-full mt-1 z-50 w-full bg-white border border-gray-300 rounded-button shadow-lg hidden text-xs max-h-56 overflow-auto">
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BIT Computer Technology">BIT Computer Technology</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Automotive Technology">BTVT-ED Automotive Technology</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Computer Programming">BTVT-ED Computer Programming</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Civil Technology">BTVT-ED Civil Technology</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Electrical Technology">BTVT-ED Electrical Technology</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Electronics Technology">BTVT-ED Electronics Technology</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Food &amp; Service Management">BTVT-ED Food &amp; Service Management</div>
+                  <div class="course-filter-option p-2.5 hover:bg-gray-50 cursor-pointer" data-value="BTVT-ED Mechanical Technology">BTVT-ED Mechanical Technology</div>
+                </div>
+              </div>
+
+              <!-- Year filter (unchanged, just moved beside course) -->
               <div class="relative w-44" id="year-filter-wrap">
                 <label class="block text-xs font-medium text-gray-700 mb-1.5">Year</label>
                 <button id="year-filter-dropdown" class="w-full px-3.5 py-2 border border-gray-300 rounded-button bg-white text-left text-xs flex items-center justify-between">
@@ -312,16 +536,12 @@
           </div>
         </div>
 
-        <div id="pick-year-empty" class="relative rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-700 shadow-sm overflow-hidden bg-white">
-          <span class="blob blob-1"></span><span class="blob blob-2"></span>
-          <div class="mx-auto max-w-xl flex flex-col items-center gap-4 relative">
-            <div class="relative">
-              <div class="absolute inset-0 blur-2xl rounded-full bg-gradient-to-r from-primary/20 to-secondary/20"></div>
-              <div class="relative w-16 h-16 rounded-full bg-white ring-1 ring-gray-200 flex items-center justify-center shadow-sm"><i class="ri-calendar-2-line text-2xl text-primary"></i></div>
-            </div>
-            <h4 class="text-xl font-bold tracking-tight text-gray-800">Please pick a Year Level to display schedules</h4>
-            <p class="text-sm text-gray-500">Use the <span class="font-semibold text-gray-700">Year</span> dropdown above.</p>
-          </div>
+        <div id="pick-year-empty" class="text-center text-gray-600 my-4">
+          <h4 class="text-base font-semibold text-gray-800">Please pick a Course and Year Level to display schedules</h4>
+          <p class="text-sm text-gray-500">
+            Use the <span class="font-semibold text-gray-700">Course</span> and
+            <span class="font-semibold text-gray-700">Year</span> dropdowns above.
+          </p>
         </div>
 
         <!-- layout -->
@@ -333,12 +553,12 @@
                 <table class="w-full text-sm">
                   <thead class="bg-gradient-to-r from-primary to-secondary text-white sticky top-0 z-10">
                     <tr class="divide-x divide-white/20" id="master-head-row">
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Time</div></th>
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Monday</div></th>
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Tuesday</div></th>
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Wednesday</div></th>
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Thursday</div></th>
-                      <th class="px-7 py-4 text-left"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Friday</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Time"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Time</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Monday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Monday</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Tuesday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Tuesday</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Wednesday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Wednesday</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Thursday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Thursday</div></th>
+                      <th class="px-7 py-4 text-left" data-day="Friday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Friday</div></th>
                     </tr>
                   </thead>
                   <tbody id="schedule-table-body" class="divide-y divide-gray-200"></tbody>
@@ -410,11 +630,66 @@
           </div></div>
       </div>
       <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
-        <p>&copy; 2025 SLSU Lucena BIT Class Schedule Viewer. All rights reserved.</p>
+        <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
       </div>
     </div>
   </div>
 </footer>
+
+<!-- Save bar for irregular subject picks -->
+<div id="irreg-save-bar" class="rounded-2xl border border-emerald-200 bg-white shadow-2xl p-3">
+  <div id="irreg-save-bar-inner">
+    <div class="save-preview" id="irreg-save-preview">
+      <i class="ri-bookmark-3-line text-lg"></i>
+    </div>
+    <div class="text-sm">
+      <div class="font-semibold text-gray-800">Picked <span id="irreg-picked-count">0</span> subject(s)</div>
+      <div class="text-[11px] text-gray-500">Click Save to use for Today’s Classes &amp; Reminders</div>
+    </div>
+    <!-- ADDED: Unselect All button (left of Save) -->
+    <div class="save-buttons">
+      <button id="irreg-unselect-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm active:scale-95">Unselect All</button>
+      <button id="irreg-save-btn" class="px-3 py-2 rounded-button bg-primary text-white text-sm active:scale-95">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- one-attempt Save confirmation modal -->
+<div id="irreg-confirm-modal" class="fixed inset-0 bg-black/50 z-[70] hidden items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-emerald-200">
+    <div class="px-5 py-4 border-b flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center"><i class="ri-save-3-line"></i></div>
+      <div class="font-semibold text-gray-900">Confirm Save</div>
+    </div>
+    <div class="px-5 py-4 text-sm text-gray-700">
+      Are you sure to save? <span class="font-semibold">You have 1 attempt only.</span>
+    </div>
+    <div class="px-5 pb-5 pt-2 flex items-center justify-end gap-2">
+      <button id="irreg-confirm-no" class="px-4 py-2 rounded-button bg-gray-100">No</button>
+      <button id="irreg-confirm-yes" class="px-4 py-2 rounded-button bg-primary text-white">Yes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Conflict modal (NEW) -->
+<div id="conflict-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4">
+  <div class="conflict-card bg-white shadow-2xl border border-emerald-100 p-4">
+    <div class="flex items-start gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center"><i class="ri-alert-line"></i></div>
+      <div class="flex-1">
+        <div class="conflict-title text-lg">Cannot pick this schedule</div>
+        <div class="conflict-body mt-2 text-sm">
+          <div id="conflict-message">This subject/room is already picked.</div>
+          <div id="conflict-meta" class="conflict-meta hidden"></div>
+        </div>
+        <div class="mt-4 flex items-center gap-2 justify-end">
+          <button id="conflict-dismiss" class="px-3 py-2 rounded-button bg-gray-100">Dismiss</button>
+          <button id="conflict-goto" class="px-3 py-2 rounded-button bg-primary text-white">Go to table</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="reminder-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
   <div class="bg-white rounded-xl max-w-lg w-full overflow-hidden shadow-2xl">
@@ -521,9 +796,7 @@
 
       <div>
         <div class="text-xs text-gray-500 mb-1">Notes</div>
-        <div class="rounded-xl border border-emerald-100 bg-emerald-50/40 p-3">
-          <div id="rv-notes" class="text-gray-800 whitespace-pre-wrap text-justify leading-relaxed break-anywhere">—</div>
-        </div>
+        <div id="rv-notes" class="text-gray-800 whitespace-pre-wrap text-justify leading-relaxed break-anywhere">—</div>
       </div>
     </div>
   </div>
@@ -542,6 +815,11 @@
 <script src="assets/js/schedules.manage.js"></script>
 <script src="assets/js/schedules.views.js"></script>
 <script src="assets/js/profile.js"></script>
+</body>
+</html>
+
+
+<!-- ========================= YOUR EXISTING SCRIPTS (UNCHANGED) ========================= -->
 
 <script>
   (function(){
@@ -601,10 +879,14 @@
   });
 </script>
 
-<!-- Firestore + Table + Reminders (aligned with Sections page) -->
+<!-- Firestore + Table + Reminders -->
 <script type="module">
   import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-  import { getFirestore, collectionGroup, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+  import {
+    getFirestore, collectionGroup, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, doc, deleteDoc,
+    setDoc, getDoc, updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+  
 
   const firebaseConfig = {
     apiKey: "AIzaSyAZLXYqe3TaVzkHZh3i4h78VBwI0KckMpE",
@@ -643,6 +925,9 @@
 
   const remindersCard = document.getElementById('reminders-card');
   const remindersList = document.getElementById('reminders-list');
+
+  /* ✅ NEW: reference to the hint node */
+  const irregHintNode = document.getElementById('irreg-pick-hint');
 
   const studentScheduleEntries = [];
 
@@ -730,12 +1015,324 @@
       window.highlightTodayColumn && window.highlightTodayColumn();
     }
   }
-  function buildCellContent(subject, room, colorClass, teacher) {
+
+  /* ------------------- Improved pickable handling ------------------- */
+
+  // compute stable pick id for a node (subject+section+day+time)
+  function computePickIdFromParts(subject, section, day, time){
+    const s = (subject||'').trim().toLowerCase();
+    const sec = (section||'').trim().toLowerCase();
+    const d = (day||'').trim().toLowerCase();
+    const t = (time||'').trim();
+    return `${s}||${sec}||${d}||${t}`;
+  }
+  function computePickIdFromNode(node){
+    if (!node) return '';
+    const subject = (node.dataset.subject || '').trim();
+    const section = (node.dataset.section || (node.closest('tr') && node.closest('tr').dataset.section) || '').trim();
+    const day = (node.dataset.day || '').trim();
+    const time = (node.dataset.time || '').trim() || (node.closest('tr') ? (node.closest('tr').querySelector('td:first-child')?.textContent || '').trim() : '');
+    return computePickIdFromParts(subject, section, day, time);
+  }
+
+  function buildCellContent(subject, room, colorClass, teacher, section, day, timeDisplay) {
     const wrap = document.createElement('div');
-    wrap.className = (colorClass||'bg-primary/10') + ' px-3.5 py-3 rounded';
+    const baseClass = (colorClass||'bg-primary/10') + ' px-3.5 py-3 rounded';
+    const pickableClass = (IS_IRREG ? ' ir-pickable' : '');
+    wrap.className = baseClass + pickableClass;
+    // accessibility attributes
+    if (IS_IRREG){
+      wrap.setAttribute('tabindex','0');
+      wrap.setAttribute('role','button');
+      wrap.setAttribute('aria-pressed','false');
+      wrap.setAttribute('data-subject', (subject||'').trim());
+      wrap.setAttribute('data-section', section || '');
+      wrap.setAttribute('data-day', day || '');
+      wrap.setAttribute('data-time', timeDisplay || '');
+      wrap.setAttribute('data-room', room || '');
+      // stable pickId stored on dataset
+      const pid = computePickIdFromParts(subject, section, day, timeDisplay);
+      wrap.setAttribute('data-pickid', pid);
+    }
     wrap.innerHTML = `<div class="font-semibold text-primary">${subject||''}</div><div class="text-gray-600 text-[11px]">${room||''}${teacher?(' • '+teacher):''}</div>`;
     return wrap;
   }
+
+  // central toggle function - ensures state stays consistent and updates UI
+  function togglePickOnNode(node){
+    if (!IS_IRREG || window.__IRREG.locked) return;
+    if (!node || !node.dataset) return;
+
+    const subject = (node.dataset.subject || '').trim();
+    if (!subject) return;
+
+    // ensure the temp sets exist
+    if (!window.__IRREG.tempPickIds) window.__IRREG.tempPickIds = new Set();
+    if (!window.__IRREG.tempSubjectNames) window.__IRREG.tempSubjectNames = new Set(window.__IRREG.subjects || []);
+
+    const tempIds = window.__IRREG.tempPickIds;
+    const tempNames = window.__IRREG.tempSubjectNames;
+
+    // compute pick id for this node
+    const pickId = node.dataset.pickid || computePickIdFromNode(node);
+    if (!pickId) return;
+
+    const isPicked = tempIds.has(pickId);
+
+    // if attempting to pick (not unpick) — run conflict check
+    if (!isPicked){
+      const conflict = hasConflict(node);
+      if (conflict){
+        // show designed modal with section + details (instead of alert)
+        showConflictModal(conflict, node);
+        return;
+      }
+    }
+
+    if (isPicked){
+      // unpick this pickId only
+      tempIds.delete(pickId);
+      // remove the subject name only if no other pickId with same subject remains
+      // find remaining pickIds that include this subject
+      const remainingWithSubject = Array.from(tempIds).some(pid => pid.split('||')[0] === (subject||'').toLowerCase());
+      if (!remainingWithSubject) tempNames.delete(subject);
+      node.classList.remove('ir-picked');
+      node.setAttribute('aria-pressed','false');
+    } else {
+      // pick specific schedule
+      tempIds.add(pickId);
+      tempNames.add(subject);
+      node.classList.add('ir-picked');
+      node.setAttribute('aria-pressed','true');
+    }
+
+    updateSaveBarCount();
+    updateStudentSubjectCount();
+    updateIrregHintVisibility();
+  }
+
+  // helper to make pickables keyboard-friendly and ensure consistent attributes
+  function enhancePickableNode(node){
+    if (!node) return;
+    if (!node.classList.contains('ir-pickable')) node.classList.add('ir-pickable');
+    if (!node.hasAttribute('tabindex')) node.setAttribute('tabindex','0');
+    if (!node.hasAttribute('role')) node.setAttribute('role','button');
+    if (!node.hasAttribute('aria-pressed')) node.setAttribute('aria-pressed','false');
+
+    // ensure pickId exists on dataset
+    if (!node.dataset.pickid){
+      const pid = computePickIdFromNode(node);
+      if (pid) node.dataset.pickid = pid;
+    }
+
+    // attach keydown listener once
+    if (!node.__ir_handled_key){
+      node.addEventListener('keydown', function(ev){
+        if (!IS_IRREG || window.__IRREG.locked) return;
+        if (ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          togglePickOnNode(node);
+        }
+      });
+      node.__ir_handled_key = true;
+    }
+  }
+
+  // iterate all pickables and enhance them (called after DOM changes)
+  function enhanceAllPickables(){
+    $$('.ir-pickable').forEach(enhancePickableNode);
+  }
+
+  // mark picked/saved classes in DOM and ensure nodes are enhanced
+  function markPickedSubjectsInDOM(){
+    if (!IS_IRREG) return;
+    const locked = !!window.__IRREG.locked;
+
+    // tempPickIds = set of pickId strings
+    const tempIds = window.__IRREG?.tempPickIds || new Set();
+    // tempSubjectNames: set of subject names (strings)
+    const tempNames = window.__IRREG?.tempSubjectNames || new Set();
+    // saved subjects (subjects names set)
+    const saved = window.__IRREG?.subjects || new Set();
+
+    getAllPickableNodes().forEach(node=>{
+      node.classList.remove('ir-picked','ir-saved');
+      // normalise dataset subject
+      if (node.dataset && node.dataset.subject) node.dataset.subject = (node.dataset.subject || '').trim();
+      enhancePickableNode(node);
+      const sub = (node.dataset.subject||'').trim();
+      const pid = node.dataset.pickid || computePickIdFromNode(node);
+
+      if (!sub) return;
+
+      if (locked){
+        // saved highlight if subject present in saved subjects (keeps green, no circle)
+        if (saved.has(sub)) node.classList.add('ir-saved');
+        node.setAttribute('aria-pressed', saved.has(sub) ? 'true' : 'false');
+      } else {
+        // picked if this exact pickId is in tempIds
+        if (tempIds.has(pid)) node.classList.add('ir-picked');
+        node.setAttribute('aria-pressed', tempIds.has(pid) ? 'true' : 'false');
+      }
+    });
+
+    updateIrregHintVisibility(); /* ✅ keep hint in sync with selections */
+  }
+
+  // get pickable nodes utility
+  function getAllPickableNodes(){
+    return $$('.ir-pickable');
+  }
+
+  // conflict checker (unchanged logic, more robust string comparisons)
+  // Now returns section and node info for the modal, and ignores the candidate node itself.
+  function hasConflict(candidate){
+    const cSub  = (candidate.dataset.subject||'').trim().toLowerCase();
+    const cDay  = (candidate.dataset.day||'').trim().toLowerCase();
+    const cTime = (candidate.dataset.time||'').trim();
+    const cRoom = (candidate.dataset.room||'').trim().toLowerCase();
+
+    // currently picked DOM nodes (visual check)
+    const pickedNodes = $$('.ir-picked');
+
+    for (const n of pickedNodes){
+      // ignore if same DOM node as candidate (so unselect doesn't conflict)
+      if (n === candidate) continue;
+
+      const nSub  = (n.dataset.subject||'').trim().toLowerCase();
+      const nDay  = (n.dataset.day||'').trim().toLowerCase();
+      const nTime = (n.dataset.time||'').trim();
+      const nRoom = (n.dataset.room||'').trim().toLowerCase();
+
+      const sameSlot = (nDay === cDay) && (nTime === cTime);
+
+      // subject conflict (same subject in same day/time)
+      if (sameSlot && (nSub === cSub)) {
+        const section = (n.dataset.section || (n.closest('tr') && n.closest('tr').dataset.section) || '').trim();
+        return { type:'subject', with: nSub, section: section || 'Unknown section', node: n, day: nDay, time: nTime, room: nRoom };
+      }
+
+      // room conflict (same room in same day/time)
+      if (sameSlot && (nRoom === cRoom) && cRoom) {
+        const section = (n.dataset.section || (n.closest('tr') && n.closest('tr').dataset.section) || '').trim();
+        return { type:'room', with: nRoom, section: section || 'Unknown section', node: n, day: nDay, time: nTime, subject: nSub };
+      }
+    }
+    return null;
+  }
+
+  // designed conflict modal show/hide + helper to scroll to the conflicting section
+  const conflictModalEl = document.getElementById('conflict-modal');
+  const conflictMsgEl   = document.getElementById('conflict-message');
+  const conflictMetaEl  = document.getElementById('conflict-meta');
+  const conflictDismiss  = document.getElementById('conflict-dismiss');
+  const conflictGoto     = document.getElementById('conflict-goto');
+
+  function showConflictModal(conflict, candidateNode){
+    if (!conflictModalEl) {
+      // fallback to alert if modal not present
+      if (conflict.type === 'subject') alert('Cannot pick: same subject at the same time/day is already selected.');
+      else alert('Cannot pick: same room at the same time/day is already selected.');
+      return;
+    }
+
+    const subj = candidateNode?.dataset?.subject || '(subject)';
+    const day = (candidateNode?.dataset?.day || conflict.day || '').trim();
+    const time = (candidateNode?.dataset?.time || conflict.time || '').trim();
+    const room = (candidateNode?.dataset?.room || conflict.room || '').trim();
+    const conflictingSection = conflict.section || 'Unknown section';
+
+    if (conflict.type === 'subject'){
+      conflictMsgEl.textContent = `You already picked "${subj}" in table ${conflictingSection}.`;
+    } else {
+      conflictMsgEl.textContent = `The room "${room || conflict.with}" is already used at that same day/time in table ${conflictingSection}.`;
+    }
+
+    const metaParts = [];
+    if (day) metaParts.push(capitalize(day));
+    if (time) metaParts.push(time);
+    if (room) metaParts.push(room);
+    if (metaParts.length) {
+      conflictMetaEl.textContent = metaParts.join(' • ');
+      conflictMetaEl.classList.remove('hidden');
+    } else {
+      conflictMetaEl.classList.add('hidden');
+    }
+
+    // store the conflicting section on the goto button for scroll
+    conflictGoto.dataset.sectionTarget = conflictingSection;
+    conflictModalEl.classList.remove('hidden');
+    conflictModalEl.classList.add('flex');
+  }
+
+  function closeConflictModal(){
+    if (!conflictModalEl) return;
+    conflictModalEl.classList.add('hidden');
+    conflictModalEl.classList.remove('flex');
+    conflictGoto.dataset.sectionTarget = '';
+  }
+
+  // scroll helper: attempt to find the section header in stacked tables, then fallback to row
+  function scrollToSection(sectionName){
+    if (!sectionName) return;
+    // try to find h4 titles inside all-sections-stack or section-card-container
+    const selectors = [
+      '#all-sections-stack h4',
+      '#section-card-container h4',
+      '#single-table-container h4',
+      '#all-sections-stack .px-4 h4',
+      '.schedule-row' // fallback search rows
+    ];
+    // look for exact match header
+    const headers = Array.from(document.querySelectorAll('#all-sections-stack h4, #section-card-container h4, #single-table-container h4'));
+    for (const h of headers){
+      if (h.textContent && h.textContent.trim() === sectionName){
+        h.scrollIntoView({behavior:'smooth', block:'center'});
+        // small flash
+        h.classList.add('animate-pulse');
+        setTimeout(()=> h.classList.remove('animate-pulse'), 900);
+        return;
+      }
+    }
+    // fallback: find first tr with data-section
+    const tr = Array.from(document.querySelectorAll('tr.schedule-row')).find(r => (r.dataset.section||'').trim() === sectionName);
+    if (tr){
+      tr.scrollIntoView({behavior:'smooth', block:'center'});
+      tr.classList.add('bg-emerald-50');
+      setTimeout(()=> tr.classList.remove('bg-emerald-50'), 1200);
+      return;
+    }
+    // as last resort, search for text nodes that match sectionName and scroll parent
+    const el = Array.from(document.querySelectorAll('div, h4, td, th')).find(d => (d.textContent||'').trim() === sectionName);
+    if (el){
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+  }
+
+  conflictDismiss && conflictDismiss.addEventListener('click', closeConflictModal);
+  conflictGoto && conflictGoto.addEventListener('click', function(){
+    const sec = this.dataset.sectionTarget || '';
+    closeConflictModal();
+    if (sec) scrollToSection(sec);
+  });
+
+  function capitalize(s){ return s && s[0]?.toUpperCase() + s.slice(1); }
+
+  // improved pointer handling: use click for reliable single-click toggles
+  (function attachPointerHandler(){
+    // delegated click — only triggers for irregular students and active states
+    document.addEventListener('click', function(e){
+      if (!IS_IRREG || window.__IRREG.locked) return;
+      const target = e.target.closest('.ir-pickable');
+      if (!target) return;
+      // prevent default to avoid unexpected focus changes
+      e.preventDefault();
+      togglePickOnNode(target);
+    }, { passive:false });
+  })();
+
+  /* ------------------- end improved pick handling ------------------- */
 
   function rebuildStudentTodayPanel() {
     if (USER_ROLE !== 'student') return;
@@ -745,8 +1342,21 @@
     studentTodayLabel && (studentTodayLabel.textContent = 'Today • ' + dayName);
     studentNowTime && (studentNowTime.textContent = now.toLocaleTimeString('en-PH', { hour:'2-digit', minute:'2-digit' }));
 
-    const todayClasses = studentScheduleEntries.filter(e => (e.day||'').toLowerCase() === dayName.toLowerCase()).sort((a,b)=> a.start - b.start);
+    const savedSubs = window.__IRREG?.subjects;
+    const shouldFilter = (IS_IRREG && savedSubs && savedSubs.size > 0);
+
+    const todayClasses = studentScheduleEntries
+      .filter(e => (e.day||'').toLowerCase() === dayName.toLowerCase())
+      .filter(e => !shouldFilter || savedSubs.has((e.subject||'').trim()))
+      .sort((a,b)=> a.start - b.start);
+
     if (!studentTodayList) return;
+
+    if (IS_IRREG && (!savedSubs || savedSubs.size === 0)) {
+      studentTodayList.innerHTML = `<div class="text-sm text-gray-500 flex items-center gap-2"><i class="ri-calendar-2-line text-gray-400 text-base"></i>No classes for today.</div>`;
+      return;
+    }
+
     studentTodayList.innerHTML = todayClasses.length ? '' : `<div class="text-sm text-gray-500 flex items-center gap-2"><i class="ri-calendar-2-line text-gray-400 text-base"></i>No classes for today.</div>`;
 
     let nextIndex = -1;
@@ -767,16 +1377,90 @@
       studentTodayList.appendChild(item);
     });
   }
+
   function updateStudentSubjectCount() {
     if (USER_ROLE !== 'student' || !metricTotalSubjects) return;
+    if (IS_IRREG) {
+      const locked = !!window.__IRREG?.locked;
+      // count unique subject NAMES
+      const c = locked ? (window.__IRREG?.subjects?.size || 0) : (window.__IRREG?.tempSubjectNames?.size || 0);
+      metricTotalSubjects.textContent = `${c} ${c === 1 ? 'Subject' : 'Subjects'}`;
+      return;
+    }
     const unique = new Set();
     studentScheduleEntries.forEach(e=> e.subject && unique.add(e.subject.trim()));
     metricTotalSubjects.textContent = `${unique.size} ${unique.size === 1 ? 'Subject' : 'Subjects'}`;
   }
 
+  const USER_STATUS = (sessionStorage.getItem('auth_status')||'').toLowerCase();
+  const IS_IRREG = (USER_ROLE === 'student' && USER_STATUS === 'irregular');
+  const CURRENT_USER_ID = (SESSION.id || SESSION.email || '').trim();
+  // window.__IRREG shape updated: keep subjects as before (saved names), add tempPickIds and tempSubjectNames
+  window.__IRREG = window.__IRREG || { sections: new Set(), subjects: new Set(), tempPickIds: new Set(), tempSubjectNames: new Set(), ready:false, locked:false, _tempInitialized:false };
+
+  /* ✅ NEW: show/hide the hint based on picked count */
+  function updateIrregHintVisibility(){
+    if (!IS_IRREG || !irregHintNode) return;
+    const locked = !!window.__IRREG.locked;
+    // show hint if no subject names selected (locked uses saved subjects)
+    const pickedCount = locked ? (window.__IRREG.subjects?.size || 0) : (window.__IRREG.tempSubjectNames?.size || 0);
+    irregHintNode.style.display = pickedCount > 0 ? 'none' : 'block';
+  }
+
+  if (IS_IRREG && CURRENT_USER_ID) {
+    const choicesRef = doc(db, 'irregular_choices', CURRENT_USER_ID);
+    onSnapshot(choicesRef, (snap)=>{
+      const data = snap.exists()? (snap.data()||{}) : {};
+      const arrSections = Array.isArray(data.sections) ? data.sections : [];
+      const arrSubjects = Array.isArray(data.subjects) ? data.subjects : [];
+      const locked      = !!data.locked;
+      window.__IRREG.sections = new Set(arrSections);
+      window.__IRREG.subjects = new Set(arrSubjects.map(s=> (s||'').trim()));
+      window.__IRREG.locked   = locked;
+
+      if (!window.__IRREG._tempInitialized) {
+        // tempSubjectNames starts from saved subjects (so user sees them as selected before they edit)
+        window.__IRREG.tempSubjectNames = new Set(window.__IRREG.subjects);
+        // try to find pickIds that match the saved subject names in DOM and populate tempPickIds accordingly
+        window.__IRREG.tempPickIds = new Set();
+        $$('.ir-pickable').forEach(node=>{
+          const sub = (node.dataset.subject||'').trim();
+          const pid = node.dataset.pickid || computePickIdFromNode(node);
+          if (sub && pid && window.__IRREG.tempSubjectNames.has(sub)) window.__IRREG.tempPickIds.add(pid);
+        });
+        window.__IRREG._tempInitialized = true;
+      }
+
+      applyLockStateToUI(locked);
+      window.__IRREG.ready = true;
+      document.dispatchEvent(new CustomEvent('irreg-sections-changed', { detail:{ sections: arrSections } }));
+      markPickedSubjectsInDOM();
+      rebuildStudentTodayPanel();
+      refreshIrregReminders();
+      updateSaveBarCount();
+      updateStudentSubjectCount();
+      updateIrregHintVisibility(); /* ✅ keep hint in sync on load */
+    });
+  } else {
+    /* hide hint if not irregular */
+    irregHintNode && (irregHintNode.style.display = 'none');
+  }
+
+  function sectionIsAllowed(sec){
+    if (USER_ROLE !== 'student') return true;
+    if (!IS_IRREG) {
+      if (USER_SECTION && sec !== USER_SECTION) return false;
+      return true;
+    }
+    const picked = window.__IRREG?.sections;
+    if (!picked || picked.size === 0) return false;
+    return picked.has(sec);
+  }
+
   function upsertRow(opts) {
     const { id, section, day, timeDisplay, subject, room, teacher } = opts;
-    if (USER_ROLE === 'student' && USER_SECTION && section !== USER_SECTION) return;
+
+    if (!sectionIsAllowed(section)) return;
     if (day && day.toLowerCase() === 'saturday') ensureSaturdayHeader();
 
     const rowId = 'auto-' + section + '-' + id;
@@ -803,8 +1487,11 @@
     cells[0].textContent = timeDisplay || '';
     for (let k=1;k<cells.length;k++){ cells[k].innerHTML=''; }
     const color = ((section.charCodeAt(0) + section.length) % 2) ? 'bg-primary/10' : 'bg-secondary/10';
-    cells[dayIndex + 1].appendChild(buildCellContent(subject, room, color, teacher));
+    cells[dayIndex + 1].appendChild(buildCellContent(subject, room, color, teacher, section, day, timeDisplay));
     sortTableByTime();
+
+    // ensure any new pickable nodes are enhanced
+    enhanceAllPickables();
 
     if (USER_ROLE === 'student') {
       const range = parseTimeRange(timeDisplay || '');
@@ -814,6 +1501,8 @@
       updateStudentSubjectCount();
       rebuildStudentTodayPanel();
     }
+
+    if (IS_IRREG) { markPickedSubjectsInDOM(); applyLockStateToUI(window.__IRREG.locked); updateIrregHintVisibility(); }
   }
   function removeRow(opts) {
     const rowId = 'auto-' + opts.section + '-' + opts.id;
@@ -831,7 +1520,7 @@
       const data = docu.data() || {};
       const section = docu.ref.parent.parent.id;
       const payload = { id:docu.id, section, day:(data.day||'').trim(), timeDisplay:data.timeDisplay||'', subject:data.subject||'', room:data.room||'', teacher:data.teacher||'' };
-      if (change.type === 'removed') { if (USER_ROLE === 'student' && USER_SECTION && section !== USER_SECTION) return; removeRow(payload); }
+      if (change.type === 'removed') { if (!sectionIsAllowed(section)) return; removeRow(payload); }
       else { upsertRow(payload); }
     });
     window.highlightTodayColumn && window.highlightTodayColumn();
@@ -843,6 +1532,7 @@
       const lastDash = idPart.lastIndexOf('-'); if (lastDash === -1) return;
       const section = idPart.substring(0,lastDash), id = idPart.substring(lastDash+1);
       const subject = tr.getAttribute('data-subject')||''; const room=tr.getAttribute('data-room')||''; const teacher=tr.getAttribute('data-teacher')||''; const day=tr.getAttribute('data-day')||''; const time=tr.firstElementChild?.textContent||'';
+      if (!sectionIsAllowed(section)) { tr.remove(); return; }
       tr.remove(); upsertRow({ id, section, day, timeDisplay:time, subject, room, teacher });
     });
     window.highlightTodayColumn && window.highlightTodayColumn();
@@ -875,7 +1565,6 @@
     return parts.join(' • ');
   }
 
-  /* === Auto-delete helpers === */
   function toLocalDate(dateStr, timeStr){
     const [y,m,d] = dateStr.split('-').map(Number);
     let H=0, Mi=0;
@@ -889,9 +1578,8 @@
     if (!rem?.date) return null;
     if (rem.endTime){
       const end = toLocalDate(rem.date, rem.endTime);
-      return end.getTime() + 60*60*1000; // +1h after end
+      return end.getTime() + 60*60*1000;
     }
-    // no end time → delete at start of the next day after the given date
     const base = toLocalDate(rem.date, '00:00');
     const nextDayStart = new Date(base.getFullYear(), base.getMonth(), base.getDate()+1, 0, 0, 0, 0);
     return nextDayStart.getTime();
@@ -951,7 +1639,7 @@
       remindersList.innerHTML = `<div class="text-sm text-gray-500 px-2">No reminders yet.</div>`;
       return;
     }
-    items.forEach(r=> { REM_CACHE[r.id] = r; scheduleAutoDelete(USER_SECTION, r); });
+    items.forEach(r=> { REM_CACHE[r.id] = r; if (r.__section) scheduleAutoDelete(r.__section, r); });
 
     remindersList.innerHTML = items.map(r => {
       const whenStr = fmtWhenNew(r);
@@ -968,7 +1656,6 @@
             <button class="rem-view px-2 py-0.5 rounded-full bg-primary text-white" data-id="${r.id}">View</button>
           </div>
           <div class="mt-2 text-[11px] text-gray-600 flex items-center gap-1 break-anywhere"><i class="ri-time-line text-[13px]"></i>${whenStr||'—'}</div>
-          <!-- ▼ Indicator line -->
           <div class="mt-1 text-[10px] text-emerald-700 flex items-center gap-1">
             <i class="ri-timer-flash-line text-[12px]"></i>
             Auto-deletes in <span class="rem-exp font-semibold">${initial}</span>
@@ -1003,6 +1690,7 @@
   if (USER_ROLE && USER_SECTION){
     const qRef = query(collection(db,'sections',USER_SECTION,'reminders'), orderBy('createdAt','desc'));
     onSnapshot(qRef, (snap)=>{
+      if (IS_IRREG) return;
       const arr=[]; snap.forEach(d=> arr.push({ id:d.id, ...(d.data()||{}) }));
       renderReminders(arr);
     });
@@ -1037,7 +1725,7 @@
     }
 
     try{
-      const ref = await addDoc(collection(db,'sections',section,'reminders'), {
+      await addDoc(collection(db,'sections',section,'reminders'), {
         title, subject, date,
         time: start || null,
         endTime: end || null,
@@ -1045,7 +1733,6 @@
         notes,
         createdAt: serverTimestamp()
       });
-      scheduleAutoDelete(section, { id: ref.id, title, subject, date, time:start||null, endTime:end||null, day:day||null, notes });
       closeModal();
       e.target.reset();
       remSectionInput.value = section;
@@ -1088,6 +1775,261 @@
   viewClose && viewClose.addEventListener('click', closeReminderView);
   viewModal && viewModal.addEventListener('click', (e)=>{ if (e.target === viewModal) closeReminderView(); });
 
+  /* ===== Irregular multi-table stack rendering (unchanged) ===== */
+  function harvestMasterBySection(){
+    const bySection = new Map();
+    const rows = body ? Array.from(body.querySelectorAll('.schedule-row')) : [];
+    rows.forEach(tr=>{
+      const sectionName = tr.dataset.section || '';
+      const day         = tr.dataset.day || '';
+      const timeStr     = tr.querySelector('td:first-child')?.textContent.trim() || '';
+      if (!sectionName || !day || !timeStr) return;
+      let timeMap = bySection.get(sectionName);
+      if (!timeMap) { timeMap = new Map(); bySection.set(sectionName, timeMap); }
+      let rec = timeMap.get(timeStr);
+      if (!rec) { rec = {}; timeMap.set(timeStr, rec); }
+      const ths = Array.from(headRow.querySelectorAll('th')).slice(1);
+      const dayIdx = ths.findIndex(th => ((th.dataset.day || th.textContent.trim()) === day));
+      if (dayIdx >= 0) {
+        const cell = tr.children[dayIdx+1];
+        rec[day] = cell ? cell.innerHTML.trim() : '';
+      }
+    });
+    return bySection;
+  }
+  function tableHTMLFromTimeMap(timeMap, title){
+    const DAYS = Array.from(headRow.querySelectorAll('th')).slice(1).map(th=> th.dataset.day || th.textContent.trim());
+    const timeRows = Array.from(timeMap.keys());
+    const headCell = (t)=>`<div class="font-semibold tracking-wide uppercase text-[11px]">${t}</div>`;
+    const emptyRow = `
+      <tr class="hover:bg-gray-50 divide-x divide-gray-200">
+        <td colspan="${1 + DAYS.length}" class="px-4 py-10 text-center text-gray-500">
+          <div class="flex flex-col items-center gap-2">
+            <i class="ri-calendar-2-line text-3xl text-gray-400"></i>
+            <div class="italic">No classes scheduled yet</div>
+          </div>
+        </td>
+      </tr>`;
+    return `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+          <h4 class="text-sm font-semibold text-gray-800">${title}</h4>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead class="bg-gradient-to-r from-primary to-secondary text-white">
+              <tr class="divide-x divide-white/20">
+                <th class="px-4 py-3 text-left">${headCell('Time')}</th>
+                ${DAYS.map(d=>`<th class="px-4 py-3 text-left">${headCell(d)}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              ${
+                timeRows.length === 0
+                  ? emptyRow
+                  : timeRows.map(t=>{
+                      const rec = timeMap.get(t) || {};
+                      return `
+                        <tr class="hover:bg-gray-50 divide-x divide-gray-200">
+                          <td class="px-4 py-3 font-medium text-gray-800">${t}</td>
+                          ${DAYS.map(d=> `<td class="px-4 py-3">${rec[d] || ''}</td>`).join('')}
+                        </tr>`;
+                    }).join('')
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+  function renderIrregularPicked(){
+    if (!IS_IRREG) return;
+    const stack = document.getElementById('all-sections-stack');
+    const card  = document.getElementById('section-card-container');
+    const single= document.getElementById('single-table-container');
+    const browse= document.getElementById('browse-card');
+    browse && (browse.style.display='none');
+    single && single.classList.add('hidden');
+    card   && (card.innerHTML='', card.classList.add('hidden'));
+    stack  && stack.classList.remove('hidden');
+    stack  && stack.classList.add('overflow-y-auto','max-h-[1100px]','pr-2');
+
+    const picked = Array.from(window.__IRREG.sections || []);
+    const title  = document.getElementById('sched-title');
+    const sub    = document.getElementById('sched-subtitle');
+    title && (title.textContent = 'Your Schedule');
+    if (sub){
+      if (picked.length>0) sub.textContent = 'Schedules for: ' + picked.join(', ');
+      else sub.textContent = 'Choose sections in Sections → Confirm to see your schedule';
+    }
+
+    const bySec = harvestMasterBySection();
+    stack.innerHTML = '';
+    if (picked.length === 0){
+      stack.innerHTML = `
+        <div class="bg-white rounded-xl border border-dashed border-gray-300 p-8 text-center text-gray-600">
+          No sections picked yet. Go to <a class="underline font-semibold" href="sections.html">Sections</a> and confirm your choices.
+        </div>`;
+      updateIrregHintVisibility(); /* keep hint consistent */
+      return;
+    }
+    picked.forEach(sec=>{
+      const map = bySec.get(sec) || new Map();
+      stack.insertAdjacentHTML('beforeend', tableHTMLFromTimeMap(map, sec));
+    });
+
+    // After inserting HTML, ensure any pickable nodes inside generated HTML are enhanced
+    enhanceAllPickables();
+
+    markPickedSubjectsInDOM();
+    applyLockStateToUI(window.__IRREG.locked);
+    updateIrregHintVisibility(); /* ✅ update after render */
+  }
+
+  if (IS_IRREG) {
+    document.addEventListener('irreg-sections-changed', renderIrregularPicked);
+    if (body){
+      const mo = new MutationObserver(()=> renderIrregularPicked());
+      mo.observe(body, { childList: true, subtree: true });
+    }
+    renderIrregularPicked();
+  }
+
+  /* ====== Pick logic & save ====== */
+  const saveBar = document.getElementById('irreg-save-bar');
+  const saveBtn = document.getElementById('irreg-save-btn');
+  const unselectBtn = document.getElementById('irreg-unselect-btn'); /* ADDED */
+  const saveCnt = document.getElementById('irreg-picked-count');
+
+  function updateSaveBarCount(){
+    if (!IS_IRREG) return;
+    const locked = !!window.__IRREG.locked;
+    // count pickIds for pre-save UI
+    const c = locked ? 0 : (window.__IRREG?.tempPickIds?.size || 0);
+    if (saveCnt) saveCnt.textContent = String(c);
+    if (saveBar) saveBar.style.display = (!locked && c>0) ? 'block' : 'none';
+    // subtle enter animation when shown
+    if (saveBar && saveBar.style.display === 'block'){ saveBar.style.transform = 'translateY(0)'; saveBar.style.opacity = '1'; }
+    else if (saveBar){ saveBar.style.opacity = '0'; saveBar.style.transform = 'translateY(6px)'; }
+  }
+
+  /* Important: lock state does NOT blur anything */
+  function applyLockStateToUI(locked){
+    /* ✅ ADDED: toggle body class so pickables truly stop being clickable */
+    document.body.classList.toggle('ir-locked', !!locked);
+
+    if (locked){
+      if (saveBar) { saveBar.style.display = 'none'; }
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.classList.add('opacity-60','cursor-not-allowed'); }
+      if (unselectBtn) { unselectBtn.disabled = true; unselectBtn.classList.add('opacity-60','cursor-not-allowed'); } /* ADDED */
+    } else {
+      if (saveBtn){ saveBtn.disabled = false; saveBtn.classList.remove('opacity-60','cursor-not-allowed'); }
+      if (unselectBtn){ unselectBtn.disabled = false; unselectBtn.classList.remove('opacity-60','cursor-not-allowed'); } /* ADDED */
+    }
+    // always refresh markings to reflect correct class (picked vs saved)
+    markPickedSubjectsInDOM();
+  }
+
+  // <<< show circle before save; remove circle after save >>>
+  // markPickedSubjectsInDOM function defined above; ensure called after DOM changes
+
+  // conflict checker already defined above
+
+  // Unselect All logic (clears temp selections)
+  if (unselectBtn){
+    unselectBtn.addEventListener('click', ()=>{
+      if (!IS_IRREG || window.__IRREG.locked) return;
+      window.__IRREG.tempPickIds = new Set();
+      window.__IRREG.tempSubjectNames = new Set();
+      getAllPickableNodes().forEach(n => { n.classList.remove('ir-picked'); n.setAttribute('aria-pressed','false'); });
+      updateSaveBarCount();       // hides the bar when count = 0
+      updateStudentSubjectCount();
+      updateIrregHintVisibility(); /* ✅ show hint again when all cleared */
+    });
+  }
+
+  const confirmModal = document.getElementById('irreg-confirm-modal');
+  const confirmYes   = document.getElementById('irreg-confirm-yes');
+  const confirmNo    = document.getElementById('irreg-confirm-no');
+
+  function openConfirm(){ confirmModal.classList.remove('hidden'); confirmModal.classList.add('flex'); }
+  function closeConfirm(){ confirmModal.classList.add('hidden'); confirmModal.classList.remove('flex'); }
+
+  async function persistIrregSubjects(){
+    if (!IS_IRREG || !CURRENT_USER_ID) return;
+    if (window.__IRREG.locked){ alert('Choices already locked.'); return; }
+
+    const ref = doc(db, 'irregular_choices', CURRENT_USER_ID);
+    // when saving: persist subject NAMES (unique) to keep DB shape unchanged
+    const newSubjects = Array.from(window.__IRREG.tempSubjectNames || []).map(s=> (s||'').trim()).filter(Boolean);
+    try {
+      const snap = await getDoc(ref);
+      if (snap.exists()){
+        const d = snap.data()||{};
+        if (d.locked){ window.__IRREG.locked = true; applyLockStateToUI(true); alert('Choices already locked.'); return; }
+        await updateDoc(ref, { subjects: newSubjects, locked: true });
+      } else {
+        await setDoc(ref, { sections: Array.from(window.__IRREG.sections||[]), subjects: newSubjects, locked: true });
+      }
+
+      // After save: LOCKED — keep green, remove circle & disable clicks
+      window.__IRREG.subjects = new Set(newSubjects);
+      window.__IRREG.tempPickIds = new Set(); // clear temp pick ids
+      window.__IRREG.tempSubjectNames = new Set(); // clear temp subject names
+      window.__IRREG.locked = true;
+      applyLockStateToUI(true);               // will add .ir-locked and call markPickedSubjectsInDOM()
+      rebuildStudentTodayPanel();
+      refreshIrregReminders();
+      updateStudentSubjectCount();
+      updateIrregHintVisibility(); /* ✅ still hidden (already picked) */
+      // no notification shown
+    } catch (err){
+      console.error(err);
+      alert('Failed to save your picked subjects.');
+    }
+  }
+
+  saveBtn && saveBtn.addEventListener('click', ()=>{
+    if (window.__IRREG.locked){ alert('Choices already locked.'); return; }
+    openConfirm();
+  });
+  confirmNo && confirmNo.addEventListener('click', closeConfirm);
+  confirmYes && confirmYes.addEventListener('click', async ()=>{
+    closeConfirm();
+    await persistIrregSubjects();
+  });
+
+  /* irregular reminders */
+  let _remindersUnsub = null;
+  function refreshIrregReminders(){
+    if (!IS_IRREG) return;
+    if (_remindersUnsub) { _remindersUnsub(); _remindersUnsub=null; }
+
+    const pickedSubs = window.__IRREG?.subjects || new Set();
+    const allowedSecs= window.__IRREG?.sections || new Set();
+
+    if (pickedSubs.size === 0 || allowedSecs.size === 0){
+      renderReminders([]);
+      return;
+    }
+
+    _remindersUnsub = onSnapshot(collectionGroup(db,'reminders'), (snap)=>{
+      const arr=[];
+      snap.forEach(d=>{
+        const data = d.data() || {};
+        const section = d.ref.parent?.parent?.id || '';
+        const subj = (data.subject||'').trim();
+        if (!allowedSecs.has(section)) return;
+        if (!pickedSubs.has(subj)) return;
+        arr.push({ id:d.id, __section: section, ...data });
+      });
+      arr.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+      renderReminders(arr);
+    });
+  }
+  if (IS_IRREG) refreshIrregReminders();
+
+  if (IS_IRREG) setInterval(()=> { rebuildStudentTodayPanel(); }, 30000);
+
 </script>
 
 <script>
@@ -1098,7 +2040,7 @@
     var headRow = document.getElementById('master-head-row'); if (!headRow) return;
     var hasSatHead = !!headRow.querySelector('th[data-day="Saturday"]');
     if (enable && !hasSatHead){
-      var th = document.createElement('th'); th.setAttribute('data-day','Saturday'); th.className = 'px-7 py-4 text-left';
+      var th = document.createElement('th'); th.setAttribute('data-day','Saturday'); th.className='px-7 py-4 text-left';
       th.innerHTML = '<div class="font-semibold tracking-wide uppercase text-[11px]">Saturday</div>';
       headRow.appendChild(th);
       document.querySelectorAll('#schedule-table-body tr').forEach(function(tr){ var td=document.createElement('td'); td.className = 'px-7 py-4'; tr.appendChild(td); });
@@ -1216,6 +2158,506 @@
     document.getElementById('pick-year-empty')?.classList.remove('hidden');
   });
 </script>
+
+<!-- ✨ Extra small script: column hover highlight (adds/removes .col-hover) -->
+<script>
+  (function(){
+    const table = document.querySelector('#single-table-container table');
+    if (!table) return;
+    const tbody = table.tBodies[0];
+    let current = -1;
+
+    function setCol(i){
+      if (i === current) return;
+      clearCol();
+      current = i;
+      for (const row of table.rows){
+        const cell = row.cells[i];
+        if (cell) cell.classList.add('col-hover');
+      }
+    }
+    function clearCol(){
+      if (current < 0) return;
+      for (const row of table.rows){
+        const cell = row.cells[current];
+        if (cell) cell.classList.remove('col-hover');
+      }
+      current = -1;
+    }
+
+    if (tbody){
+      tbody.addEventListener('mouseover', (e)=>{
+        const td = e.target.closest('td');
+        if (!td || !td.parentElement) return;
+        setCol(td.cellIndex);
+      });
+      tbody.addEventListener('mouseleave', clearCol);
+    }
+    table.addEventListener('mouseleave', clearCol);
+  })();
+</script>
+
+<!-- ✅ NEW: robust real-time “today” column highlighter (works for master + card + stack) -->
+<script>
+  (function(){
+    const dayNameLower = () => new Date().toLocaleDateString('en-PH', { weekday:'long' }).toLowerCase();
+
+    function clearTodayMarks(tbl){
+      for (const row of tbl.rows){
+        for (const cell of row.cells){
+          cell.classList.remove('today-col');
+        }
+      }
+    }
+
+    function applyTodayMark(tbl){
+      if (!tbl || !tbl.tHead || !tbl.tHead.rows.length) return;
+      const head = tbl.tHead.rows[0];
+      const cells = Array.from(head.cells);
+      const today = dayNameLower();
+
+      let idx = -1;
+      for (let i=0;i<cells.length;i++){
+        const label = ((cells[i].dataset.day || cells[i].textContent || '').trim() || '').toLowerCase();
+        if (label === today){ idx = i; break; }
+      }
+      clearTodayMarks(tbl);
+      if (idx < 0) return;
+      for (const row of tbl.rows){
+        const cell = row.cells[idx];
+        if (cell) cell.classList.add('today-col');
+      }
+    }
+
+    function highlightAll(){
+      const containers = [
+        document.getElementById('single-table-container'),
+        document.getElementById('section-card-container'),
+        document.getElementById('all-sections-stack')
+      ].filter(Boolean);
+
+      containers.forEach(c=>{
+        const tables = c.querySelectorAll('table');
+        tables.forEach(applyTodayMark);
+      });
+    }
+
+    // expose so existing calls still work
+    window.highlightTodayColumn = highlightAll;
+
+    // run ASAP
+    if (document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(highlightAll));
+    } else {
+      requestAnimationFrame(highlightAll);
+    }
+
+    // re-run when the DOM under our containers changes (card/stack re-render)
+    const mo = new MutationObserver(()=> requestAnimationFrame(highlightAll));
+    ['single-table-container','section-card-container','all-sections-stack'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) mo.observe(el, { childList:true, subtree:true });
+    });
+
+    // re-run on window focus and every minute (covers midnight/day switch)
+    window.addEventListener('focus', highlightAll);
+    setInterval(highlightAll, 60*1000);
+  })();
+</script>
+
+<!-- ========================= ADD-ON: LIVE SECTIONS → SCHEDULES SYNC (fixed by year) ========================= -->
+<!-- ========================= ADD-ON: LIVE SECTIONS → SCHEDULES SYNC (course + year) ========================= -->
+<script type="module">
+  import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  // Reuse Firestore from your page initialization
+  const LS_db =
+    (window.__FB_SCHED && window.__FB_SCHED.db) ||
+    (window.__FB && window.__FB.db) ||
+    null;
+
+  if (!LS_db) {
+    console.warn("[Live Sections Sync] Firestore not available; add-on idle.");
+  }
+
+  const LS_SESSION = window.__APP_SESSION || {};
+  const LS_ROLE = (LS_SESSION.role || "").toLowerCase();
+  const LS_IS_STUDENT = LS_ROLE === "student";
+
+  // 👉 Do NOT run for students (student view already handled above)
+  if (!LS_IS_STUDENT && LS_db) {
+    const LS$  = (s, r = document) => r.querySelector(s);
+    const LS$$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+    // Year number → label mapping
+    const YEAR_LABEL = {
+      1: "1st Year",
+      2: "2nd Year",
+      3: "3rd Year",
+      4: "4th Year",
+    };
+
+    // Default BIT sections (your original BIT flow)
+    const BASE_SECTIONS_BY_YEAR = {
+      "1st Year": ["BIT 1A-A","BIT 1A-B","BIT 1B-A","BIT 1B-B"],
+      "2nd Year": ["BIT 2A-A","BIT 2A-B","BIT 2B-A","BIT 2B-B"],
+      "3rd Year": ["BIT 3A-A","BIT 3A-B","BIT 3B-A","BIT 3B-B"],
+      "4th Year": ["BIT 4A-A","BIT 4A-B","BIT 4B-A","BIT 4B-B"],
+    };
+
+    const DEFAULT_COURSE = "BIT Computer Technology";
+
+    // 🔹 From Firestore: sections grouped by course + year
+    // Shape: SECTIONS_BY_COURSE[course][yearLabel] = Set(sectionName)
+    const SECTIONS_BY_COURSE = {};
+
+    function ensureCourseYear(course, yearLabel) {
+      if (!SECTIONS_BY_COURSE[course]) {
+        SECTIONS_BY_COURSE[course] = {};
+      }
+      if (!SECTIONS_BY_COURSE[course][yearLabel]) {
+        SECTIONS_BY_COURSE[course][yearLabel] = new Set();
+      }
+      return SECTIONS_BY_COURSE[course][yearLabel];
+    }
+
+    function courseFromSectionDoc(data) {
+      if (data && data.course) return data.course;
+      const deg = (data && data.degree) || "";
+      if (typeof deg === "string" && deg.includes("Industrial Technology")) {
+        return DEFAULT_COURSE;
+      }
+      return DEFAULT_COURSE;
+    }
+
+    function getCurrentYearLabel() {
+      const el = LS$("#year-filter-selected");
+      if (!el) return "";
+      const txt = el.textContent.trim();
+      // If still default "Year Level", treat as not selected
+      if (/^year level$/i.test(txt)) return "";
+      return txt;
+    }
+
+    function getCurrentCourseLabel() {
+      const el = LS$("#course-filter-selected");
+      if (!el) return "";
+      const txt = el.textContent.trim();
+      // If still default "Select Course", treat as not selected
+      if (/^select course$/i.test(txt)) return "";
+      return txt;
+    }
+
+    // Merge base BIT sections + Firestore sections for that course + year
+    function mergedSectionsForYearCourse(yearLabel, course) {
+      if (!yearLabel || !course) return [];
+
+      const result = [];
+      const seen = new Set();
+
+      // BIT course keeps your original fixed sections
+      if (course === DEFAULT_COURSE && BASE_SECTIONS_BY_YEAR[yearLabel]) {
+        BASE_SECTIONS_BY_YEAR[yearLabel].forEach((sec) => {
+          if (!seen.has(sec)) {
+            seen.add(sec);
+            result.push(sec);
+          }
+        });
+      }
+
+      const byYear = SECTIONS_BY_COURSE[course] || {};
+      const extraSet = byYear[yearLabel] || new Set();
+      extraSet.forEach((sec) => {
+        if (!seen.has(sec)) {
+          seen.add(sec);
+          result.push(sec);
+        }
+      });
+
+      return result;
+    }
+
+    // ================== UI: Section buttons row ==================
+
+    // ================== UI: Section buttons row ==================
+
+function rebuildSectionButtons(sections) {
+  // Container that holds "All Sections" + section buttons
+  const container = LS$("#filters-gated .flex.flex-wrap.gap-2");
+  if (!container) return;
+
+  // Keep / create the "All Sections" button
+  let allBtn = container.querySelector('.section-filter-btn[data-section="all"]');
+  if (!allBtn) {
+    allBtn = document.createElement("button");
+    allBtn.dataset.section = "all";
+    allBtn.className =
+      "section-filter-btn px-4 py-2 rounded-button text-sm md:text-base font-semibold bg-primary text-white !rounded-button";
+    allBtn.textContent = "All Sections";
+  }
+
+  // Clear and re-insert All button
+  container.innerHTML = "";
+  container.appendChild(allBtn);
+
+  // Add one button per section
+  sections.forEach((secName) => {
+    const btn = document.createElement("button");
+    btn.className =
+      "section-filter-btn px-3.5 py-1.5 rounded-button text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 !rounded-button";
+    btn.dataset.section = secName;
+    btn.textContent = secName;
+    container.appendChild(btn);
+  });
+
+  // ✅ IMPORTANT: right after rebuilding buttons, auto-click "All Sections"
+  // so from the START it already shows the sections for the selected course + year
+  if (allBtn) {
+    setTimeout(() => {
+      allBtn.click();  // triggers your existing schedules.filter.js logic
+    }, 0);
+  }
+}
+
+
+    // ================== UI: Placeholder tables per section ==================
+
+    function ensurePlaceholderTablesForSelection(yearLabel, course) {
+      const host = document.getElementById("section-card-container");
+      if (!host) return;
+
+      const sections = mergedSectionsForYearCourse(yearLabel, course);
+      host.innerHTML = "";
+
+      if (!sections.length) {
+        // Optional: leave empty — your master table still works
+        return;
+      }
+
+      // Day labels from main head row (Time/Monday/...)
+      const masterHead = document.getElementById("master-head-row");
+      let dayLabels;
+      if (masterHead) {
+        dayLabels = Array.from(masterHead.querySelectorAll("th"))
+          .slice(1)
+          .map((th) => (th.dataset.day || th.textContent || "").trim());
+      } else {
+        dayLabels = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+      }
+
+      sections.forEach((secName) => {
+        const wrapper = document.createElement("div");
+        wrapper.className =
+          "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-4";
+
+        wrapper.innerHTML = `
+          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-800">${secName}</h4>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead class="bg-gradient-to-r from-primary to-secondary text-white">
+                <tr class="divide-x divide-white/20">
+                  <th class="px-4 py-3 text-left">
+                    <div class="font-semibold tracking-wide uppercase text-[11px]">Time</div>
+                  </th>
+                  ${dayLabels
+                    .map(
+                      (d) => `
+                    <th class="px-4 py-3 text-left">
+                      <div class="font-semibold tracking-wide uppercase text-[11px]">
+                        ${d}
+                      </div>
+                    </th>`
+                    )
+                    .join("")}
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
+                  <td colspan="${1 + dayLabels.length}" class="px-4 py-10 text-center text-gray-500">
+                    <div class="flex flex-col items-center gap-2">
+                      <i class="ri-calendar-2-line text-3xl text-gray-400"></i>
+                      <div class="italic">No classes scheduled yet</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        host.appendChild(wrapper);
+      });
+
+      // Let your global helper re-highlight today's column
+      if (window.highlightTodayColumn) {
+        window.highlightTodayColumn();
+      }
+    }
+
+    // ================== Apply selection (course + year) ==================
+
+    function applyCourseYearSelection() {
+      const yearLabel = getCurrentYearLabel();
+      const course = getCurrentCourseLabel();
+
+      // If either not chosen, keep your original BIT behavior
+      if (!yearLabel || !course) return;
+
+      const sections = mergedSectionsForYearCourse(yearLabel, course);
+
+      // Rebuild the section buttons row
+      rebuildSectionButtons(sections);
+
+      // Make sure there is a table shell for each section
+      ensurePlaceholderTablesForSelection(yearLabel, course);
+    }
+        // ================== Year dropdown lock/unlock ==================
+
+    function disableYearDropdown() {
+      const yearBtn = LS$("#year-filter-dropdown");
+      if (!yearBtn) return;
+      yearBtn.classList.add("opacity-60", "cursor-not-allowed", "pointer-events-none");
+      yearBtn.setAttribute("data-disabled", "1");
+    }
+
+    function enableYearDropdown() {
+      const yearBtn = LS$("#year-filter-dropdown");
+      if (!yearBtn) return;
+      yearBtn.classList.remove("opacity-60", "cursor-not-allowed", "pointer-events-none");
+      yearBtn.removeAttribute("data-disabled");
+    }
+
+
+    // ================== Wire COURSE dropdown on schedules page ==================
+
+    function setupCourseFilterDropdown() {
+      const btn = LS$("#course-filter-dropdown");
+      const panel = LS$("#course-filter-options");
+      const label = LS$("#course-filter-selected");
+
+      if (!btn || !panel || !label) return;
+
+      const options = LS$$(".course-filter-option", panel);
+
+      // Open / close
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        panel.classList.toggle("hidden");
+      });
+
+      // Pick course
+           // Pick course
+      options.forEach((opt) => {
+        opt.addEventListener("click", () => {
+          const value = opt.getAttribute("data-value") || opt.textContent.trim();
+          label.textContent = value;
+          panel.classList.add("hidden");
+
+          // ✅ enable Year dropdown as soon as a course is chosen
+          enableYearDropdown();
+
+          applyCourseYearSelection();
+        });
+      });
+
+
+      // Close on outside click
+      document.addEventListener("click", (e) => {
+        if (!btn.contains(e.target) && !panel.contains(e.target)) {
+          panel.classList.add("hidden");
+        }
+      });
+    }
+
+    // ================== Watch YEAR label changes ==================
+
+    function watchYearLabel() {
+      const el = LS$("#year-filter-selected");
+      if (!el) return;
+
+      let lastText = el.textContent;
+
+      const mo = new MutationObserver(() => {
+        const now = el.textContent;
+        if (now !== lastText) {
+          lastText = now;
+          applyCourseYearSelection();
+        }
+      });
+
+      mo.observe(el, { childList: true, subtree: true, characterData: true });
+    }
+
+    // Also hook the year options (extra safety)
+    function hookYearOptions() {
+      const opts = LS$$("#year-filter-options .year-filter-option");
+      opts.forEach((opt) => {
+        opt.addEventListener("click", () => {
+          // Give the existing script time to update the label, then sync
+          setTimeout(applyCourseYearSelection, 0);
+        });
+      });
+    }
+
+    // ================== Live Firestore sections listener ==================
+
+    function observeSections() {
+      onSnapshot(collection(LS_db, "sections"), (snap) => {
+        // Clear current map
+        Object.keys(SECTIONS_BY_COURSE).forEach((courseKey) => {
+          const byYear = SECTIONS_BY_COURSE[courseKey];
+          Object.keys(byYear).forEach((y) => byYear[y].clear());
+        });
+
+        snap.forEach((d) => {
+          const data = d.data() || {};
+          const code = (data.name || d.id || "").trim();
+          const yearNum = data.yearNum;
+
+          if (!code || !yearNum || !YEAR_LABEL[yearNum]) return;
+
+          const yearLabel = YEAR_LABEL[yearNum];
+          const course = courseFromSectionDoc(data);
+
+          const setForCourseYear = ensureCourseYear(course, yearLabel);
+          setForCourseYear.add(code);
+        });
+
+        // After updating section map, reapply current selection (if any)
+        applyCourseYearSelection();
+      });
+    }
+
+    // ================== Init ==================
+
+        function init() {
+      setupCourseFilterDropdown();
+      watchYearLabel();
+      hookYearOptions();
+      observeSections();
+
+      // 🚫 From start: block Year until a course is selected
+      if (!getCurrentCourseLabel()) {
+        disableYearDropdown();
+      }
+
+      // In case both course + year are already set when page loads
+      applyCourseYearSelection();
+    }
+
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  }
+</script>
+
+
+
 
 </body>
 </html>
