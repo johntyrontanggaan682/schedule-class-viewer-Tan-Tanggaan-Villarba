@@ -649,13 +649,32 @@ function renderScheduleList(data){
   order.forEach(d=>byDay[d]?.sort((a,b)=>a.startMin-b.startMin));
   listSchedule.innerHTML = order.filter(d=>byDay[d]).map(day=>{
     const items = byDay[day].map(it=>{
-      const actionBtns = isAdmin
-        ? `
+      let actionBtns = '';
+
+      // ADMIN: edit + delete (same as before)
+      if (isAdmin) {
+        actionBtns = `
           <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
-            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}"><i class="ri-pencil-line text-sm"></i></button>
-            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${it.id}"><i class="ri-delete-bin-6-line text-sm"></i></button>
+            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}">
+              <i class="ri-pencil-line text-sm"></i>
+            </button>
+            <button class="sched-del w-[30px] h-[30px] rounded-[10px] bg-red-500 text-white hover:opacity-90 flex items-center justify-center" title="Delete" data-id="${it.id}">
+              <i class="ri-delete-bin-6-line text-sm"></i>
+            </button>
           </div>
-        ` : '';
+        `;
+      }
+      // TEACHER: edit only, and only if this teacher created the schedule
+      else if (isTeacher && CURRENT_USER_ID && it.ownerId === CURRENT_USER_ID) {
+        actionBtns = `
+          <div class="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
+            <button class="sched-edit w-[30px] h-[30px] rounded-[10px] bg-blue-500 text-white hover:opacity-90 flex items-center justify-center" title="Edit" data-id="${it.id}">
+              <i class="ri-pencil-line text-sm"></i>
+            </button>
+          </div>
+        `;
+      }
+
       return `
       <div class="group relative p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
         <div class="pr-20">
@@ -669,6 +688,7 @@ function renderScheduleList(data){
     return `<div class="mb-4"><div class="text-primary font-semibold mb-2">${day}</div><div class="space-y-2">${items}</div></div>`;
   }).join('');
 }
+
 
 function wireDropdown(buttonId,panelId,hiddenId,optionClass,labelId){
   const btn    = document.getElementById(buttonId);
@@ -906,17 +926,36 @@ document.getElementById('del-yes').onclick = async ()=>{
 };
 
 document.getElementById('section-schedule').addEventListener('click', (e)=>{
-  if (!isAdmin) return;
   const editBtn = e.target.closest('.sched-edit');
   const delBtn  = e.target.closest('.sched-del');
-  if (editBtn){
+  if (!editBtn && !delBtn) return;
+
+  // DELETE: only admin can delete
+  if (delBtn) {
+    if (!isAdmin) return;
+    pendingDeleteId = delBtn.dataset.id;
+    openDelModal('schedule');
+    return;
+  }
+
+  // EDIT: admin OR teacher who owns this schedule
+  if (editBtn) {
     const it = currentSchedules.find(s => s.id === editBtn.dataset.id);
     if (!it) return;
+
+    if (!(isAdmin || (isTeacher && CURRENT_USER_ID && it.ownerId === CURRENT_USER_ID))) {
+      return;
+    }
+
     document.getElementById('subject').value = it.subject || '';
-    document.getElementById('section').value = activeSection; document.getElementById('section-selected').textContent = activeSection;
-    document.getElementById('room').value = it.room || '';    document.getElementById('room-selected').textContent   = it.room || 'Select room';
-    document.getElementById('teacher').value = it.teacher || ''; document.getElementById('teacher-selected').textContent = it.teacher || 'Select teacher';
-    document.getElementById('day').value = it.day || ''; document.getElementById('day-selected').textContent = it.day || 'Select day';
+    document.getElementById('section').value = activeSection;
+    document.getElementById('section-selected').textContent = activeSection;
+    document.getElementById('room').value = it.room || '';
+    document.getElementById('room-selected').textContent   = it.room || 'Select room';
+    document.getElementById('teacher').value = it.teacher || '';
+    document.getElementById('teacher-selected').textContent = it.teacher || 'Select teacher';
+    document.getElementById('day').value = it.day || '';
+    document.getElementById('day-selected').textContent = it.day || 'Select day';
     const toHHMM = (m)=> `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
     document.getElementById('start-time').value = toHHMM(it.startMin);
     document.getElementById('end-time').value   = toHHMM(it.endMin);
@@ -928,8 +967,8 @@ document.getElementById('section-schedule').addEventListener('click', (e)=>{
     document.getElementById('conflict').classList.add('hidden');
     document.getElementById('schedule-modal').classList.remove('hidden');
   }
-  if (delBtn){ pendingDeleteId = delBtn.dataset.id; openDelModal('schedule'); }
 });
+
 
 document.getElementById('section-students').addEventListener('click', async (e)=>{
   const editBtn = e.target.closest('.stu-edit');
@@ -1276,11 +1315,39 @@ document.getElementById('schedule-form').addEventListener('submit', async (e)=>{
     aBtn.disabled = true; aSpin.classList.remove('hidden'); aText.textContent = editId ? 'Saving Changes...' : 'Adding Schedule...'; aBtn.classList.add('opacity-90','cursor-not-allowed');
 
     const timeRange=makeRange(startHHMM,endHHMM);
-    const payload = { day, subject, room, teacher, startMin: sm, endMin: em, timeDisplay: timeRange, createdAt: serverTimestamp() };
+    const basePayload = {
+      day,
+      subject,
+      room,
+      teacher,
+      startMin: sm,
+      endMin: em,
+      timeDisplay: timeRange
+    };
+
     const secRef = doc(db,'sections',section);
     await ensureSectionDoc(section);
-    if (editId) await updateDoc(doc(secRef,'schedules',editId), payload);
-    else        await addDoc(collection(secRef,'schedules'), payload);
+
+    if (editId) {
+      // Extra safety: teacher can only edit their own schedule
+      if (isTeacher && !isAdmin) {
+        const snap = await getDoc(doc(secRef,'schedules',editId));
+        const existing = snap.exists() ? (snap.data() || {}) : {};
+        if (!CURRENT_USER_ID || existing.ownerId !== CURRENT_USER_ID) {
+          showFormError('You are not allowed to edit this schedule.');
+          aBtn.disabled = false; aSpin.classList.add('hidden'); aText.textContent = 'Add Schedule'; aBtn.classList.remove('opacity-90','cursor-not-allowed');
+          return;
+        }
+      }
+      await updateDoc(doc(secRef,'schedules',editId), basePayload);
+    } else {
+      // New schedule: store who created it
+      await addDoc(collection(secRef,'schedules'), {
+        ...basePayload,
+        ownerId: CURRENT_USER_ID || '',
+        createdAt: serverTimestamp()
+      });
+    }
 
     await refreshCounts(section);
     resetScheduleForm();
@@ -1296,6 +1363,7 @@ document.getElementById('schedule-form').addEventListener('submit', async (e)=>{
     aBtn.disabled = false; aSpin.classList.add('hidden'); aText.textContent = 'Add Schedule'; aBtn.classList.remove('opacity-90','cursor-not-allowed');
   }
 });
+
 
 function resetScheduleForm(){
   const form=document.getElementById('schedule-form'); if(form) form.reset();
