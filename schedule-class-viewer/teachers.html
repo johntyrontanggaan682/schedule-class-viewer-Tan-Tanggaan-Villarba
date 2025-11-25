@@ -98,7 +98,7 @@
 
         <!-- MOBILE -->
         <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
-      </div>
+      </div">
 
       <div id="mobile-menu" class="md:hidden mt-4 hidden">
         <div class="space-y-2">
@@ -117,7 +117,7 @@
     <section id="teachers" class="min-h-screen bg-white">
       <div class="px-6 py-12">
         <div class="max-w-6xl mx-auto">
-          <div class="relative mb-8 -mt-4">
+          <div class="relative mb-4 -mt-4">
             <div class="text-center max-w-2xl mx-auto">
               <h2 class="text-4xl font-bold text-gray-800 mb-1">Faculty Directory</h2>
               <p class="text-lg text-gray-600">Meet our dedicated faculty members and their subject assign</p>
@@ -130,9 +130,43 @@
             </div>
           </div>
 
-          <!-- CENTERED search -->
+          <!-- Department filter aligned under Add Teacher button -->
+          <div class="mb-6">
+            <div class="relative w-full md:w-72">
+              <select id="deptFilterSelect"
+                      class="absolute inset-0 opacity-0 pointer-events-none"
+                      aria-hidden="true" tabindex="-1">
+                <option value="">All Departments</option>
+                <option value="BIT Computer Technology">BIT Computer Technology</option>
+                <option value="BTVT-ED Automotive Technology">BTVT-ED Automotive Technology</option>
+                <option value="BTVT-ED Computer Programming">BTVT-ED Computer Programming</option>
+                <option value="BTVT-ED Civil Technology">BTVT-ED Civil Technology</option>
+                <option value="BTVT-ED Electrical Technology">BTVT-ED Electrical Technology</option>
+                <option value="BTVT-ED Electronics Technology">BTVT-ED Electronics Technology</option>
+                <option value="BTVT-ED Food &amp; Service Management">BTVT-ED Food &amp; Service Management</option>
+                <option value="BTVT-ED Mechanical Technology">BTVT-ED Mechanical Technology</option>
+              </select>
+
+              <div id="dept-filter-combo" class="relative">
+                <input id="dept-filter-input" type="text" autocomplete="off"
+                       placeholder="Filter by Department"
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm pr-9"
+                       role="combobox" aria-expanded="false" aria-controls="dept-filter-list" aria-autocomplete="list" />
+                <button id="dept-filter-toggle" type="button"
+                        class="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100 focus:outline-none"
+                        aria-label="Toggle department">
+                  <i class="ri-arrow-down-s-line text-gray-500"></i>
+                </button>
+                <ul id="dept-filter-list"
+                    class="hidden absolute z-20 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-lg shadow-lg text-sm"
+                    role="listbox"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search bar (unchanged, just centered) -->
           <div class="max-w-2xl mx-auto mb-6">
-            <div class="relative">
+            <div class="relative flex-1">
               <input id="teacher-search" type="search" placeholder="Search teachers…"
                 class="w-full h-12 pl-12 pr-12 border border-gray-300 rounded-2xl text-base focus:ring-2 focus:ring-primary focus:border-primary" />
               <i class="ri-search-line absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
@@ -146,7 +180,7 @@
           <!-- Empty state -->
           <div id="empty-state" class="hidden text-center text-gray-500 mt-6">No teachers yet. Click “Add Teacher” to create one.</div>
 
-          <!-- No results after search -->
+          <!-- No results after search/filter -->
           <div id="no-results" class="hidden text-center text-gray-500 mt-6">No matching teachers.</div>
 
           <!-- Pagination -->
@@ -241,9 +275,41 @@
               </div>
             </div>
 
+            <!-- Department dropdown (same combobox style as students page) -->
             <div>
               <label class="block text_sm font-medium text-gray-700 mb-1">Department</label>
-              <input id="t_dept" type="text" class="w-full h-10 px-3 border border-gray-300 rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Department"/>
+              <!-- hidden real value used by JS -->
+              <input id="t_dept" type="hidden" value="" />
+              <div class="relative w-full">
+                <select id="t_dept_select"
+                        class="absolute inset-0 opacity-0 pointer-events-none"
+                        aria-hidden="true" tabindex="-1">
+                  <option value="">Select Department</option>
+                  <option value="BIT Computer Technology">BIT Computer Technology</option>
+                  <option value="BTVT-ED Automotive Technology">BTVT-ED Automotive Technology</option>
+                  <option value="BTVT-ED Computer Programming">BTVT-ED Computer Programming</option>
+                  <option value="BTVT-ED Civil Technology">BTVT-ED Civil Technology</option>
+                  <option value="BTVT-ED Electrical Technology">BTVT-ED Electrical Technology</option>
+                  <option value="BTVT-ED Electronics Technology">BTVT-ED Electronics Technology</option>
+                  <option value="BTVT-ED Food &amp; Service Management">BTVT-ED Food &amp; Service Management</option>
+                  <option value="BTVT-ED Mechanical Technology">BTVT-ED Mechanical Technology</option>
+                </select>
+
+                <div id="t-dept-combo" class="relative">
+                  <input id="t-dept-input" type="text" autocomplete="off"
+                         placeholder="Select Department"
+                         class="w-full px-4 py-2.5 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm pr-9"
+                         role="combobox" aria-expanded="false" aria-controls="t-dept-list" aria-autocomplete="list" />
+                  <button id="t-dept-toggle" type="button"
+                          class="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100 focus:outline-none"
+                          aria-label="Toggle department">
+                    <i class="ri-arrow-down-s-line text-gray-500"></i>
+                  </button>
+                  <ul id="t-dept-list"
+                      class="hidden absolute z-20 mt-1 w-full max-h-60 overflow-auto bg-white border border-gray-200 rounded-lg shadow-lg text-sm"
+                      role="listbox"></ul>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -327,7 +393,7 @@
     import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import {
       getFirestore, collection, addDoc, onSnapshot, serverTimestamp,
-      doc, deleteDoc, updateDoc, query, orderBy, getDoc
+      doc, deleteDoc, updateDoc, query, orderBy
     } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
     // ===== Cloudinary config (same pattern as profile page) =====
@@ -366,6 +432,7 @@
     // Search
     const sInput = document.getElementById('teacher-search');
     const sClear = document.getElementById('teacher-search-clear');
+    const deptFilterSelect = document.getElementById('deptFilterSelect');
 
     // Modal refs
     const openBtn = document.getElementById('open-add-teacher');
@@ -405,6 +472,7 @@
     let currentGroup = 0;  // 0-based
 
     let filterQuery = '';
+    let filterDepartment = '';
     let editingId = null;
     let teacherHasOwn = false;
 
@@ -496,7 +564,7 @@
     function canEdit(t){ if (isAdmin) return true; if (isTeacher && t.ownerId && CURRENT_USER_ID && t.ownerId === CURRENT_USER_ID) return true; return false; }
     function canDelete(t){ return isAdmin; }
 
-    // ====== CARD UI (subject chips EXACT like screenshot: light bg + dark border/text) ======
+    // ====== CARD UI ======
     function cardHtml(t){
       const chips = (t.subjects && t.subjects.length)
         ? t.subjects.map((s)=>`
@@ -561,7 +629,6 @@
       pager.innerHTML = '';
       if (totalPages <= 1) return;
 
-      // group bounds
       const maxGroup = Math.max(0, Math.ceil(totalPages / GROUP_SIZE) - 1);
       currentGroup = Math.min(currentGroup, maxGroup);
       const startIdx = currentGroup * GROUP_SIZE + 1;
@@ -581,7 +648,6 @@
         return b;
       };
 
-      // previous group
       const hasPrev = currentGroup > 0;
       pager.appendChild(makeBtn('<i class="ri-arrow-right-up-line"></i>', {
         disabled: !hasPrev,
@@ -589,7 +655,6 @@
         onClick: ()=>{ currentGroup -= 1; currentPage = currentGroup*GROUP_SIZE + 1; applyRender(true); }
       }));
 
-      // numbers
       for (let p = startIdx; p <= endIdx; p++){
         pager.appendChild(makeBtn(String(p), {
           active: p === currentPage,
@@ -597,7 +662,6 @@
         }));
       }
 
-      // next group
       const hasNext = endIdx < totalPages;
       pager.appendChild(makeBtn('<i class="ri-arrow-left-down-line"></i>', {
         disabled: !hasNext,
@@ -627,8 +691,22 @@
           editingId = id;
           selectTitle(t.title || 'Sir');
           document.getElementById('t_name').value   = t.name || '';
-          document.getElementById('t_dept').value   = t.department || '';
           document.getElementById('t_office').value = t.office || '';
+
+          // department into hidden + select (combobox handles display)
+          const deptHidden = document.getElementById('t_dept');
+          const deptSelect = document.getElementById('t_dept_select');
+          const deptVal = t.department || '';
+          if (deptHidden) deptHidden.value = deptVal;
+          if (deptSelect) {
+            let opt = Array.from(deptSelect.options).find(o => o.value === deptVal);
+            if (!opt && deptVal) {
+              opt = new Option(deptVal, deptVal);
+              deptSelect.appendChild(opt);
+            }
+            deptSelect.value = deptVal;
+            deptSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
 
           // Initialize subject inputs with existing values (clean + prefill)
           initSubjectInputs((t.subjects||[]).length, t.subjects||[]);
@@ -661,13 +739,21 @@
 
     // ====== Render ======
     function applyRender(keepPage=false){
-      // Filter
       const q = (filterQuery || '').trim().toLowerCase();
-      const matched = q ? TEACHERS.filter(t => t.__idx.includes(q)) : [...TEACHERS];
+
+      // 1) filter by department
+      let base = [...TEACHERS];
+      if (filterDepartment) {
+        const dLow = filterDepartment.toLowerCase();
+        base = base.filter(t => (t.department || '').toLowerCase() === dLow);
+      }
+
+      // 2) filter by search
+      const matched = q ? base.filter(t => t.__idx.includes(q)) : base;
 
       // Empty & search states
       emptyState.classList.toggle('hidden', TEACHERS.length !== 0);
-      noResults.classList.toggle('hidden', matched.length !== 0 || TEACHERS.length === 0);
+      noResults.classList.toggle('hidden', !(TEACHERS.length !== 0 && matched.length === 0));
 
       // Teacher add-limit: compute ownership
       teacherHasOwn = isTeacher && CURRENT_USER_ID
@@ -707,7 +793,7 @@
         t.__idx = buildIndexText(t);
         TEACHERS.push(t);
       });
-      if (filterQuery) { currentPage = 1; currentGroup = 0; }
+      if (filterQuery || filterDepartment) { currentPage = 1; currentGroup = 0; }
       applyRender(true);
     });
 
@@ -727,11 +813,31 @@
       sClear.classList.add('hidden'); applyRender(true); sInput.focus();
     });
 
-    // ====== Add / Edit with spinner (unchanged except subjects init) ======
+    // ====== Department filter select ======
+    if (deptFilterSelect) {
+      deptFilterSelect.addEventListener('change', () => {
+        filterDepartment = deptFilterSelect.value || '';
+        currentPage = 1;
+        currentGroup = 0;
+        applyRender(true);
+      });
+    }
+
+    // ====== Add / Edit with spinner ======
     openBtn.addEventListener('click', ()=>{
       if (isTeacher && teacherHasOwn) return;
       editingId=null; form.reset(); selectTitle('Sir');
       initSubjectInputs(0);
+
+      // reset department combobox
+      const deptHidden = document.getElementById('t_dept');
+      const deptSelect = document.getElementById('t_dept_select');
+      if (deptHidden) deptHidden.value = '';
+      if (deptSelect) {
+        deptSelect.value = '';
+        deptSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
       openModal();
     });
     closeBtn.addEventListener('click', closeModal);
@@ -774,6 +880,13 @@
         editingId = null;
         form.reset();
         initSubjectInputs(0);
+        const deptHidden = document.getElementById('t_dept');
+        const deptSelect = document.getElementById('t_dept_select');
+        if (deptHidden) deptHidden.value = '';
+        if (deptSelect) {
+          deptSelect.value = '';
+          deptSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
         closeModal();
       } finally {
         btnSave.disabled = false;
@@ -845,7 +958,6 @@
         setAvatarUploading(UPLOAD_TARGET_ID, true);
         const url = await uploadToCloudinary(f);
         await updateDoc(doc(db,'teachers', UPLOAD_TARGET_ID), { photoURL: url, updatedAt: serverTimestamp() });
-        // snapshot will refresh the UI
       } catch (e) {
         alert(e.message || 'Upload failed.');
       } finally {
@@ -904,7 +1016,320 @@
     })();
   </script>
 
+  <!-- Department filter combobox UI -->
+  <script>
+    (function(){
+      const selectEl = document.getElementById('deptFilterSelect');
+      const combo = document.getElementById('dept-filter-combo');
+      const input = document.getElementById('dept-filter-input');
+      const list  = document.getElementById('dept-filter-list');
+      const toggleBtn = document.getElementById('dept-filter-toggle');
+      if (!selectEl || !combo || !input || !list || !toggleBtn) return;
+
+      let options = [];
+      let realOptions = [];
+      let open = false;
+      let activeIndex = -1;
+      let filtered = [];
+
+      function renderList(items){
+        list.innerHTML = '';
+        if(items.length === 0){
+          list.innerHTML = '<li class="px-3 py-2 text-gray-500">No matches</li>';
+          return;
+        }
+        items.forEach((opt, idx) => {
+          const li = document.createElement('li');
+          li.role = 'option';
+          li.id = 'dept-filter-opt-' + idx;
+          li.tabIndex = -1;
+          li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+          li.textContent = opt.label;
+          li.dataset.value = opt.value;
+          li.dataset.index = String(idx);
+          li.addEventListener('mousedown', (e) => {
+            selectValue(opt);
+            e.preventDefault();
+          });
+          list.appendChild(li);
+        });
+      }
+
+      function computeOptionsFromSelect(){
+        options = Array.from(selectEl.options).map(o => ({ value: o.value, label: o.textContent }));
+        realOptions = options.slice();
+        filtered = realOptions.slice();
+        renderList(filtered);
+      }
+
+      function openList(){
+        if(open) return;
+        list.classList.remove('hidden');
+        combo.classList.add('z-30');
+        input.setAttribute('aria-expanded', 'true');
+        open = true;
+        highlight(-1);
+      }
+
+      function closeList(){
+        if(!open) return;
+        list.classList.add('hidden');
+        combo.classList.remove('z-30');
+        input.setAttribute('aria-expanded', 'false');
+        open = false;
+        highlight(-1);
+      }
+
+      function highlight(index){
+        activeIndex = index;
+        const children = Array.from(list.children);
+        children.forEach((el, i) => {
+          if(i === index){
+            el.classList.add('bg-gray-100');
+            el.setAttribute('aria-selected', 'true');
+            el.scrollIntoView({ block:'nearest' });
+          } else {
+            el.classList.remove('bg-gray-100');
+            el.removeAttribute('aria-selected');
+          }
+        });
+      }
+
+      function filterList(query){
+        const q = query.trim().toLowerCase();
+        filtered = !q ? realOptions.slice()
+                      : realOptions.filter(o =>
+                          o.label.toLowerCase().includes(q) ||
+                          o.value.toLowerCase().includes(q)
+                        );
+        renderList(filtered);
+        highlight(-1);
+      }
+
+      function selectValue(opt){
+        input.value = opt.label;
+        selectEl.value = opt.value;
+        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        closeList();
+      }
+
+      (function initFromSelect(){
+        computeOptionsFromSelect();
+        const selected = options.find(o => o.value === selectEl.value);
+        input.value = selected && selected.value ? selected.label : '';
+      })();
+
+      input.addEventListener('focus', () => openList());
+      input.addEventListener('input', () => {
+        filterList(input.value);
+        openList();
+        if(input.value.trim() === ''){
+          selectEl.value = '';
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        const max = filtered.length - 1;
+        if(e.key === 'ArrowDown'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.min(max, activeIndex + 1));
+        } else if(e.key === 'ArrowUp'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.max(0, activeIndex - 1));
+        } else if(e.key === 'Enter'){
+          if(open && activeIndex >= 0){
+            e.preventDefault();
+            selectValue(filtered[activeIndex]);
+          }
+        } else if(e.key === 'Escape'){
+          closeList();
+        }
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        if(open){ closeList(); } else { openList(); input.focus(); }
+      });
+
+      selectEl.addEventListener('change', () => {
+        computeOptionsFromSelect();
+        const sel = options.find(o => o.value === selectEl.value);
+        input.value = sel && sel.value ? sel.label : '';
+        if (!sel || !sel.value) input.value = ''; // show empty for "All Departments"
+      });
+
+      document.addEventListener('click', (e) => {
+        if(!combo.contains(e.target)) closeList();
+      });
+    })();
+  </script>
+
+  <!-- Department combobox for Add Teacher modal -->
+  <script>
+    (function(){
+      const hiddenInput = document.getElementById('t_dept');
+      const selectEl = document.getElementById('t_dept_select');
+      const combo = document.getElementById('t-dept-combo');
+      const input = document.getElementById('t-dept-input');
+      const list  = document.getElementById('t-dept-list');
+      const toggleBtn = document.getElementById('t-dept-toggle');
+      if (!hiddenInput || !selectEl || !combo || !input || !list || !toggleBtn) return;
+
+      let options = [];
+      let realOptions = [];
+      let open = false;
+      let activeIndex = -1;
+      let filtered = [];
+
+      function renderList(items){
+        list.innerHTML = '';
+        if(items.length === 0){
+          list.innerHTML = '<li class="px-3 py-2 text-gray-500">No matches</li>';
+          return;
+        }
+        items.forEach((opt, idx) => {
+          const li = document.createElement('li');
+          li.role = 'option';
+          li.id = 't-dept-opt-' + idx;
+          li.tabIndex = -1;
+          li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+          li.textContent = opt.label;
+          li.dataset.value = opt.value;
+          li.dataset.index = String(idx);
+          li.addEventListener('mousedown', (e) => {
+            selectValue(opt);
+            e.preventDefault();
+          });
+          list.appendChild(li);
+        });
+      }
+
+      function computeOptionsFromSelect(){
+        options = Array.from(selectEl.options).map(o => ({ value: o.value, label: o.textContent }));
+        realOptions = options.filter(o => o.value !== '');
+        filtered = realOptions.slice();
+        renderList(filtered);
+      }
+
+      function openList(){
+        if(open) return;
+        list.classList.remove('hidden');
+        combo.classList.add('z-30');
+        input.setAttribute('aria-expanded', 'true');
+        open = true;
+        highlight(-1);
+      }
+
+      function closeList(){
+        if(!open) return;
+        list.classList.add('hidden');
+        combo.classList.remove('z-30');
+        input.setAttribute('aria-expanded', 'false');
+        open = false;
+        highlight(-1);
+      }
+
+      function highlight(index){
+        activeIndex = index;
+        const children = Array.from(list.children);
+        children.forEach((el, i) => {
+          if(i === index){
+            el.classList.add('bg-gray-100');
+            el.setAttribute('aria-selected', 'true');
+            el.scrollIntoView({ block:'nearest' });
+          } else {
+            el.classList.remove('bg-gray-100');
+            el.removeAttribute('aria-selected');
+          }
+        });
+      }
+
+      function filterList(query){
+        const q = query.trim().toLowerCase();
+        filtered = !q ? realOptions.slice()
+                      : realOptions.filter(o =>
+                          o.label.toLowerCase().includes(q) ||
+                          o.value.toLowerCase().includes(q)
+                        );
+        renderList(filtered);
+        highlight(-1);
+      }
+
+      function selectValue(opt){
+        input.value = opt.label;
+        selectEl.value = opt.value;
+        hiddenInput.value = opt.value;
+        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        closeList();
+      }
+
+      (function initFromSelect(){
+        computeOptionsFromSelect();
+        const selected = options.find(o => o.value === selectEl.value);
+        if (selected && selected.value) {
+          input.value = selected.label;
+          hiddenInput.value = selected.value;
+        } else {
+          input.value = '';
+          hiddenInput.value = '';
+        }
+      })();
+
+      input.addEventListener('focus', () => openList());
+      input.addEventListener('input', () => {
+        filterList(input.value);
+        openList();
+        if(input.value.trim() === ''){
+          selectEl.value = '';
+          hiddenInput.value = '';
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        const max = filtered.length - 1;
+        if(e.key === 'ArrowDown'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.min(max, activeIndex + 1));
+        } else if(e.key === 'ArrowUp'){
+          e.preventDefault();
+          if(!open) openList();
+          highlight(Math.max(0, activeIndex - 1));
+        } else if(e.key === 'Enter'){
+          if(open && activeIndex >= 0){
+            e.preventDefault();
+            selectValue(filtered[activeIndex]);
+          }
+        } else if(e.key === 'Escape'){
+          closeList();
+        }
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        if(open){ closeList(); } else { openList(); input.focus(); }
+      });
+
+      selectEl.addEventListener('change', () => {
+        computeOptionsFromSelect();
+        const sel = options.find(o => o.value === selectEl.value);
+        if (sel && sel.value) {
+          input.value = sel.label;
+          hiddenInput.value = sel.value;
+        } else {
+          input.value = '';
+          hiddenInput.value = '';
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if(!combo.contains(e.target)) closeList();
+      });
+    })();
+  </script>
+
   <script src="assets/js/realtime-calendar.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src=""></script>
 </body>
 </html>
