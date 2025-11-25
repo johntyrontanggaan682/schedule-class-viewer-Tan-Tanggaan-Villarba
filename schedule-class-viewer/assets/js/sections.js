@@ -21,8 +21,6 @@ if (!window.__FB) {
 }
 const { app, db } = window.__FB;
 
-/* ====== NO localStorage: removed all localStorage usage ====== */
-/* ====== NO localStorage: removed all localStorage usage ====== */
 const ssRole = sessionStorage.getItem('auth_role');
 let EFFECTIVE_ROLE = 'student';
 if (ssRole && ssRole !== 'null') {
@@ -92,7 +90,6 @@ const YEAR_SECTIONS = {
   '4th Year': ['BIT 4A-A','BIT 4A-B','BIT 4B-A','BIT 4B-B']
 };
 
-/* NEW: supported courses (from your HTML course dropdown) */
 const COURSES = [
   'BIT Computer Technology',
   'BTVT-ED Automotive Technology',
