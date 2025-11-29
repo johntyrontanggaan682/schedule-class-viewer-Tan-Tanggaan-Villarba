@@ -106,21 +106,21 @@
 
         #schedule-table-body td { line-height: 1.3; }
 
-    .role-student #student-today-panel{
-      position: absolute;
-      top: 40%;
-      right: 20px;
-      margin-right: 10px;
-      z-index: 30;
-    }
-    .role-student #single-table-container,
-    .role-student #section-card-container,
-    .role-student #all-sections-stack{
-      margin-right: 300px;
-    }
-    .role-student #schedule-table-body{
-      margin-right: 250px;
-    }
+
+.role-student #student-today-panel{
+  position: static;      
+  right: auto;
+  margin: 0;
+  z-index: 1;
+}
+
+.role-student #single-table-container,
+.role-student #section-card-container,
+.role-student #all-sections-stack,
+.role-student #schedule-table-body{
+  margin-right: 0;
+}
+
 
     #hero-wrap{
       display:flex;
