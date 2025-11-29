@@ -1,517 +1,1309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home • SLSU Lucena</title>
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: { primary: '#0A4B2D', secondary: '#0A4B2D' },
-      borderRadius: {
-        'none':'0px','sm':'4px', DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px',
-        '2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
-      },
-      keyframes: {
-        fadeIn: { '0%':{opacity:0,transform:'translateY(6px)'}, '100%':{opacity:1,transform:'translateY(0)'} },
-        fadeOut: { '0%':{opacity:1}, '100%':{opacity:0} },
-        crossFadeA: {
-          '0%':   {opacity:1, transform:'scale(1)'},
-          '40%':  {opacity:1, transform:'scale(1.02)'},
-          '50%':  {opacity:0, transform:'scale(1.03)'},
-          '90%':  {opacity:0, transform:'scale(1.04)'},
-          '100%': {opacity:1, transform:'scale(1)'}
-        },
-        crossFadeB: {
-          '0%':   {opacity:0, transform:'scale(1.04)'},
-          '40%':  {opacity:0, transform:'scale(1.03)'},
-          '50%':  {opacity:1, transform:'scale(1.02)'},
-          '90%':  {opacity:1, transform:'scale(1)'},
-          '100%': {opacity:0, transform:'scale(1.04)'}
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In • SLSU Lucena</title>
+  <title>SLSU Lucena Class Schedule Viewer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary:'#0A4B2D', secondary:'#0A4B2D' },
+          borderRadius: { 'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px' },
+          boxShadow: { glow: '0 10px 30px rgba(10,75,45,.15)' },
+          keyframes:{
+            fadeIn:{ from:{opacity:0,transform:'translateY(6px)'}, to:{opacity:1,transform:'none'} },
+            fadeOut:{ from:{opacity:1}, to:{opacity:0} },
+            pulseCard:{ '0%,100%':{ boxShadow:'0 10px 30px rgba(10,75,45,.15)' }, '50%':{ boxShadow:'0 16px 50px rgba(10,75,45,.35)'} },
+            whiteFlash:{ from:{ boxShadow:'0 0 0 0 rgba(255,255,255,1), 0 0 0 rgba(0,0,0,0)' }, to:{ boxShadow:'0 0 0 6px rgba(255,255,255,0), 0 12px 30px rgba(10,75,45,.20)' } }
+          },
+          animation:{
+            'fade-in':'fadeIn .25s ease-out both',
+            'fade-out':'fadeOut .25s ease-in both',
+            'pulse-card':'pulseCard 1.6s ease-in-out 1',
+            'white-flash':'whiteFlash .28s ease-out both'
+          }
         }
-      },
-      animation: {
-        'fade-in': 'fadeIn .25s ease-out both',
-        'page-fade-out': 'fadeOut .2s ease-in forwards',
-        'cross-a': 'crossFadeA 14s cubic-bezier(.4,.0,.2,1) infinite',
-        'cross-b': 'crossFadeB 14s cubic-bezier(.4,.0,.2,1) infinite'
       }
     }
-  }
-}
-</script>
-<link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-<style>
-:where([class^="ri-"])::before { content: "\f3c2"; }
-html, body { overflow-x: hidden; }
-#home, #about-merged { overflow-x: hidden; }
-.site-bg-pattern{
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: .06;
-  background:
-    repeating-linear-gradient(135deg,
-      rgba(10,75,45,.25) 0px,
-      rgba(10,75,45,.25) 2px,
-      transparent 2px,
-      transparent 14px);
-}
-#about-merged { position: relative; }
-.footer-logo-wm{
-  position: absolute;
-  right: 0;
-  bottom: 16px;
-  transform: translateX(12%);
-  width: min(42vw, 520px);
-  aspect-ratio: 1/1;
-  background: url('lucenalogo.jpg') center/contain no-repeat;
-  opacity: .14;
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 50%;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
-          mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
-}
-.footer-logo-blob{
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  transform: translateX(20%);
-  width: min(56vw, 680px);
-  height: min(56vw, 680px);
-  background: radial-gradient(closest-side, rgba(10,75,45,.12), transparent 60%);
-  filter: blur(6px);
-  opacity: .8;
-  pointer-events: none;
-  z-index: 0;
-}
-.side-logo-left{
-  position: absolute;
-  left: 0;
-  top: 24px;
-  transform: translateX(-16%);
-  width: min(38vw, 480px);
-  aspect-ratio: 1/1;
-  background: url('logolucenabg.png') center/contain no-repeat;
-  opacity: .14;
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 50%;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
-          mask-image: radial-gradient(circle at 50% 50%, #000 90%, transparent 100%);
-}
-.side-logo-blob-left{
-  position: absolute;
-  left: 0;
-  top: -20px;
-  transform: translateX(-24%);
-  width: min(52vw, 640px);
-  height: min(52vw, 640px);
-  background: radial-gradient(closest-side, rgba(10,75,45,.10), transparent 60%);
-  filter: blur(6px);
-  opacity: .8;
-  pointer-events: none;
-  z-index: 0;
-}
-footer { position: relative; z-index: 10; }
-.solid-btn{
-  position: relative;
-  z-index: 2;
-  background-color:#0A4B2D !important;
-  color:#fff !important;
-  isolation:isolate;
-}
-.feature-card{
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 28px rgba(10,75,45,.08);
-  border: 1px solid rgba(10,75,45,.22);
-  background:
-    linear-gradient(180deg,#ffffff 0%, rgba(10,75,45,.02) 100%);
-  transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease, background .25s ease;
-}
-.feature-card::before{
-  content:"";
+  </script>
+  <link rel="icon" href="lucenalogo.jpg" type="image/png" sizes="48×48">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+  <style>
+    :where([class^="ri-"])::before{content:"\f3c2";}
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin:0; overflow-x:hidden; }
+    @media (min-width: 768px){ .bg-shift-top{ background-position: center -140px !important; } }
+    @media (max-width: 767px){ .bg-shift-top{ background-position: center -80px !important; } }
+    #register-cta { position: static !important; }
+
+    /* DROPDOWN PANELS – now higher z-index so they appear on top of Create account */
+    /* DROPDOWN PANELS – show ABOVE the input instead of below */
+.reg-suggest-panel{
   position:absolute;
-  left:0; right:0; top:0;
-  height:3px;
-  background: linear-gradient(90deg,#0A4B2D,#0D5C38);
-  opacity:.85;
+  left:2.5rem;
+  right:.75rem;
+  z-index:500;
+  bottom:100%;          /* ⬅ position above the input */
+  margin-bottom:.25rem; /* ⬅ small gap above the input */
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  max-height:14rem;
+  overflow:auto;
 }
-.feature-card:hover{
-  transform: translateY(-6px);
-  box-shadow: 0 18px 48px rgba(10,75,45,.22);
-  border-color: rgba(10,75,45,.42);
-  background:
-    linear-gradient(180deg, rgba(10,75,45,.03) 0%, #ffffff 100%);
+.reg-suggest-item{
+  padding:.6rem .8rem;
+  border-radius:10px;
+  cursor:pointer;
 }
-.feature-card .w-12, .feature-card .w-16{
-  box-shadow: 0 0 0 6px rgba(10,75,45,.06);
+.reg-suggest-item:hover{
+  background:#f8fafc;
 }
-.icon-wrap{
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  isolation: isolate;
-}
-.icon-wrap::after{
-  content:"";
-  position:absolute;
-  inset:-8px;
-  border-radius:16px;
-  background: radial-gradient(closest-side, rgba(10,75,45,.28), transparent 65%);
-  filter: blur(10px);
-  z-index:0;
-}
-.features-wrap{
-  position: relative;
-  border-radius: 1rem;
-  background: rgba(255,255,255,.72);
-  -webkit-backdrop-filter: blur(10px) saturate(1.05);
-  backdrop-filter: blur(10px) saturate(1.05);
-  border: 1px solid rgba(10,75,45,.18);
-  box-shadow: 0 18px 60px rgba(10,75,45,.12);
-  overflow: hidden;
-}
-.features-wrap::before{
-  content:"";
-  position:absolute;
-  inset: -2px;
-  background: radial-gradient(1200px 400px at -10% -20%, rgba(10,75,45,.10), transparent 60%),
-              radial-gradient(600px 300px at 120% 120%, rgba(10,75,45,.08), transparent 60%);
-  pointer-events:none;
-  filter: blur(10px);
-}
-/* smoother cross-fade layers */
-.bg-cross {
-  backface-visibility: hidden;
-  will-change: opacity, transform;
-}
-</style>
+
+
+    /* MOBILE TWEAKS – make whole page/card fit on small screens */
+    @media (max-width: 640px) {
+      .page-section{
+        min-height:auto;
+      }
+      #login-card{
+        margin-top:0.75rem;
+      }
+      .login-scroll{
+        max-height:none !important;
+        overflow-y:visible !important;
+      }
+      #register-panel,
+      #fp-panel{
+        width:100%;
+        max-width:100%;
+        margin-top:3rem;
+        border-radius:0.75rem;
+      }
+
+      /* Make Student / Teacher / Admin tabs fit and not get cut */
+      .page-section .inline-flex.bg-gray-100{
+        display:flex !important;
+        flex-wrap:wrap;
+        width:100%;
+        justify-content:space-between;
+        gap:0.25rem;
+      }
+      .page-section .inline-flex.bg-gray-100 .tab-btn{
+        flex:1 1 calc(33.333% - 0.25rem);
+        justify-content:center;
+        padding-inline:0.5rem;
+        font-size:0.75rem;
+        white-space:nowrap;
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-<div class="site-bg-pattern"></div>
-
-<nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
-  <div class="px-6 py-4">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full" />
-        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
-      </div>
-      <div class="hidden md:flex items-center space-x-2">
-        <a href="index.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition hover:bg-white/25 active:scale-[.98]">
-          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/10"></span>
-          <i class="ri-home-line"></i><span>Home</span>
-        </a>
-        <a href="sections.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
-          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
-          <i class="ri-book-2-line"></i><span>Sections</span>
-        </a>
-        <a href="schedules.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
-          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
-          <i class="ri-calendar-line"></i><span>Schedules</span>
-        </a>
-        <a href="students.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
-          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
-          <i class="ri-user-line"></i><span>Students</span>
-        </a>
-        <a href="teachers.html"  class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition hover:translate-y-[-1px]">
-          <span class="absolute inset-0 opacity-0 hover:opacity-100 transition bg-white/5"></span>
-          <i class="ri-user-star-line"></i><span>Teachers</span>
-        </a>
-
-        <div id="profile-wrap" class="relative">
-          <a id="profile-trigger" href="profile.html" class="nav-link relative overflow-hidden flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
-            <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
-          </a>
-          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
-            <a href="profile.html" class="flex items-center gap-3 hover:opacity-90">
-              <div id="acc-avatar" class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold overflow-hidden"></div>
-              <div class="min-w-0">
-                <div id="acc-name" class="font-semibold truncate"></div>
-                <div id="acc-role" class="text-xs text-gray-500 truncate"></div>
-              </div>
-            </a>
-            <div class="mt-3 space-y-1 text-sm">
-              <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span id="acc-email" class="truncate"></span></div>
-              <div class="flex items-center gap-2"><i class="ri-id-card-line"></i><span id="acc-id" class="truncate"></span></div>
-            </div>
-            <div class="mt-4 grid grid-cols-2 gap-2">
-              <a id="acc-cta" href="profile.html" class="px-3 py-2 rounded-button bg-primary text-white text-sm text-center active:scale-95 transition">View profile</a>
-              <button id="signout-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10 active:scale-95 transition">
-        <i class="ri-menu-line text-xl"></i>
-      </button>
-    </div>
-    <div id="mobile-menu" class="md:hidden mt-4 hidden">
-      <div class="space-y-2">
-        <a href="index.html"    class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 active:scale-95 transition"><i class="ri-home-line"></i><span>Home</span></a>
-        <a href="sections.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-book-2-line"></i><span>Sections</span></a>
-        <a href="schedules.html"class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-        <a href="students.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-line"></i><span>Students</span></a>
-        <a href="teachers.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-        <a href="profile.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 active:scale-95 transition"><i class="ri-user-3-line"></i><span>Profile</span></a>
-      </div>
+  <!-- TOAST -->
+  <div id="toast" class="fixed top-0 left-0 right-0 z-[100] hidden pointer-events-none">
+    <div class="mx-auto mt-1 relative left-36 w-fit rounded-xl bg-white shadow-2xl border border-green-200 px-4 py-3 text-sm text-green-800 flex items-center gap-2 pointer-events-auto">
+      <i class="ri-check-double-line text-lg"></i>
+      <span id="toast-msg"></span>
     </div>
   </div>
-</nav>
 
-<main class="pt-20">
-  <section id="home" class="min-h-screen bg-white relative overflow-hidden">
-    <div class="absolute inset-0">
-      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-cross animate-cross-a" style="background-image:url('lucena.png');"></div>
-      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-cross animate-cross-b" style="background-image:url('bldg.jpg');"></div>
-      <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/60 to-white/80"></div>
-      <div class="absolute -top-24 -right-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
-    </div>
+  <main class="pt-0">
+    <section class="min-h-[calc(100vh-5rem)] bg-white relative overflow-hidden page-section">
+      <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-center bg-cover opacity-30 bg-shift-top" style="background-image:url('lucena.png')"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-white/30 via-white/20 to-white/10"></div>
+        <div class="absolute -left-24 top-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl"></div>
+        <div class="absolute -right-24 bottom-10 w-72 h-72 rounded-full bg-secondary/10 blur-3xl"></div>
+      </div>
 
-    <div class="relative z-10 px-6 py-16">
-      <div class="max-w-6xl mx-auto text-center">
-        <div class="mb-12">
-          <div class="w-32 h-32 mx-auto bg-white rounded-xl border-2 border-primary/20 shadow-lg flex items-center justify-center mb-6 overflow-hidden">
-            <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-24 h-24 object-contain rounded-full" />
+      <div class="relative px-6 py-12">
+        <div class="max-w-[560px] mx-auto mb-4 px-4 flex items-center gap-3">
+          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/20">
+          <div class="leading-tight">
+            <div class="text-sm font-semibold text-black-800">SLSU Lucena</div>
+            <div class="text-[14px] text-black-500 -mt-0.5">Class Schedule Management System</div>
+          </div>
+          <div class="ml-auto flex items-center gap-2 text--600 text-xs">
+            <i class="ri-time-line"></i><span>Academic Year 2025–2026</span>
           </div>
         </div>
 
-        <h1 class="text-5xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-sm">SLSU Lucena Class Schedule Viewer</h1>
-
-        <div class="max-w-3xl mx-auto">
-          <p class="text-xl font-semibold text-gray-700 leading-relaxed mb-8 drop-shadow-sm">
-            The SLSU Lucena Class Schedule Viewer. Quickly browse weekly timetables and find students, sections, and teachers in one place.
-          </p>
-
-          <div class="grid md:grid-cols-3 gap-8 mt-16">
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-calendar-check-line text-2xl text-primary"></i>
-                </div>
+        <div id="login-card" class="max-w-[560px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-glow overflow-hidden animate-fade-in">
+          <div class="bg-primary text-white px-6 py-5">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+                <i class="ri-key-2-line text-xl"></i>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-3">Schedule Viewer</h3>
-              <p class="text-gray-600">Browse the weekly timetable by day, subject, room, and instructor.</p>
-              <div class="mt-5">
-                <a href="schedules.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
-                  Open Schedules <i class="ri-arrow-right-up-line"></i>
-                </a>
-              </div>
-            </div>
-
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-group-line text-2xl text-primary"></i>
-                </div>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-3">Student Directory</h3>
-              <p class="text-gray-600">Search students by name or section, including regular/irregular status.</p>
-              <div class="mt-5">
-                <a href="students.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
-                  Open Students <i class="ri-arrow-right-up-line"></i>
-                </a>
-              </div>
-            </div>
-
-            <div class="group bg-white p-8 rounded-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-              <div class="icon-wrap w-16 h-16 mx-auto mb-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-primary/10 rounded-xl relative z-[1]">
-                  <i class="ri-user-star-line text-2xl text-primary"></i>
-                </div>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-3">Faculty Directory</h3>
-              <p class="text-gray-600">See teaching assignments with subjects and rooms at a glance.</p>
-              <div class="mt-5">
-                <a href="teachers.html" class="inline-flex items-center gap-1 px-3 py-2 rounded-button border border-primary/20 text-primary hover:bg-primary hover:text-white transition active:scale-95">
-                  Open Teachers <i class="ri-arrow-right-up-line"></i>
-                </a>
+              <div>
+                <h2 class="text-lg font-bold leading-none">Sign In</h2>
+                <p class="text-[12px] opacity-90">Access your class schedule and manage your academic information</p>
               </div>
             </div>
           </div>
 
+          <div class="px-5 md:px-6 pt-5 md:pt-6">
+            <div class="inline-flex bg-gray-100 p-1 rounded-full text-sm">
+              <button id="tab-student" class="tab-btn px-4 py-2 rounded-full font-medium bg-white text-primary shadow-sm flex items-center gap-2 transition">
+                <i class="ri-graduation-cap-line"></i><span>Student</span>
+              </button>
+              <button id="tab-teacher" class="tab-btn px-4 py-2 rounded-full text-gray-700 hover:text-primary flex items-center gap-2 transition">
+                <i class="ri-user-voice-line"></i><span>Teacher</span>
+              </button>
+              <button id="tab-admin" class="tab-btn px-4 py-2 rounded-full text-gray-700 hover:text-primary flex items-center gap-2 transition">
+                <i class="ri-shield-user-line"></i><span>Admin</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="px-5 md:px-6 py-5 md:py-6 max-h-[60vh] overflow-y-auto login-scroll">
+            <form id="login-form" class="space-y-4" autocomplete="off">
+              <div id="student-name-row" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <div class="relative">
+                  <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="student-fullname" type="text" autocomplete="off" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
+                </div>
+              </div>
+
+              <div>
+                <label id="id-label" class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                <div class="relative">
+                  <i class="ri-id-card-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="id-input" type="text" autocomplete="off" required class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your student ID">
+                </div>
+              </div>
+
+              <div id="email-row" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <div class="relative">
+                  <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="email-input" type="email" autocomplete="email" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email address">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <div class="relative">
+                  <i class="ri-lock-2-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input id="password-input" type="password" autocomplete="new-password" name="new-password" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your password" value="">
+                  <button type="button" id="toggle-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <i class="ri-eye-line"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div id="student-section-row" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
+                <div class="relative">
+                  <i class="ri-layout-grid-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <select id="student-section" class="hidden w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                    <option value="" disabled selected>Select your section</option>
+                    <option>BIT 1A-A</option>
+                    <option>BIT 1A-B</option>
+                    <option>BIT 1B-A</option>
+                    <option>BIT 1B-B</option>
+                    <option>BIT 2A-A</option>
+                    <option>BIT 2A-B</option>
+                    <option>BIT 2B-A</option>
+                    <option>BIT 2B-B</option>
+                    <option>BIT 3A-A</option>
+                    <option>BIT 3A-B</option>
+                    <option>BIT 3B-A</option>
+                    <option>BIT 3B-B</option>
+                    <option>BIT 4A-A</option>
+                    <option>BIT 4A-B</option>
+                    <option>BIT 4B-A</option>
+                    <option>BIT 4B-B</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end pt-1">
+                <a id="forgot-link" href="#" class="text-sm text-primary hover:underline">Forgot password?</a>
+              </div>
+
+              <button id="submit-btn" type="submit" class="w-full px-4 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition shadow-sm active:scale-[.99]">
+                Sign in as Student
+              </button>
+            </form>
+          </div>
+
+          <div class="px-5 md:px-6 pb-5 md:pb-6">
+            <div id="register-cta" class="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
+              <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="text-gray-700">
+                  <div class="font-semibold">New to SLSU Lucena?</div>
+                  <div class="text-gray-600">Create your account to access the class schedule management system.</div>
+                </div>
+                <button id="open-register" class="px-4 py-2 rounded-button border border-primary text-primary hover:bg-primary/10 transition">
+                  Register Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-primary text-white py-8">
+    <div class="px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-bold mb-3">SLSU Lucena Campus</h3>
+            <p class="text-white/80 mb-3">Southern Luzon State University Lucena Campus</p>
+            <div class="flex items-center space-x-3">
+              <a href="https://www.facebook.com/profile.php?id=100064260360036" target="_blank" rel="noopener noreferrer" aria-label="SLSU Lucena Facebook Page" class="p-2 rounded-full hover:bg-white/10 transition active:scale-95">
+                <i class="ri-facebook-line text-xl"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-3">Contact Information</h3>
+            <div class="space-y-2 text-white/80">
+              <div class="flex items-center space-x-3"><i class="ri-map-pin-line"></i><span>Ibabang Dupay, Lucena City</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-phone-line"></i><span>(042) 123-4567</span></div>
+              <div class="flex items-center space-x-3"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80 text-sm">
+          <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
         </div>
       </div>
     </div>
-  </section>
+  </footer>
 
-  <section id="about-merged" class="bg-gray-50">
-    <div class="side-logo-blob-left"></div>
-    <div class="side-logo-left"></div>
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  <script>
+    if (location.hostname === '127.0.0.1') { location.replace(location.href.replace('127.0.0.1', 'localhost')); }
+  </script>
 
-    <div class="px-6 py-16">
-      <div class="max-w-6xl mx-auto space-y-10">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 relative overflow-hidden">
-          <div class="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-primary/10"></div>
-          <div class="absolute -bottom-12 -left-12 w-52 h-52 rounded-full bg-secondary/10"></div>
-          <div class="relative">
-            <p class="text-xs uppercase tracking-wider text-primary font-semibold">About</p>
-            <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1">System Purpose</h3>
-            <p class="text-gray-700 leading-relaxed mt-4">
-              The <strong>SLSU Lucena Class Schedule Viewer</strong> provides a centralized, real-time way to view academic schedules for the program at Southern Luzon State University Lucena Campus. It focuses on clear, student and faculty-friendly viewing of class grids, sections, and assignments to minimize conflicts and make information easy to find.
-            </p>
-          </div>
+  <!-- Register Modal -->
+  <div id="register-modal" class="fixed inset-0 z-[70] hidden">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div id="register-panel" class="relative z-[71] w-full max-w-xl mx-auto mt-20 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="bg-primary text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 id="register-title" class="text-lg font-bold">Create an Account</h3>
+          <p id="register-subtitle" class="text-xs opacity-90">Choose your role to continue</p>
         </div>
+        <button id="close-register" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
 
-        <div class="features-wrap p-8">
-          <h3 class="text-2xl font-extrabold text-gray-900 mb-6">Key Features</h3>
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
-                  <i class="ri-calendar-check-line text-xl"></i>
-                </div>
+      <div id="register-role" class="p-6">
+        <div class="grid md:grid-cols-2 gap-4">
+          <button id="choose-student" class="p-5 border border-gray-200 rounded-xl hover:shadow-md active:scale-[.99] transition text-left">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <i class="ri-graduation-cap-line text-xl"></i>
               </div>
-              <h4 class="font-bold text-gray-900 mb-2">Interactive Viewing</h4>
-              <p class="font-semibold text-black-600 text-sm">Weekly grid with subjects, rooms, teachers, and edit actions.</p>
-              <a href="schedules.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm mt-2">
-                Go to Master Schedule <i class="ri-arrow-right-up-line"></i>
-              </a>
-            </div>
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
-                  <i class="ri-group-line text-xl"></i>
-                </div>
+              <div>
+                <div class="font-semibold">Student</div>
+                <div class="text-xs text-gray-600">Register with Student ID & Section</div>
               </div>
-              <h4 class="font-bold text-gray-900 mb-2">Student Directory</h4>
-              <p class="font-semibold text-black-600 text-sm">Search by name or section; regular/irregular tagging.</p>
-              <a href="students.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm mt-2">
-                Open Student Directory <i class="ri-arrow-right-up-line"></i>
-              </a>
             </div>
-            <div class="feature-card group p-6 rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div class="icon-wrap">
-                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 relative z-[1]">
-                  <i class="ri-user-star-line text-xl"></i>
-                </div>
+          </button>
+          <button id="choose-teacher" class="p-5 border border-gray-200 rounded-xl hover:shadow-md active:scale-[.99] transition text-left">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <i class="ri-user-voice-line text-xl"></i>
               </div>
-              <h4 class="font-bold text-gray-900 mb-2">Faculty Info</h4>
-              <p class=" font-semibold text-black-600 text-sm">Subjects, rooms, and assignments in one consistent layout.</p>
-              <a href="teachers.html" class="inline-flex items-center gap-1 text-primary hover:underline text-sm mt-2">
-                View Faculty Page <i class="ri-arrow-right-up-line"></i>
-              </a>
+              <div>
+                <div class="font-semibold">Teacher</div>
+                <div class="text-xs text-gray-600">Register with your email</div>
+              </div>
             </div>
-          </div>
+          </button>
         </div>
+      </div>
 
-        <div id="cta-card" class="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-8">
-          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div id="register-form-wrap" class="p-6 hidden">
+        <form id="register-form" class="space-y-4">
+          <!-- SCROLLABLE CONTENT ONLY -->
+          <div id="reg-form-scroll" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div>
-              <h4 id="cta-title" class="text-xl font-extrabold text-gray-900">Ready to explore the schedules?</h4>
-              <p id="cta-sub" class="text-gray-700">Open the Master Schedule and use the filters to browse sections.</p>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+              <div class="relative">
+                <i class="ri-user-3-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="reg-fullname" type="text" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your full name">
+              </div>
             </div>
-            <a href="schedules.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-button solid-btn active:scale-95 transition">
-              <i class="ri-calendar-2-line"></i> Open Your Schedule
-            </a>
-          </div>
-        </div>
 
-      </div>
-    </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <div class="relative">
+                <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="reg-email" type="email" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your email">
+              </div>
+            </div>
 
-    <div class="footer-logo-blob"></div>
-    <div class="footer-logo-wm"></div>
-  </section>
-</main>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <div class="relative">
+                <i class="ri-lock-2-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="reg-password" type="password" class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Create a password">
+                <button type="button" id="toggle-reg-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <i class="ri-eye-line"></i>
+                </button>
+              </div>
+            </div>
 
-<footer class="bg-primary text-white py-6 mt-12 text-sm">
-  <div class="px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="grid md:grid-cols-3 gap-6">
-        <div>
-          <h3 class="font-bold mb-2">SLSU Lucena Campus</h3>
-          <p class="text-white/80">Southern Luzon State University Lucena Campus</p>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">Contact Information</h3>
-          <div class="space-y-1 text-white/80">
-            <div class="flex items-center gap-2"><i class="ri-map-pin-line"></i><span>Ibabang dupay, Lucena City</span></div>
-            <div class="flex items-center gap-2"><i class="ri-phone-line"></i><span>+63 9876543212</span></div>
-            <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span>info@slsu-lucena.edu.ph</span></div>
+            <!-- Student-only fields -->
+            <div id="reg-student-id-group" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+              <div class="relative">
+                <i class="ri-id-card-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="reg-student-id" type="text" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="e.g. 23-000056">
+                <p id="reg-student-id-hint" class="mt-1 text-xs text-gray-500">Format: 2 digits, dash, 6 digits (e.g., 23-000056).</p>
+              </div>
+            </div>
+
+            <div id="reg-student-status-group" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <div class="relative">
+                <i class="ri-information-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <select id="reg-status" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                  <option value="" selected>— Select status —</option>
+                  <option>Regular</option>
+                  <option>Irregular</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Course -->
+            <div id="reg-student-course-group" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Course</label>
+              <div class="relative">
+                <i class="ri-book-mark-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="reg-course-combo" type="text" autocomplete="off"
+                       class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                       placeholder="Type your course (e.g., BTVT-ED Computer Programming)">
+                <div id="reg-course-suggest" class="reg-suggest-panel hidden"></div>
+                <input type="hidden" id="reg-course-input" />
+              </div>
+            </div>
+
+            <!-- Section -->
+            <div id="reg-student-section-group" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
+              <div class="relative">
+                <i class="ri-layout-grid-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+                <select id="reg-section" class="hidden w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                  <option value="" disabled selected>Select your section</option>
+                  <option>BIT 1A-A</option>
+                  <option>BIT 1A-B</option>
+                  <option>BIT 1B-A</option>
+                  <option>BIT 1B-B</option>
+                  <option>BIT 2A-A</option>
+                  <option>BIT 2A-B</option>
+                  <option>BIT 2B-A</option>
+                  <option>BIT 2B-B</option>
+                  <option>BIT 3A-A</option>
+                  <option>BIT 3A-B</option>
+                  <option>BIT 3B-A</option>
+                  <option>BIT 3B-B</option>
+                  <option>BIT 4A-A</option>
+                  <option>BIT 4A-B</option>
+                  <option>BIT 4B-A</option>
+                  <option>BIT 4B-B</option>
+                </select>
+
+                <input id="reg-section-combo" type="text" autocomplete="off"
+                       class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                       placeholder="Type your section (e.g., BIT 3A-A)">
+                <div id="reg-section-suggest" class="reg-suggest-panel hidden"></div>
+                <input type="hidden" id="reg-section-input" />
+              </div>
+            </div>
           </div>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">Quick Links</h3>
-          <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
-            <a href="index.html"     class="hover:text-white">Home</a>
-            <a href="sections.html"  class="hover:text-white">Sections</a>
-            <a href="schedules.html" class="hover:text-white">Schedules</a>
-            <a href="students.html"  class="hover:text-white">Students</a>
-            <a href="teachers.html"  class="hover:text-white">Teachers</a>
-            <a href="profile.html"   class="hover:text-white">Profile</a>
+          <!-- NON-SCROLLING BUTTON -->
+          <div class="pt-2">
+            <button id="register-submit" type="submit" class="w-full px-4 py-3 bg-primary text-white rounded-button hover:bg-primary/90 transition active:scale-[.99]">
+              Create account
+            </button>
           </div>
-        </div>
-      </div>
-      <div class="border-t border-white/20 mt-4 pt-4 text-center text-white/80">
-        <p>&copy; 2025 SLSU Lucena Class Schedule Viewer. All rights reserved.</p>
+        </form>
       </div>
     </div>
   </div>
-</footer>
+  <!-- END Register Modal -->
 
-<div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
-  <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-        <i class="ri-question-line"></i>
+  <!-- Forgot Password Modal (unchanged) -->
+  <div id="fp-modal" class="fixed inset-0 z-[80] hidden">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div id="fp-panel" class="relative z-[81] w-full max-w-md mx-auto mt-24 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-fade-in">
+      <div class="bg-primary text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+            <i class="ri-lock-password-line text-lg"></i>
+          </div>
+          <div class="font-bold">Forgot Password</div>
+        </div>
+        <button id="fp-close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+          <i class="ri-close-line text-xl"></i>
+        </button>
       </div>
-      <div class="font-semibold text-gray-900">Sign out?</div>
-    </div>
-    <p class="mt-3 text-sm text-gray-600">Are you sure you want to sign out?</p>
-    <div class="mt-6 flex items-center justify-end gap-2">
-      <button id="cancel-signout" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
-      <button id="confirm-signout" class="px-4 py-2 rounded-button bg-primary text-white">Yes</button>
+
+      <div id="fp-step-email" class="p-6 space-y-4">
+        <p class="text-sm text-gray-600">Enter your registered email to continue.</p>
+        <form id="fp-email-form" class="space-y-3">
+          <div class="relative">
+            <i class="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input id="fp-email" type="email" class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="you@example.com" required>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button type="button" id="fp-cancel-1" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+            <button id="fp-next" type="submit" class="px-4 py-2 rounded-button bg-primary text-white">Next</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="fp-step-send" class="p-6 space-y-4 hidden">
+        <div class="text-sm text-gray-700">
+          We will send a <span class="font-semibold">reset code/link</span> to:
+          <div id="fp-review-email" class="mt-1 font-semibold text-gray-900 break-words"></div>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <button id="fp-back" class="px-4 py-2 rounded-button bg-gray-100">Back</button>
+          <button id="fp-send" class="px-4 py-2 rounded-button bg-primary text-white">Send Code</button>
+        </div>
+      </div>
+
+      <div id="fp-step-done" class="p-6 space-y-3 hidden">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+            <i class="ri-check-double-line text-lg"></i>
+          </div>
+          <div class="text-sm">
+            <div class="font-semibold text-gray-900">Email sent!</div>
+            <div class="text-gray-700">Check your inbox for the reset code/link. Follow the instructions in the email to set a new password.</div>
+            <ul class="mt-2 text-gray-600 list-disc pl-5">
+              <li>Also check Spam/Updates/Promotions.</li>
+              <li>If you don’t see it after a while, try again.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pt-2 text-right">
+          <button id="fp-done-close" class="px-4 py-2 rounded-button bg-primary text-white">Close</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+  <!-- END Forgot Password Modal -->
 
-<script src="assets/js/nav.js"></script>
-<script src="assets/js/realtime-calendar.js"></script>
-<script src="assets/js/profile.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    ['home', 'about-merged'].forEach(function(id){
-      var el = document.getElementById(id);
-      if(!el) return;
-      el.classList.remove('animate-fade-in');
-      void el.offsetWidth;
-      el.classList.add('animate-fade-in');
-    });
+  <script type="module">
+    import {
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile,
+      fetchSignInMethodsForEmail,
+      signOut,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import {
+      doc, getDoc, setDoc, serverTimestamp,
+      onSnapshot, collection
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-    document.querySelectorAll('a.nav-link').forEach(function(a){
-      a.addEventListener('click', function(){
-        var href = a.getAttribute('href') || '';
-        if (a.id === 'profile-trigger') return;
-        if(href.startsWith('#')) return;
-        document.body.classList.add('animate-page-fade-out');
+    const { auth, db } = window.__FB;
+
+    const toast = (msg) => {
+      const box = document.getElementById('toast');
+      const span = document.getElementById('toast-msg');
+      span.textContent = msg;
+      box.classList.remove('hidden');
+      clearTimeout(box._hideTimer);
+      box._hideTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 1600);
+    };
+
+    const capWords = (s)=> s.split(/[\s._-]+/).filter(Boolean).map(t=>t.charAt(0).toUpperCase()+t.slice(1)).join(' ');
+    const setSession = (obj)=> Object.entries(obj).forEach(([k,v])=> v==null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k,String(v)));
+
+    const ensureUserDoc = async (uid, data) => {
+      const ref = doc(db, 'users', uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const current = snap.data();
+        const next = { ...current, ...data };
+        if (current.role && data.role && current.role !== data.role) {
+          next.role = current.role;
+        }
+        await setDoc(ref, { ...next, updatedAt: serverTimestamp() });
+      } else {
+        await setDoc(ref, { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      }
+    };
+
+    const ensureStudentDoc = async (uid, data) => {
+      const ref = doc(db, 'students', uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const current = snap.data();
+        await setDoc(ref, { ...current, ...data, updatedAt: serverTimestamp() });
+      } else {
+        await setDoc(ref, { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      }
+    };
+
+    const ensureTeacherDoc = async (uid, data) => {
+      const ref = doc(db, 'teachers', uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const current = snap.data();
+        await setDoc(ref, { ...current, ...data, updatedAt: serverTimestamp() });
+      } else {
+        await setDoc(ref, { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      }
+    };
+
+    const tabStudent = document.getElementById('tab-student');
+    const tabTeacher = document.getElementById('tab-teacher');
+    const tabAdmin   = document.getElementById('tab-admin');
+
+    const idLabel = document.getElementById('id-label');
+    const idInput = document.getElementById('id-input');
+    const submitBtn = document.getElementById('submit-btn');
+
+    const studentRow = document.getElementById('student-section-row');
+    const studentNameRow = document.getElementById('student-name-row');
+    const emailRow = document.getElementById('email-row');
+    const emailInput = document.getElementById('email-input');
+    const passInput = document.getElementById('password-input');
+    const registerCta = document.getElementById('register-cta');
+    let currentRole = 'student';
+
+    const idGroup = idLabel.parentElement;
+
+    const setLoading = (btn, on, customLabel) => {
+      if (on) {
+        if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
+        const label = customLabel || (btn.textContent || 'Loading');
+        btn.disabled = true;
+        btn.setAttribute('aria-busy','true');
+        btn.innerHTML = `
+          <span class="inline-flex items-center justify-center gap-2">
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" d="M22 12a10 10 0 00-10-10" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+            </svg>
+            <span>${label}</span>
+          </span>`;
+      } else {
+        if (btn.dataset.orig) {
+          btn.innerHTML = btn.dataset.orig;
+          delete btn.dataset.orig;
+        }
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+      }
+    };
+
+    const setActive = (tab)=>{
+      [tabStudent, tabTeacher, tabAdmin].forEach(b=>{
+        b.classList.remove('bg-white','text-primary','shadow-sm');
+        b.classList.add('text-gray-700');
       });
+      tab.classList.add('bg-white','text-primary','shadow-sm');
+      tab.classList.remove('text-gray-700');
+      tab.classList.add('animate-white-flash');
+      setTimeout(()=> tab.classList.remove('animate-white-flash'), 320);
+    };
+
+    const errCls = ['border-red-500','ring-2','ring-red-400','focus:ring-red-500','focus:border-red-500'];
+    const clearErr = (el)=>{ el?.classList?.remove(...errCls); el?.removeAttribute?.('aria-invalid'); };
+    const setErr   = (el)=>{ el?.classList?.add(...errCls); el?.setAttribute?.('aria-invalid','true'); };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const studentIdPattern = /^\d{2}-\d{6}$/;
+    const getActiveEmailInput = ()=> currentRole==='student' ? emailInput : idInput;
+
+    [emailInput, idInput, passInput].forEach(el=>{
+      el.addEventListener('input', ()=> clearErr(el));
+      el.addEventListener('focus',  ()=> clearErr(el));
     });
 
-    var role = (sessionStorage.getItem('auth_role') || 'guest').toLowerCase();
-    var ctaCard = document.getElementById('cta-card');
-    var ctaTitle = document.getElementById('cta-title');
-    var ctaSub = document.getElementById('cta-sub');
-    if (role === 'student') {
-      if (ctaTitle) ctaTitle.textContent = 'Ready to view your schedule?';
-      if (ctaSub) ctaSub.textContent = 'Open your section timetable and check today’s classes.';
-    } else if (role === 'teacher' || role === 'admin') {
-      if (ctaCard) ctaCard.classList.add('hidden');
+    tabStudent.addEventListener('click', () => {
+      setActive(tabStudent);
+      currentRole = 'student';
+      idGroup.classList.add('hidden');
+      idInput.required = false;
+      idInput.disabled = true;
+      emailRow.classList.remove('hidden');
+      emailInput.required = true;
+      studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Student';
+      registerCta?.classList.remove('hidden');
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
+    });
+    tabTeacher.addEventListener('click', () => {
+      setActive(tabTeacher);
+      currentRole = 'teacher';
+      idLabel.textContent = 'Email Address';
+      idInput.placeholder = 'Enter your email address';
+      idInput.type = 'email';
+      idGroup.classList.remove('hidden');
+      idInput.required = true;
+      idInput.disabled = false;
+      emailRow.classList.add('hidden');
+      emailInput.required = false;
+      studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Teacher';
+      registerCta?.classList.remove('hidden');
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
+    });
+    tabAdmin.addEventListener('click', () => {
+      setActive(tabAdmin);
+      currentRole = 'admin';
+      idLabel.textContent = 'Username (email)';
+      idInput.placeholder = 'Enter your admin email';
+      idInput.type = 'email';
+      idGroup.classList.remove('hidden');
+      idInput.required = true;
+      idInput.disabled = false;
+      emailRow.classList.add('hidden');
+      emailInput.required = false;
+      studentRow.classList.add('hidden');
+      studentNameRow.classList.add('hidden');
+      submitBtn.textContent = 'Sign in as Admin';
+      registerCta?.classList.add('hidden');
+      clearErr(idInput); clearErr(emailInput); clearErr(passInput);
+      passInput.value = ''; passInput.setAttribute('value','');
+    });
+
+    tabStudent.click();
+
+    function applyRoleFromQuery() {
+      const q = new URLSearchParams(location.search);
+      const role = q.get('role');
+      const email = q.get('email');
+      if (role === 'teacher') {
+        tabTeacher.click();
+        if (email) idInput.value = email;
+      } else if (role === 'admin') {
+        tabAdmin.click();
+        if (email) idInput.value = email;
+      } else if (role === 'student') {
+        tabStudent.click();
+        if (email) emailInput.value = email;
+      }
+      if (role) history.replaceState({}, '', location.pathname);
     }
+    applyRoleFromQuery();
+
+    document.getElementById('toggle-pass').addEventListener('click', ()=>{
+      const isPwd = passInput.type === 'password';
+      passInput.type = isPwd ? 'text' : 'password';
+      document.getElementById('toggle-pass').innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!navigator.onLine) { toast('You are offline.'); return; }
+
+      const password = passInput.value.trim();
+      const idValue  = idInput.value.trim();
+      const emailVal = (currentRole==='student' ? emailInput.value.trim() : idValue);
+
+      clearErr(getActiveEmailInput()); clearErr(passInput);
+      if (!emailVal || !emailRegex.test(emailVal)) { setErr(getActiveEmailInput()); toast('Enter a valid email.'); return; }
+      if (!password) { setErr(passInput); toast('Enter your password.'); return; }
+
+      const roleLabel = currentRole==='teacher' ? 'Teacher' : currentRole==='admin' ? 'Admin' : 'Student';
+      setLoading(submitBtn, true, `Signing in as ${roleLabel}…`);
+
+      try {
+        const { user } = await signInWithEmailAndPassword(auth, emailVal, password);
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        const data = snap.exists() ? snap.data() : {};
+
+        const storedRole = (data.role || '').toLowerCase();
+        if (!storedRole) {
+          await signOut(auth);
+          setLoading(submitBtn, false);
+          toast('This account has no role assigned. Please contact support.');
+          return;
+        }
+        if (storedRole !== currentRole) {
+          await signOut(auth);
+          setLoading(submitBtn, false);
+          toast(`This account is registered as ${storedRole.charAt(0).toUpperCase()+storedRole.slice(1)}. Please use the ${storedRole} tab.`);
+          return;
+        }
+
+        const name = data.name || user.displayName || emailVal.split('@')[0];
+
+        if (storedRole === 'student') {
+          let section   = data.section   || '';
+          let studentId = data.studentId || '';
+          let status    = data.status    || '';
+          let course    = data.course    || '';
+          try {
+            const stuSnap = await getDoc(doc(db, 'students', user.uid));
+            if (stuSnap.exists()) {
+              const sdata = stuSnap.data() || {};
+              section   = sdata.section   || section;
+              studentId = sdata.studentId || studentId;
+              status    = sdata.status    || status;
+              course    = sdata.course    || course;
+            }
+          } catch {}
+
+          setSession({
+            auth_name: name,
+            auth_role: 'student',
+            auth_email: emailVal,
+            auth_id: studentId,
+            auth_section: section,
+            auth_status: status,
+            auth_course: course || ''
+          });
+
+          await ensureUserDoc(user.uid, {
+            name,
+            email: emailVal,
+            role: 'student',
+            studentId: studentId || null,
+            section: section || null,
+            status: status || null,
+            course: course || null
+          });
+
+          await ensureStudentDoc(user.uid, {
+            name,
+            email: emailVal,
+            studentId: studentId || null,
+            section: section || null,
+            status: status || null,
+            course: course || null
+          });
+
+        } else if (storedRole === 'teacher' || storedRole === 'admin') {
+  const displayName = name || capWords(emailVal.split('@')[0].replace(/\d+/g,'') || storedRole);
+  await ensureUserDoc(user.uid, { name: displayName, email: emailVal, role: storedRole });
+  await updateProfile(user, { displayName });
+  setSession({
+    auth_name: displayName,
+    auth_role: storedRole,
+    auth_email: emailVal,
+    auth_id: emailVal.split('@')[0],
+    auth_section: null,
+    auth_status: null,
+    auth_course: null
   });
-</script>
+
+  // ⛔ no more auto teacher doc here
+}
+
+
+        window.location.href = 'home.html?welcome=1';
+      } catch (err) {
+        await handleAuthErrorAccurate(err, emailVal);
+      } finally {
+        setLoading(submitBtn, false);
+      }
+    });
+
+    async function handleAuthErrorAccurate(err, emailVal){
+      const code = err?.code || '';
+      const emailEl = getActiveEmailInput();
+
+      if (code === 'auth/user-not-found') {
+        setErr(emailEl); toast('Account not found. Please register first.'); return;
+      }
+      if (code === 'auth/invalid-email') {
+        setErr(emailEl); toast('Enter a valid email address.'); return;
+      }
+      if (code === 'auth/too-many-requests') {
+        setErr(passInput); toast('Too many attempts. Try again later.'); return;
+      }
+
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password') {
+        try {
+          const methods = await fetchSignInMethodsForEmail(auth, emailVal);
+          if (Array.isArray(methods) && methods.length > 0) {
+            setErr(passInput); toast('Incorrect password.');
+          } else {
+            setErr(emailEl); toast('Account not found. Please register first.');
+          }
+        } catch {
+          setErr(passInput); toast('Email or password is incorrect.');
+        }
+        return;
+      }
+
+      setErr(passInput);
+      toast(err.message?.replace('Firebase: ','') || 'Sign-in failed.');
+    }
+
+    // ===== REGISTER LOGIC =====
+    const regModal = document.getElementById('register-modal');
+    const registerPanel = document.getElementById('register-panel');
+    const openRegister = document.getElementById('open-register');
+    const closeRegister = document.getElementById('close-register');
+    const roleView = document.getElementById('register-role');
+    const formWrap = document.getElementById('register-form-wrap');
+    const regTitle = document.getElementById('register-title');
+    const regSubtitle = document.getElementById('register-subtitle');
+    const chooseStudent = document.getElementById('choose-student');
+    const chooseTeacher = document.getElementById('choose-teacher');
+    const regStudentIdGroup = document.getElementById('reg-student-id-group');
+    const regStudentSectionGroup = document.getElementById('reg-student-section-group');
+    const regStudentStatusGroup = document.getElementById('reg-student-status-group');
+    const regStudentCourseGroup = document.getElementById('reg-student-course-group');
+    const toggleRegPass = document.getElementById('toggle-reg-pass');
+    const regPassword = document.getElementById('reg-password');
+    const regSubmit = document.getElementById('register-submit');
+
+    const regSectionSelect  = document.getElementById('reg-section');
+    const regSectionInput   = document.getElementById('reg-section-input');
+    const regSectionCombo   = document.getElementById('reg-section-combo');
+    const regSectionSuggest = document.getElementById('reg-section-suggest');
+    const regStatus         = document.getElementById('reg-status');
+
+    const regCourseCombo   = document.getElementById('reg-course-combo');
+    const regCourseSuggest = document.getElementById('reg-course-suggest');
+    const regCourseInput   = document.getElementById('reg-course-input');
+
+    const COURSES = [
+      'BIT Computer Technology',
+      'BTVT-ED Automotive Technology',
+      'BTVT-ED Computer Programming',
+      'BTVT-ED Civil Technology',
+      'BTVT-ED Electrical Technology',
+      'BTVT-ED Electronics Technology',
+      'BTVT-ED Food & Service Management',
+      'BTVT-ED Mechanical Technology'
+    ];
+
+    const regStudentIdInput = document.getElementById('reg-student-id');
+    const regStudentIdHint  = document.getElementById('reg-student-id-hint');
+    regStudentIdInput?.addEventListener('input', () => {
+      regStudentIdInput.classList.remove(...errCls);
+      if (regStudentIdHint) {
+        regStudentIdHint.textContent = 'Format: 2 digits, dash, 6 digits (e.g., 23-000056).';
+        regStudentIdHint.classList.remove('text-red-600');
+        regStudentIdHint.classList.add('text-gray-500');
+      }
+    });
+
+    const idxText = (s)=> (s||'').toLowerCase().replace(/\s+/g,' ').trim();
+
+    let ALL_SECTIONS = [];
+    let REG_SECTION_SOURCE = [];
+
+    function seedSectionsFromSelect(){
+      const arr = [];
+      Array.from(regSectionSelect?.options || []).forEach(op=>{
+        const v = (op.value || op.textContent || '').trim();
+        if (v && v.toLowerCase() !== 'select your section') {
+          arr.push({ name: v, course: 'BIT Computer Technology' });
+        }
+      });
+      return arr;
+    }
+    function dedupeSorted(list){
+      const map = new Map();
+      list.forEach(row=>{
+        if (!row || !row.name) return;
+        if (!map.has(row.name)) {
+          map.set(row.name, { name: row.name, course: row.course || 'BIT Computer Technology' });
+        }
+      });
+      return Array.from(map.values()).sort((a,b)=> a.name.localeCompare(b.name));
+    }
+
+    function renderRegSectionSuggestions(list){
+      if (!list.length){ regSectionSuggest.classList.add('hidden'); regSectionSuggest.innerHTML=''; return; }
+      regSectionSuggest.innerHTML = list.map(s=>`
+        <div class="reg-suggest-item" data-value="${s.replace(/"/g,'&quot;')}">${s}</div>
+      `).join('');
+      regSectionSuggest.classList.remove('hidden');
+    }
+    function filterRegSections(qRaw){
+      const q = idxText(qRaw);
+      if (!q){ regSectionSuggest.classList.add('hidden'); regSectionSuggest.innerHTML=''; return; }
+      const starts = REG_SECTION_SOURCE.filter(s=> idxText(s).startsWith(q));
+      const contains = REG_SECTION_SOURCE.filter(s=> !idxText(s).startsWith(q) && idxText(s).includes(q));
+      const list = [...starts, ...contains].slice(0,3);
+      renderRegSectionSuggestions(list);
+    }
+    function applyRegSection(val){
+      regSectionInput.value = val;
+      regSectionCombo.value = val;
+      const opt = Array.from(regSectionSelect.options).find(o => (o.value||o.textContent).trim().toLowerCase() === val.trim().toLowerCase());
+      if (opt){ regSectionSelect.value = opt.value || opt.textContent.trim(); }
+      regSectionSuggest.classList.add('hidden');
+    }
+
+    regSectionCombo?.addEventListener('input', ()=> filterRegSections(regSectionCombo.value));
+    regSectionCombo?.addEventListener('focus', ()=> filterRegSections(regSectionCombo.value));
+    regSectionCombo?.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        const first = regSectionSuggest.querySelector('.reg-suggest-item');
+        if (first){ applyRegSection(first.dataset.value || first.textContent.trim()); }
+      } else if (e.key === 'Escape'){
+        regSectionSuggest.classList.add('hidden');
+      }
+    });
+    document.addEventListener('mousedown', (e)=>{
+      if (!regSectionSuggest.contains(e.target) && e.target !== regSectionCombo){
+        regSectionSuggest.classList.add('hidden');
+      }
+      if (!regCourseSuggest.contains(e.target) && e.target !== regCourseCombo){
+        regCourseSuggest.classList.add('hidden');
+      }
+    });
+    regSectionSuggest?.addEventListener('mousedown', (e)=>{
+      const it = e.target.closest('.reg-suggest-item'); if (!it) return;
+      applyRegSection(it.dataset.value || it.textContent.trim());
+    });
+
+    function renderCourseSuggestions(list){
+      if (!list.length){ regCourseSuggest.classList.add('hidden'); regCourseSuggest.innerHTML=''; return; }
+      regCourseSuggest.innerHTML = list.map(c=>`
+        <div class="reg-suggest-item" data-value="${c.replace(/"/g,'&quot;')}">${c}</div>
+      `).join('');
+      regCourseSuggest.classList.remove('hidden');
+    }
+    function filterRegCourses(qRaw){
+      const q = idxText(qRaw);
+      if (!q){ regCourseSuggest.classList.add('hidden'); regCourseSuggest.innerHTML=''; return; }
+      const starts = COURSES.filter(c => idxText(c).startsWith(q));
+      const contains = COURSES.filter(c => !idxText(c).startsWith(q) && idxText(c).includes(q));
+      const list = [...starts, ...contains].slice(0,3);
+      renderCourseSuggestions(list);
+    }
+    function applyRegCourse(val){
+      regCourseInput.value = val;
+      regCourseCombo.value = val;
+      regCourseSuggest.classList.add('hidden');
+      rebuildSectionSourceForCourse();
+      if (document.activeElement === regSectionCombo){
+        filterRegSections(regSectionCombo.value);
+      }
+    }
+    regCourseCombo?.addEventListener('input', ()=> filterRegCourses(regCourseCombo.value));
+    regCourseCombo?.addEventListener('focus', ()=> filterRegCourses(regCourseCombo.value));
+    regCourseCombo?.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        const first = regCourseSuggest.querySelector('.reg-suggest-item');
+        if (first){ applyRegCourse(first.dataset.value || first.textContent.trim()); }
+      } else if (e.key === 'Escape'){
+        regCourseSuggest.classList.add('hidden');
+      }
+    });
+    regCourseSuggest?.addEventListener('mousedown', (e)=>{
+      const it = e.target.closest('.reg-suggest-item'); if (!it) return;
+      applyRegCourse(it.dataset.value || it.textContent.trim());
+    });
+
+    function rebuildSectionSourceForCourse(){
+      const statusVal = (regStatus?.value || '').toLowerCase();
+      const courseVal = (regCourseInput?.value || '').trim().toLowerCase();
+      if (statusVal === 'irregular'){
+        REG_SECTION_SOURCE = [];
+        return;
+      }
+      let list;
+      if (!courseVal){
+        list = ALL_SECTIONS.map(r=>r.name);
+      } else {
+        list = ALL_SECTIONS.filter(r => (r.course || '').toLowerCase() === courseVal).map(r=>r.name);
+      }
+      REG_SECTION_SOURCE = list.sort((a,b)=> a.localeCompare(b));
+    }
+
+    function observeSectionsForRegister(){
+      ALL_SECTIONS = seedSectionsFromSelect();
+      onSnapshot(collection(db,'sections'), (snap)=>{
+        const fromFS = [];
+        snap.forEach(d=>{
+          const data = d.data() || {};
+          const name = (data.name || d.id || '').trim();
+          if (!name) return;
+          const course = (data.course || 'BIT Computer Technology').trim();
+          fromFS.push({ name, course });
+        });
+        ALL_SECTIONS = dedupeSorted([...ALL_SECTIONS, ...fromFS]);
+        rebuildSectionSourceForCourse();
+        if (document.activeElement === regSectionCombo){
+          filterRegSections(regSectionCombo.value);
+        }
+      });
+    }
+    observeSectionsForRegister();
+
+    function updateSectionVisibilityByStatus(){
+      const val = (regStatus?.value || '').toLowerCase();
+      if (val === 'irregular'){
+        regStudentSectionGroup.classList.add('hidden');
+        regSectionCombo.value = '';
+        regSectionInput.value = '';
+        regSectionSuggest.classList.add('hidden');
+      } else if (val === 'regular'){
+        regStudentSectionGroup.classList.remove('hidden');
+      }
+      rebuildSectionSourceForCourse();
+    }
+    regStatus?.addEventListener('change', updateSectionVisibilityByStatus);
+
+    let registerRole = null;
+
+    openRegister.addEventListener('click', () => {
+      regTitle.textContent = 'Create an Account';
+      regSubtitle.textContent = 'Choose your role to continue';
+      roleView.classList.remove('hidden');
+      formWrap.classList.add('hidden');
+      regModal.classList.remove('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
+      registerRole = null;
+      regSectionInput.value = '';
+      regSectionCombo.value = '';
+      regSectionSuggest.classList.add('hidden');
+      regCourseInput.value = '';
+      regCourseCombo.value = '';
+      regCourseSuggest.classList.add('hidden');
+      if (regStatus){ regStatus.value = ''; }
+      updateSectionVisibilityByStatus();
+      if (regStudentIdHint) {
+        regStudentIdHint.textContent = 'Format: 2 digits, dash, 6 digits (e.g., 23-000056).';
+        regStudentIdHint.classList.remove('text-red-600');
+        regStudentIdHint.classList.add('text-gray-500');
+      }
+      regStudentIdInput?.classList.remove(...errCls);
+    });
+    const closeReg = ()=> regModal.classList.add('hidden');
+    closeRegister.addEventListener('click', closeReg);
+    regModal.addEventListener('click', (e)=>{ if(e.target === regModal) closeReg(); });
+
+    chooseStudent.addEventListener('click', ()=>{
+      registerRole = 'student';
+      regTitle.textContent = 'Register as Student';
+      regSubtitle.textContent = 'Fill out the information below';
+      roleView.classList.add('hidden');
+      formWrap.classList.remove('hidden');
+      regStudentIdGroup.classList.remove('hidden');
+      regStudentStatusGroup.classList.remove('hidden');
+      regStudentCourseGroup.classList.remove('hidden');
+      regStudentSectionGroup.classList.remove('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
+      setTimeout(()=> regCourseCombo?.focus(), 50);
+      updateSectionVisibilityByStatus();
+    });
+    chooseTeacher.addEventListener('click', ()=>{
+      registerRole = 'teacher';
+      regTitle.textContent = 'Register as Teacher';
+      regSubtitle.textContent = 'Fill out the information below';
+      roleView.classList.add('hidden');
+      formWrap.classList.remove('hidden');
+      regStudentIdGroup.classList.add('hidden');
+      regStudentStatusGroup.classList.add('hidden');
+      regStudentCourseGroup.classList.add('hidden');
+      regStudentSectionGroup.classList.add('hidden');
+      regPassword.value = ''; regPassword.setAttribute('value','');
+    });
+
+    toggleRegPass.addEventListener('click', ()=>{
+      const isPwd = regPassword.type === 'password';
+      regPassword.type = isPwd ? 'text' : 'password';
+      toggleRegPass.innerHTML = isPwd ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!navigator.onLine) { toast('You are offline.'); return; }
+
+      const full = document.getElementById('reg-fullname').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const pass  = document.getElementById('reg-password').value.trim();
+      const sidEl = document.getElementById('reg-student-id');
+      const secEl = document.getElementById('reg-section');
+      const statEl = document.getElementById('reg-status');
+      const sidHintEl = document.getElementById('reg-student-id-hint');
+      const courseElHidden = document.getElementById('reg-course-input');
+
+      const secTyped = (regSectionInput && regSectionInput.value ? regSectionInput.value.trim() : (secEl && secEl.value ? secEl.value.trim() : ''));
+      const sid   = sidEl && sidEl.value ? sidEl.value.trim() : '';
+      const stat  = statEl && statEl.value ? statEl.value.trim() : '';
+      const courseVal = courseElHidden && courseElHidden.value ? courseElHidden.value.trim() : '';
+
+      if (!registerRole) { toast('Please choose Student or Teacher.'); return; }
+
+      if (registerRole === 'student') {
+        if (!/^(Regular|Irregular)$/i.test(stat || '')) { toast('Please select status: Regular or Irregular.'); return; }
+
+        if (!courseVal) {
+          toast('Please select your course.');
+          return;
+        }
+
+        const isIrreg = /^Irregular$/i.test(stat);
+
+        if (!sid) {
+          sidEl.classList.add(...errCls);
+          if (sidHintEl) {
+            sidHintEl.textContent = 'Student ID is required (e.g., 23-000056).';
+            sidHintEl.classList.remove('text-gray-500');
+            sidHintEl.classList.add('text-red-600');
+          }
+          toast('Student ID is required.');
+          return;
+        }
+
+        if (!studentIdPattern.test(sid)) {
+          sidEl.classList.add(...errCls);
+          if (sidHintEl) {
+            sidHintEl.textContent = 'Please follow the format: 2 digits, dash, 6 digits (e.g., 23-000056).';
+            sidHintEl.classList.remove('text-gray-500');
+            sidHintEl.classList.add('text-red-600');
+          }
+          toast('Please enter a valid Student ID (e.g., 23-000056).');
+          return;
+        }
+
+        if (!isIrreg && !secTyped) { toast('Section is required for Regular students.'); return; }
+      }
+
+      setLoading(regSubmit, true, 'Creating account…');
+
+      try {
+        const { user } = await createUserWithEmailAndPassword(auth, email, pass);
+        await updateProfile(user, { displayName: full || capWords(email.split('@')[0]) });
+
+        const isIrreg = /^Irregular$/i.test(stat);
+        const secToSave = (registerRole==='student' && !isIrreg) ? (secTyped || null) : null;
+        const courseToSave = (registerRole==='student' ? (courseVal || null) : null);
+
+        await ensureUserDoc(user.uid, {
+          name: full || capWords(email.split('@')[0]),
+          email,
+          role: registerRole,
+          studentId: registerRole==='student' ? sid || null : null,
+          section:   registerRole==='student' ? secToSave : null,
+          status:    registerRole==='student' ? (stat || null) : null,
+          course:    courseToSave
+        });
+
+        if (registerRole === 'student') {
+  await ensureStudentDoc(user.uid, {
+    name: full || capWords(email.split('@')[0]),
+    email,
+    studentId: sid || null,
+    section:   secToSave,
+    status:    stat || null,
+    course:    courseToSave
+  });
+} else if (registerRole === 'teacher') {
+
+}
+
+        toast("You're now registered 🎉");
+        const qp = new URLSearchParams({ role: registerRole, email }).toString();
+        registerPanel.classList.add('animate-fade-out');
+        setTimeout(()=>{
+          regModal.classList.add('hidden');
+          registerPanel.classList.remove('animate-fade-out');
+          location.href = location.pathname + '?' + qp;
+        }, 250);
+
+      } catch (err) {
+        toast(err.message?.replace('Firebase: ', '') || 'Registration failed.');
+      } finally {
+        setLoading(regSubmit, false);
+      }
+    });
+
+    // FORGOT PASSWORD
+    const fpModal = document.getElementById('fp-modal');
+    const fpPanel = document.getElementById('fp-panel');
+    const fpOpen  = document.getElementById('forgot-link');
+    const fpClose = document.getElementById('fp-close');
+    const fpCancel1 = document.getElementById('fp-cancel-1');
+
+    const fpStepEmail = document.getElementById('fp-step-email');
+    const fpStepSend  = document.getElementById('fp-step-send');
+    const fpStepDone  = document.getElementById('fp-step-done');
+
+    const fpEmailForm = document.getElementById('fp-email-form');
+    const fpEmailInput= document.getElementById('fp-email');
+    const fpReviewEmail = document.getElementById('fp-review-email');
+
+    const fpBack  = document.getElementById('fp-back');
+    const fpSend  = document.getElementById('fp-send');
+    const fpDoneClose = document.getElementById('fp-done-close');
+
+    function fpShow(step){
+      [fpStepEmail, fpStepSend, fpStepDone].forEach(s=> s.classList.add('hidden'));
+      step.classList.remove('hidden');
+    }
+    function openFP(){
+      fpModal.classList.remove('hidden');
+      fpPanel.classList.remove('animate-fade-out');
+      fpPanel.classList.add('animate-fade-in');
+      fpEmailInput.value = '';
+      fpShow(fpStepEmail);
+      setTimeout(()=> fpEmailInput.focus(), 60);
+    }
+    function closeFP(){
+      fpPanel.classList.remove('animate-fade-in');
+      fpPanel.classList.add('animate-fade-out');
+      setTimeout(()=> fpModal.classList.add('hidden'), 220);
+    }
+
+    fpOpen?.addEventListener('click', (e)=>{ e.preventDefault(); openFP(); });
+    fpClose?.addEventListener('click', closeFP);
+    fpCancel1?.addEventListener('click', closeFP);
+    fpModal?.addEventListener('click', (e)=>{ if (e.target === fpModal) closeFP(); });
+
+    fpEmailForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const val = fpEmailInput.value.trim();
+      if (!emailRegex.test(val)){ fpEmailInput.focus(); toast('Enter a valid email.'); return; }
+      fpReviewEmail.textContent = val;
+      fpShow(fpStepSend);
+    });
+
+    fpBack?.addEventListener('click', ()=> fpShow(fpStepEmail));
+    fpSend?.addEventListener('click', async ()=>{
+      const email = (fpReviewEmail.textContent || '').trim();
+      if (!email){ fpShow(fpStepEmail); return; }
+      if (!navigator.onLine){ toast('You are offline.'); return; }
+
+      setLoading(fpSend, true, 'Sending…');
+      try{
+        await sendPasswordResetEmail(auth, email);
+        fpShow(fpStepDone);
+      }catch(err){
+        const code = err?.code || '';
+        if (code === 'auth/user-not-found'){ toast('No account found with that email.'); fpShow(fpStepEmail); }
+        else if (code === 'auth/invalid-email'){ toast('Enter a valid email.'); fpShow(fpStepEmail); }
+        else { toast(err.message?.replace('Firebase: ','') || 'Failed to send email.'); }
+      } finally {
+        setLoading(fpSend, false);
+      }
+    });
+
+    fpDoneClose?.addEventListener('click', closeFP);
+  </script>
 </body>
 </html>

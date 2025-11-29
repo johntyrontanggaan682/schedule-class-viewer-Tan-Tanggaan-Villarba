@@ -51,7 +51,7 @@ document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>documen
       document.addEventListener('click', function(e){ if(!wrap.contains(e.target)) hide(); });
       document.addEventListener('keydown', function(e){ if(e.key==='Escape') hide(); });
     }
-    const LOGIN_PAGE = 'about.html';
+    const LOGIN_PAGE = 'index.html';
     var signoutBtn = document.getElementById('signout-btn');
     var modal = document.getElementById('signout-modal');
     var cancelBtn = document.getElementById('cancel-signout');

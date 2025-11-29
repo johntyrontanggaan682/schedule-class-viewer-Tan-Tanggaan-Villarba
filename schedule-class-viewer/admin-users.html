@@ -539,10 +539,10 @@
     btnSignout.addEventListener("click", async () => {
       try { await signOut(auth); } catch(e){}
       sessionStorage.clear();
-      location.href = "about.html";
+      location.href = "home.html";
     });
 
-    btnHome.addEventListener("click", () => { window.location.href = "index.html"; });
+    btnHome.addEventListener("click", () => { window.location.href = "home.html"; });
 
     if (adminProfile && adminPhotoInput) {
       adminProfile.addEventListener("click", () => { adminPhotoInput.click(); });
@@ -1101,7 +1101,7 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user){ location.href = "about.html"; return; }
+      if (!user){ location.href = "home.html"; return; }
       try {
         const snap = await getDoc(doc(db, "users", user.uid));
         const data = snap.exists() ? snap.data() : {};
@@ -1109,7 +1109,7 @@
         adminAvatar.textContent = (data.name || user.displayName || "Admin").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("");
         adminName.textContent   = data.name || user.displayName || "Admin User";
         if (adminEmail) adminEmail.textContent = data.email || user.email || "";
-        if (role !== "admin"){ alert("Access denied. Admin only."); location.href="index.html"; return; }
+        if (role !== "admin"){ alert("Access denied. Admin only."); location.href="home.html"; return; }
         startLiveSections(); startLiveTeacherDepts();
         await Promise.all([buildOwnerAndStudentMaps(), buildTeacherDeptMap(), buildIrregularSectionsMap()]);
         await loadUsers();

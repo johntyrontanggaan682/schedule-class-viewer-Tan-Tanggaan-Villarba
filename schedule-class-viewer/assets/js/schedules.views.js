@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // signout modal (keep as is)
   // ============================================================
-  const LOGIN_PAGE = 'index.html';
+  const LOGIN_PAGE = 'home.html';
   const signoutBtn = document.getElementById('signout-btn');
   const modal      = document.getElementById('signout-modal');
   const cancelBtn  = document.getElementById('cancel-signout');

@@ -33,6 +33,75 @@
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
   <style>
+        /* ===== Drawer open/close animation (mobile main drawer) ===== */
+    #mobile-menu {
+      transform-origin: top;
+    }
+    @keyframes drawerOpen {
+      from { transform: translateY(-8px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes drawerClose {
+      from { transform: translateY(0);    opacity: 1; }
+      to   { transform: translateY(-6px); opacity: 0; }
+    }
+    .drawer-anim-open {
+      animation: drawerOpen .22s ease-out forwards;
+    }
+    .drawer-anim-close {
+      animation: drawerClose .18s ease-in forwards;
+    }
+
+    /* ===== Mobile layout tweaks for Teachers page ===== */
+    @media (max-width: 640px) {
+      /* nav more compact */
+      nav .flex.items-center.justify-between {
+        flex-wrap: wrap;
+        row-gap: 0.5rem;
+      }
+      nav img.w-16.h-16 {
+        width: 48px;
+        height: 48px;
+      }
+      nav h1 {
+        font-size: 0.95rem;
+        line-height: 1.2;
+        max-width: 11.5rem;
+      }
+      nav .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      /* main content padding + titles */
+      #teachers .px-6.py-12 {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+      }
+      #teachers h2 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+      }
+      #teachers p.text-lg {
+        font-size: 0.95rem;
+      }
+
+      /* filters stack on mobile */
+      #teachers .mb-6 > .relative.w-full.md\:w-72 {
+        width: 100%;
+      }
+      #teachers .max-w-2xl.mx-auto.mb-6 {
+        margin-top: 0.75rem;
+      }
+
+      /* grid spacing */
+      #teachers #teachers-grid {
+        gap: 1.25rem;
+      }
+    }
+
     :where([class^="ri-"])::before{content:"\f3c2";}
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn-loader{
@@ -56,62 +125,89 @@
   </script>
 
   <nav class="bg-primary text-white shadow-lg fixed w-full top-0 z-50">
-    <div class="px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full"/>
-          <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
-        </div>
+  <div class="px-6 py-4">
+    <!-- HEADER ROW -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="lucenalogo.jpg" alt="SLSU Lucena Logo" class="w-16 h-16 object-contain rounded-full"/>
+        <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
+      </div>
 
-        <!-- DESKTOP NAV -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-home-line"></i><span>Home</span></a>
-          <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-book-2-line"></i><span>Sections</span></a>
-          <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-          <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-line"></i><span>Students</span></a>
-          <a href="teachers.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition-colors"><i class="ri-user-star-line"></i><span>Teachers</span></a>
+      <!-- DESKTOP NAV -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="home.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-home-line"></i><span>Home</span>
+        </a>
+        <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-book-2-line"></i><span>Sections</span>
+        </a>
+        <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-calendar-line"></i><span>Schedules</span>
+        </a>
+        <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-user-line"></i><span>Students</span>
+        </a>
+        <a href="teachers.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20 transition-colors">
+          <i class="ri-user-star-line"></i><span>Teachers</span>
+        </a>
 
-          <!-- Profile dropdown -->
-          <div id="profile-wrap" class="relative">
-            <a id="profile-trigger" href="profile.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
-              <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
+        <!-- Profile dropdown -->
+        <div id="profile-wrap" class="relative">
+          <a id="profile-trigger" href="profile.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10 transition">
+            <i class="ri-user-3-line"></i><span id="profile-label">Profile</span><i class="ri-arrow-down-s-line text-xs"></i>
+          </a>
+          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
+            <a href="profile.html" class="flex items-center gap-3 hover:opacity-90">
+              <div id="acc-avatar" class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold overflow-hidden"></div>
+              <div class="min-w-0">
+                <div id="acc-name" class="font-semibold truncate"></div>
+                <div id="acc-role" class="text-xs text-gray-500 truncate"></div>
+              </div>
             </a>
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
-              <a href="profile.html" class="flex items-center gap-3 hover:opacity-90">
-                <div id="acc-avatar" class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold overflow-hidden"></div>
-                <div class="min-w-0">
-                  <div id="acc-name" class="font-semibold truncate"></div>
-                  <div id="acc-role" class="text-xs text-gray-500 truncate"></div>
-                </div>
-              </a>
-              <div class="mt-3 space-y-1 text-sm">
-                <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span id="acc-email" class="truncate"></span></div>
-                <div class="flex items-center gap-2"><i class="ri-id-card-line"></i><span id="acc-id" class="truncate"></span></div>
-              </div>
-              <div class="mt-4 grid grid-cols-2 gap-2">
-                <a id="acc-cta" href="profile.html" class="px-3 py-2 rounded-button bg-primary text-white text-sm text-center active:scale-95 transition">View profile</a>
-                <button id="signout-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
-              </div>
+            <div class="mt-3 space-y-1 text-sm">
+              <div class="flex items-center gap-2"><i class="ri-mail-line"></i><span id="acc-email" class="truncate"></span></div>
+              <div class="flex items-center gap-2"><i class="ri-id-card-line"></i><span id="acc-id" class="truncate"></span></div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <a id="acc-cta" href="profile.html" class="px-3 py-2 rounded-button bg-primary text-white text-sm text-center active:scale-95 transition">View profile</a>
+              <button id="signout-btn" class="px-3 py-2 rounded-button bg-gray-100 text-gray-700 text-sm text-center active:scale-95 transition">Sign out</button>
             </div>
           </div>
         </div>
-
-        <!-- MOBILE -->
-        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
-      </div">
-
-      <div id="mobile-menu" class="md:hidden mt-4 hidden">
-        <div class="space-y-2">
-          <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-home-line"></i><span>Home</span></a>
-          <a href="sections.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-book-2-line"></i><span>Sections</span></a>
-          <a href="schedules.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-calendar-line"></i><span>Schedules</span></a>
-          <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-line"></i><span>Students</span></a>
-          <a href="teachers.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 transition-colors"><i class="ri-user-star-line"></i><span>Teachers</span></a>
-          <a href="profile.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors"><i class="ri-user-3-line"></i><span>Profile</span></a>
-        </div>
       </div>
-    </div>
-  </nav>
+
+      <!-- MOBILE TOGGLE BUTTON -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
+        <i class="ri-menu-line text-xl"></i>
+      </button>
+    </div> <!-- ✅ closes flex header row -->
+
+    <!-- MOBILE DRAWER MENU (same structure as other pages) -->
+    <div id="mobile-menu" class="md:hidden mt-4 hidden">
+      <div class="space-y-2">
+        <a href="home.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-home-line"></i><span>Home</span>
+        </a>
+        <a href="sections.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-book-2-line"></i><span>Sections</span>
+        </a>
+        <a href="schedules.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-calendar-line"></i><span>Schedules</span>
+        </a>
+        <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-user-line"></i><span>Students</span>
+        </a>
+        <a href="teachers.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20 transition-colors">
+          <i class="ri-user-star-line"></i><span>Teachers</span>
+        </a>
+        <a href="profile.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10 transition-colors">
+          <i class="ri-user-3-line"></i><span>Profile</span>
+        </a>
+      </div>
+    </div> <!-- ✅ closes mobile drawer -->
+  </div> <!-- ✅ closes px-6 container -->
+</nav>
+
 
   <main class="pt-20">
     <section id="teachers" class="min-h-screen bg-white">
@@ -211,7 +307,7 @@
           <div>
             <h3 class="font-bold mb-2">Quick Links</h3>
             <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
-              <a href="index.html"     class="hover:text-white">Home</a>
+              <a href="home.html"     class="hover:text-white">Home</a>
               <a href="sections.html"  class="hover:text-white">Sections</a>
               <a href="schedules.html" class="hover:text-white">Schedules</a>
               <a href="students.html"  class="hover:text-white">Students</a>
@@ -415,12 +511,15 @@
     const db  = getFirestore(app);
 
     // ===== Session / Role =====
-    const SESS = window.__APP_SESSION || {};
-    const CURRENT_USER_ID = (SESS.id || SESS.email || '').trim();
-    const ROLE = (SESS.role || 'guest').toLowerCase();
-    const isAdmin   = ROLE === 'admin';
-    const isTeacher = ROLE === 'teacher';
-    const isStudent = ROLE === 'student';
+    // ===== Session / Role =====
+const SESS = window.__APP_SESSION || {};
+const CURRENT_USER_ID = (SESS.id || SESS.email || '').trim();
+const CURRENT_EMAIL   = (SESS.email || '').trim().toLowerCase();   // 👈 NEW
+const ROLE = (SESS.role || 'guest').toLowerCase();
+const isAdmin   = ROLE === 'admin';
+const isTeacher = ROLE === 'teacher';
+const isStudent = ROLE === 'student';
+
 
     // ====== DOM refs ======
     const grid = document.getElementById('teachers-grid');
@@ -777,25 +876,37 @@
 
     // ====== Snapshot ======
     onSnapshot(query(collection(db,'teachers'), orderBy('createdAt','desc')), (snap)=>{
-      TEACHERS = [];
-      snap.forEach(d=>{
-        const data = d.data() || {};
-        const t = {
-          id: d.id,
-          title: data.title || 'Sir',
-          name: data.name || '',
-          department: data.department || '',
-          office: data.office || '',
-          subjects: Array.isArray(data.subjects) ? data.subjects : [],
-          ownerId: data.ownerId || '',
-          photoURL: data.photoURL || ''
-        };
-        t.__idx = buildIndexText(t);
-        TEACHERS.push(t);
-      });
-      if (filterQuery || filterDepartment) { currentPage = 1; currentGroup = 0; }
-      applyRender(true);
-    });
+  TEACHERS = [];
+  snap.forEach(d=>{
+    const data = d.data() || {};
+
+    // 🔥 HIDE the auto/placeholder card everywhere
+    const rawName   = (data.name  || '').trim().toLowerCase();
+    const rawOffice = (data.office|| '').trim().toLowerCase();
+    const subjCount = Array.isArray(data.subjects) ? data.subjects.length : 0;
+
+    // This matches the "Sir. teacher / No subjects / Office" card
+    if (rawName === 'teacher' && subjCount === 0 && (!rawOffice || rawOffice === 'office')) {
+      return; // skip this teacher document for ALL roles
+    }
+
+    const t = {
+      id: d.id,
+      title: data.title || 'Sir',
+      name: data.name || '',
+      department: data.department || '',
+      office: data.office || '',
+      subjects: Array.isArray(data.subjects) ? data.subjects : [],
+      ownerId: data.ownerId || '',
+      photoURL: data.photoURL || ''
+    };
+    t.__idx = buildIndexText(t);
+    TEACHERS.push(t);
+  });
+  if (filterQuery || filterDepartment) { currentPage = 1; currentGroup = 0; }
+  applyRender(true);
+});
+
 
     // ====== Search ======
     let tId;
@@ -985,14 +1096,18 @@
         const initials = t ? t.split(' ').map(p=>p[0]?.toUpperCase()).slice(0,2).join('') : 'U';
         if (avatar) avatar.innerHTML = '<span>'+initials+'</span>';
       }
-      if (sess && (sess.name || sess.email || sess.role !== 'guest')) {
-        label && (label.textContent = 'Profile');
-        nameEl && (nameEl.textContent = sess.name || 'User');
-        roleEl && (roleEl.textContent = (sess.role||'').toUpperCase());
-        emailEl && (emailEl.textContent = sess.email || '');
-        idEl && (idEl.textContent = sess.id || '');
-        setAvatarInitials(sess.name || sess.email || 'User');
-      }
+        if (sess && (sess.name || sess.email || sess.role !== 'guest')) {
+    // 🔥 Show user name in the header tab (same behavior as other pages)
+    const baseLabel = (sess.name || sess.email || 'Profile').split(' ')[0];
+    if (label) label.textContent = baseLabel;
+
+    nameEl  && (nameEl.textContent  = sess.name || 'User');
+    roleEl  && (roleEl.textContent  = (sess.role||'').toUpperCase());
+    emailEl && (emailEl.textContent = sess.email || '');
+    idEl    && (idEl.textContent    = sess.id || '');
+    setAvatarInitials(sess.name || sess.email || 'User');
+  }
+
       function openDD(){ dropdown && dropdown.classList.remove('hidden'); }
       function closeDD(){ dropdown && dropdown.classList.add('hidden'); }
       trigger && trigger.addEventListener('click', function(e){ e.preventDefault(); if (dropdown.classList.contains('hidden')) openDD(); else closeDD(); });
@@ -1011,7 +1126,7 @@
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal2(); });
       confirmSignout && confirmSignout.addEventListener('click', function(){
         try { ['auth_name','auth_role','auth_section','auth_email','auth_id'].forEach(k => sessionStorage.removeItem(k)); } catch(_) {}
-        window.location.href = 'about.html';
+        window.location.href = 'index.html';
       });
     })();
   </script>
@@ -1327,6 +1442,51 @@
       });
     })();
   </script>
+    <script>
+    // Drawer toggle with animation + icon change (Teachers page)
+    (function () {
+      const btn  = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      if (!btn || !menu) return;
+
+      const icon = btn.querySelector('i');
+      let open = false;
+
+      btn.addEventListener('click', () => {
+        if (!open) {
+          // OPEN drawer
+          menu.classList.remove('hidden', 'drawer-anim-close');
+          void menu.offsetWidth; // force reflow
+          menu.classList.add('drawer-anim-open');
+          if (icon) {
+            icon.classList.remove('ri-menu-line');
+            icon.classList.add('ri-close-line');
+          }
+          open = true;
+        } else {
+          // CLOSE drawer
+          menu.classList.remove('drawer-anim-open');
+          menu.classList.add('drawer-anim-close');
+          if (icon) {
+            icon.classList.remove('ri-close-line');
+            icon.classList.add('ri-menu-line');
+          }
+          open = false;
+        }
+      });
+
+      menu.addEventListener('animationend', (e) => {
+        if (e.animationName === 'drawerOpen') {
+          menu.classList.remove('drawer-anim-open');
+        }
+        if (e.animationName === 'drawerClose') {
+          menu.classList.add('hidden');
+          menu.classList.remove('drawer-anim-close');
+        }
+      });
+    })();
+  </script>
+
 
   <script src="assets/js/realtime-calendar.js"></script>
   <script src="assets/js/nav.js"></script>

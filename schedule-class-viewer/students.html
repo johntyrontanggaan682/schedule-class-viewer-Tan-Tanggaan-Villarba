@@ -28,6 +28,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
   <style>
+      /* === Mobile drawer animation (same as other pages) === */
+  #mobile-menu{
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-4px);
+    overflow: hidden;
+    transition:
+      max-height 0.22s ease,
+      opacity 0.22s ease,
+      transform 0.22s ease;
+  }
+  #mobile-menu.menu-open{
+    max-height: 500px; /* enough for all links */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
     :where([class^="ri-"])::before { content: "\f3c2"; }
     .rounded-button { border-radius: 8px; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -52,7 +69,7 @@
           <h1 class="text-xl font-bold">SLSU Lucena Class Schedule Viewer</h1>
         </div>
         <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="home.html#home" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
           <a href="sections.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
           <a href="schedules.html" class="flex items-center space-x-2 px-3 py-2 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
           <a href="students.html" class="flex items-center space-x-2 px-3 py-2 rounded-button bg-white/20"><i class="ri-user-line"></i><span>Students</span></a>
@@ -80,13 +97,14 @@
             </div>
           </div>
         </div>
-        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10">
-          <i class="ri-menu-line text-xl"></i>
-        </button>
+       <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10 active:scale-95 transition">
+  <i id="mobile-menu-icon" class="ri-menu-line text-xl transition-transform duration-200"></i>
+</button>
+
       </div>
       <div id="mobile-menu" class="md:hidden mt-4 hidden">
         <div class="space-y-2">
-          <a href="index.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+          <a href="home.html#home" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
           <a href="sections.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
           <a href="schedules.html" class="flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-calendar-line"></i><span>Schedules</span></a>
           <a href="students.html" class="flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-user-line"></i><span>Students</span></a>
@@ -321,7 +339,7 @@
           <div>
             <h3 class="font-bold mb-2">Quick Links</h3>
             <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
-              <a href="index.html"     class="hover:text-white">Home</a>
+              <a href="home.html"     class="hover:text-white">Home</a>
               <a href="sections.html"  class="hover:text-white">Sections</a>
               <a href="schedules.html" class="hover:text-white">Schedules</a>
               <a href="students.html"  class="hover:text-white">Students</a>
@@ -353,11 +371,74 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-      document.getElementById('mobile-menu')?.classList.toggle('hidden');
+    <!-- Animated mobile drawer for Students page -->
+  <!-- Animated mobile drawer for Students page -->
+<script>
+  (function () {
+    const btn  = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('mobile-menu-icon');
+
+    if (!btn || !menu || !icon) return;
+
+    let isOpen = false;
+
+    function openMenu() {
+      if (isOpen) return;
+      isOpen = true;
+
+      // show then animate
+      menu.classList.remove('hidden');
+      // force reflow so transition plays
+      void menu.offsetHeight;
+      menu.classList.add('menu-open');
+
+      icon.classList.remove('ri-menu-line');
+      icon.classList.add('ri-close-line');
+    }
+
+    function closeMenu() {
+      if (!isOpen) return;
+      isOpen = false;
+
+      menu.classList.remove('menu-open');
+
+      icon.classList.remove('ri-close-line');
+      icon.classList.add('ri-menu-line');
+
+      // wait for animation then hide
+      setTimeout(function () {
+        if (!isOpen) {
+          menu.classList.add('hidden');
+        }
+      }, 230);
+    }
+
+    btn.addEventListener('click', function () {
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
-  </script>
+
+    // close when clicking any link inside the drawer
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (isOpen) closeMenu();
+      });
+    });
+
+    // close drawer automatically on desktop resize
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 768) {
+        closeMenu();
+      }
+    });
+  })();
+</script>
+
+
 
   <!-- Data / logic -->
   <script type="module">

@@ -646,11 +646,11 @@
     btnSignout.addEventListener("click", async () => {
       try { await signOut(auth); } catch(e){}
       sessionStorage.clear();
-      location.href = "about.html";
+      location.href = "index.html";
     });
 
     btnHome.addEventListener("click", () => {
-      window.location.href = "index.html";
+      window.location.href = "home.html";
     });
 
     // profile picture change
@@ -1384,7 +1384,7 @@
     // Auth guard — only admins
     onAuthStateChanged(auth, async (user) => {
       if (!user){
-        location.href = "about.html";
+        location.href = "index.html";
         return;
       }
       try{
@@ -1400,7 +1400,7 @@
 
         if (role !== "admin"){
           alert("Access denied. Admin only.");
-          location.href = "index.html";
+          location.href = "home.html";
           return;
         }
         await loadDashboard();

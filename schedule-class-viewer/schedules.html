@@ -20,7 +20,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
   <style>:where([class^="ri-"])::before{content:"\f3c2";}</style>
 
-  <!-- 🔒 Early role class to prevent flash of admin/teacher UI -->
   <script>
     (function(){
       try{
@@ -31,8 +30,26 @@
   </script>
 
   <style>
+
+        /* === Mobile drawer animation for schedules page === */
+    #mobile-menu {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-4px);
+      overflow: hidden;
+      transition:
+        max-height 0.22s ease,
+        opacity 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    #mobile-menu.menu-open {
+      max-height: 500px; /* enough for all links */
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     
-    /* ========= 👇 NEW: gently dim overall UI visibility (requested) ========= */
     :root{ --ui-dim: .94; } /* lower = more dim; tweaked lightly */
     #browse-card,
     #pick-year-empty,
@@ -41,7 +58,6 @@
     #all-sections-stack,
     #student-today-panel { opacity: var(--ui-dim); }
 
-    /* ========= 👇 NEW: light table design polish (requested) ========= */
     /* Sticky first column (Time) for easier scanning */
     #single-table-container table th:first-child,
     #single-table-container table td:first-child{
@@ -94,15 +110,73 @@
     .blob-1 { width:180px; height:180px; left:-30px; top:-30px; background: radial-gradient(circle at 30% 30%, rgba(10,75,45,.30), transparent 60%); }
     .blob-2 { width:220px; height:220px; right:-40px; bottom:-40px; background: radial-gradient(circle at 70% 70%, rgba(10,75,45,.30), transparent 60%); }
 
-    #schedule-table-body td { line-height: 1.3; }
+        #schedule-table-body td { line-height: 1.3; }
 
-    .role-student #student-today-panel{ position: absolute; top: 40%; right: 20px; margin-right: 10px; z-index:30; }
+    /* ===== Desktop student layout ===== */
+    .role-student #student-today-panel{
+      position: absolute;
+      top: 40%;
+      right: 20px;
+      margin-right: 10px;
+      z-index: 30;
+    }
     .role-student #single-table-container,
     .role-student #section-card-container,
-    .role-student #all-sections-stack{ margin-right: 300px; }
-    .role-student #schedule-table-body { margin-right: 250px; }
+    .role-student #all-sections-stack{
+      margin-right: 300px;
+    }
+    .role-student #schedule-table-body{
+      margin-right: 250px;
+    }
 
-    #hero-wrap{ display:flex; flex-direction:column; align-items:center; text-align:center; gap: 1.25rem; margin-bottom: 0.5rem; }
+    #hero-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===== Mobile / tablet fixes for student view ===== */
+    @media (max-width: 1024px){
+      .role-student #student-today-panel{
+        position: static;
+        right: auto;
+        margin: 1.25rem 0 0;
+      }
+      .role-student #single-table-container,
+      .role-student #section-card-container,
+      .role-student #all-sections-stack,
+      .role-student #schedule-table-body{
+        margin-right: 0;
+      }
+
+      #hero-wrap{
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      #student-metrics{
+        grid-template-columns: 1fr;
+      }
+    }
+    /* ===== Mobile nav drawer animation ===== */
+    #mobile-menu{
+      transform-origin: top;
+      transition: transform .2s ease-out, opacity .2s ease-out;
+    }
+    #mobile-menu.drawer-closed{
+      transform: scaleY(.95);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #mobile-menu.drawer-open{
+      transform: scaleY(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
 
     #student-today-panel .today-card { box-shadow: 0 8px 24px rgba(10,75,45,.10); border-radius: 1rem; overflow: hidden; border: 1px solid rgba(10,75,45,.12); background: #ffffff; }
     /* FIX: align/sticky header properly */
@@ -353,6 +427,24 @@
     .role-student #course-filter-wrap{
       display:none !important;
     }
+    /* ===== MOBILE: reduce table-card height so it's fully viewable ===== */
+@media (max-width: 768px) {
+  #single-table-container {
+    max-height: 420px;           /* adjust to your liking */
+    overflow-y: auto;            /* enable clean vertical scroll */
+    border-radius: 14px;
+  }
+
+  #single-table-container table {
+    font-size: 13px;             /* optional: cleaner mobile fit */
+  }
+
+  #schedule-table-body td,
+  #master-head-row th {
+    padding: 10px 14px;          /* reduce padding for smaller screens */
+  }
+}
+
   </style>
 </head>
 <body class="bg-white min-h-screen">
@@ -375,7 +467,7 @@
         <h1 class="text-lg font-bold">SLSU Lucena Class Schedule Viewer</h1>
       </div>
       <div class="hidden md:flex items-center space-x-6 text-sm">
-        <a href="index.html"     class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="home.html"     class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-home-line"></i><span>Home</span></a>
         <a href="sections.html"  class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-book-2-line"></i><span>Sections</span></a>
         <a href="schedules.html" class="nav-link px-3 py-2 rounded-button bg-white/20 flex items-center space-x-2"><i class="ri-calendar-line"></i><span>Schedules</span></a>
         <a href="students.html"  class="nav-link px-3 py-2 rounded-button hover:bg-white/10 flex items-center space-x-2"><i class="ri-user-line"></i><span>Students</span></a>
@@ -403,11 +495,14 @@
           </div>
         </div>
       </div>
-      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10"><i class="ri-menu-line text-xl"></i></button>
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-button hover:bg-white/10 active:scale-95 transition">
+  <i id="mobile-menu-icon" class="ri-menu-line text-xl transition-transform duration-200"></i>
+</button>
+
     </div>
     <div id="mobile-menu" class="md:hidden mt-3 hidden">
       <div class="space-y-2 text-sm">
-        <a href="index.html"     class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
+        <a href="home.html"     class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-home-line"></i><span>Home</span></a>
         <a href="sections.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-book-2-line"></i><span>Sections</span></a>
         <a href="schedules.html" class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button bg-white/20"><i class="ri-calendar-line"></i><span>Schedules</span></a>
         <a href="students.html"  class="nav-link flex items-center space-x-3 px-3 py-3 rounded-button hover:bg-white/10"><i class="ri-user-3-line"></i><span>Students</span></a>
@@ -464,6 +559,21 @@
           </div>
         </div>
         <!-- end hint -->
+                 <!-- ✅ NEW: Guard card – shown when student has no student info yet -->
+        <div id="student-section-warning" class="mb-4 hidden">
+          <div class="flex items-start gap-3 p-3 rounded-2xl border border-amber-200 bg-amber-50 text-amber-900 text-sm">
+            <i class="ri-information-line text-xl mt-0.5"></i>
+            <div class="text-left">
+              <div class="font-semibold">Add your student information first</div>
+              <div class="text-[12px] mt-1">
+                Go to <a href="sections.html" class="underline font-medium">Sections</a> and add your student info to your section.
+                Your class schedule will appear here after you save it.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end guard card -->
+
 
         <div id="browse-card" class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
           <div class="p-5 border-b border-gray-200">
@@ -545,62 +655,100 @@
         </div>
 
         <!-- layout -->
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- table -->
-          <div class="flex-[1.7] lg:pr-4 min-w-0 space-y-6">
-            <div id="single-table-container" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead class="bg-gradient-to-r from-primary to-secondary text-white sticky top-0 z-10">
-                    <tr class="divide-x divide-white/20" id="master-head-row">
-                      <th class="px-7 py-4 text-left" data-day="Time"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Time</div></th>
-                      <th class="px-7 py-4 text-left" data-day="Monday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Monday</div></th>
-                      <th class="px-7 py-4 text-left" data-day="Tuesday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Tuesday</div></th>
-                      <th class="px-7 py-4 text-left" data-day="Wednesday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Wednesday</div></th>
-                      <th class="px-7 py-4 text-left" data-day="Thursday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Thursday</div></th>
-                      <th class="px-7 py-4 text-left" data-day="Friday"><div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">Friday</div></th>
-                    </tr>
-                  </thead>
-                  <tbody id="schedule-table-body" class="divide-y divide-gray-200"></tbody>
-                </table>
-              </div>
-            </div>
-
-            <div id="section-card-container"></div>
-            <div id="all-sections-stack" class="space-y-8"></div>
+        <!-- layout -->
+<div class="flex flex-col lg:flex-row gap-6 items-start">
+  <!-- Today’s Classes + Reminders -->
+  <aside
+    id="student-today-panel"
+    class="hidden w-full lg:w-72 space-y-4 order-1 lg:order-2"
+  >
+    <div class="today-card bg-white border rounded-2xl shadow-sm overflow-hidden">
+      <div class="today-head px-4 py-4 flex items-center justify-between gap-3">
+        <div>
+          <div id="student-today-label"
+               class="text-[11px] uppercase tracking-wide text-emerald-600 font-semibold">
+            Today • —
           </div>
-
-          <aside id="student-today-panel" class="hidden w-72 space-y-4">
-            <div class="today-card bg-white border rounded-2xl shadow-sm overflow-hidden">
-              <div class="today-head px-4 py-4 flex items-center justify-between gap-3">
-                <div>
-                  <div id="student-today-label" class="text-[11px] uppercase tracking-wide text-emerald-600 font-semibold">Today • —</div>
-                  <div class="text-sm font-semibold text-gray-800">Today's Classes</div>
-                </div>
-                <div class="flex items-center gap-2 bg-white px3 py-1.5 rounded-full border border-emerald-100 shadow-sm">
-                  <i class="ri-time-line text-emerald-600 text-base"></i>
-                  <span id="student-now-time" class="text-sm font-semibold text-emerald-700">--:--</span>
-                </div>
-              </div>
-              <div id="student-today-list" class="p-4 space-y-3">
-                <div class="text-sm text-gray-500 flex items-center gap-2"><i class="ri-calendar-2-line text-gray-400 text-base"></i>No classes for today.</div>
-              </div>
-            </div>
-
-            <!-- Class Reminders -->
-            <div id="reminders-card" class="rem-card hidden">
-              <div class="rem-head flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center"><i class="ri-notification-3-line text-[15px]"></i></div>
-                  <div class="font-semibold text-gray-800">Class Reminders</div>
-                </div>
-              </div>
-              <div id="reminders-list" class="space-y-3">
-                <div class="text-sm text-gray-500 px-2">No reminders yet.</div>
-              </div>
-            </div>
-          </aside>
+          <div class="text-sm font-semibold text-gray-800">Today's Classes</div>
         </div>
+        <div class="flex items-center gap-2 bg-white px3 py-1.5 rounded-full border border-emerald-100 shadow-sm">
+          <i class="ri-time-line text-emerald-600 text-base"></i>
+          <span id="student-now-time" class="text-sm font-semibold text-emerald-700">--:--</span>
+        </div>
+      </div>
+      <div id="student-today-list" class="p-4 space-y-3">
+        <div class="text-sm text-gray-500 flex items-center gap-2">
+          <i class="ri-calendar-2-line text-gray-400 text-base"></i>
+          No classes for today.
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Reminders -->
+    <div id="reminders-card" class="rem-card hidden">
+      <div class="rem-head flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+            <i class="ri-notification-3-line text-[15px]"></i>
+          </div>
+          <div class="font-semibold text-gray-800">Class Reminders</div>
+        </div>
+      </div>
+      <div id="reminders-list" class="space-y-3">
+        <div class="text-sm text-gray-500 px-2">No reminders yet.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- table -->
+  <div class="flex-[1.7] lg:pr-4 min-w-0 space-y-6 order-2 lg:order-1 w-full">
+    <div id="single-table-container"
+         class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gradient-to-r from-primary to-secondary text-white sticky top-0 z-10">
+            <tr class="divide-x divide-white/20" id="master-head-row">
+              <th class="px-7 py-4 text-left" data-day="Time">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Time
+                </div>
+              </th>
+              <th class="px-7 py-4 text-left" data-day="Monday">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Monday
+                </div>
+              </th>
+              <th class="px-7 py-4 text-left" data-day="Tuesday">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Tuesday
+                </div>
+              </th>
+              <th class="px-7 py-4 text-left" data-day="Wednesday">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Wednesday
+                </div>
+              </th>
+              <th class="px-7 py-4 text-left" data-day="Thursday">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Thursday
+                </div>
+              </th>
+              <th class="px-7 py-4 text-left" data-day="Friday">
+                <div class="inline-block px-3 py-1.5 rounded-button font-semibold tracking-wide uppercase text-[11px] bg-white/15 ring-1 ring-white/25 shadow">
+                  Friday
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="schedule-table-body" class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="section-card-container"></div>
+    <div id="all-sections-stack" class="space-y-8"></div>
+  </div>
+</div>
 
       </div>
     </div>
@@ -621,7 +769,7 @@
           </div></div>
         <div><h3 class="font-bold mb-2">Quick Links</h3>
           <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-white/80">
-            <a href="index.html"     class="hover:text-white">Home</a>
+            <a href="home.html"     class="hover:text-white">Home</a>
             <a href="sections.html"  class="hover:text-white">Sections</a>
             <a href="schedules.html" class="hover:text-white">Schedules</a>
             <a href="students.html"  class="hover:text-white">Students</a>
@@ -804,19 +952,139 @@
 
 <div id="signout-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[60]">
   <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
-    <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center"><i class="ri-question-line"></i></div><div class="font-semibold text-gray-900">Sign out?</div></div>
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+        <i class="ri-question-line"></i>
+      </div>
+      <div class="font-semibold text-gray-900">Sign out?</div>
+    </div>
     <p class="mt-3 text-sm text-gray-600">Are you sure you want to sign out?</p>
-    <div class="mt-6 flex items-center justify-end gap-2"><button id="cancel-signout" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button><button id="confirm-signout" class="px-4 py-2 rounded-button bg-primary text-white">Yes</button></div>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button id="cancel-signout" class="px-4 py-2 rounded-button bg-gray-100">Cancel</button>
+      <button id="confirm-signout" class="px-4 py-2 rounded-button bg-primary text-white">Yes</button>
+    </div>
   </div>
 </div>
+
+<!-- 👇 NEW: animated mobile drawer for schedules page -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btn   = document.getElementById('mobile-menu-btn');
+    const menu  = document.getElementById('mobile-menu');
+    const icon  = btn ? btn.querySelector('i') : null;
+    if (!btn || !menu) return;
+
+    let isOpen = false;
+
+    function openMenu() {
+      if (isOpen) return;
+      isOpen = true;
+      menu.classList.remove('hidden');
+      // small async frame so transition runs
+      requestAnimationFrame(function () {
+        menu.classList.add('menu-open');
+      });
+      if (icon) {
+        icon.classList.remove('ri-menu-line');
+        icon.classList.add('ri-close-line');
+      }
+    }
+
+    function closeMenu() {
+      if (!isOpen) return;
+      isOpen = false;
+      menu.classList.remove('menu-open');
+      if (icon) {
+        icon.classList.remove('ri-close-line');
+        icon.classList.add('ri-menu-line');
+      }
+      // wait for animation, then hide
+      setTimeout(function () {
+        if (!isOpen) {
+          menu.classList.add('hidden');
+        }
+      }, 230);
+    }
+
+    btn.addEventListener('click', function () {
+      if (isOpen) closeMenu();
+      else openMenu();
+    });
+
+    // close when clicking any link in drawer
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (isOpen) closeMenu();
+      });
+    });
+
+    // close drawer when resizing to desktop width
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 768) {
+        closeMenu();
+      }
+    });
+  });
+</script>
 
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/schedules.filter.js"></script>
 <script src="assets/js/schedules.manage.js"></script>
 <script src="assets/js/schedules.views.js"></script>
 <script src="assets/js/profile.js"></script>
-</body>
-</html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btn  = document.getElementById('mobile-menu-btn');
+    const icon = document.getElementById('mobile-menu-icon');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!btn || !icon || !menu) return;
+
+    let isOpen = false;
+    let animating = false;
+    const DURATION = 200; // ms
+
+    function openMenu() {
+      if (animating || isOpen) return;
+      animating = true;
+      isOpen = true;
+
+      menu.classList.remove('hidden', 'drawer-closed');
+      // force reflow so transition runs
+      void menu.offsetHeight;
+      menu.classList.add('drawer-open');
+
+      icon.classList.remove('ri-menu-line');
+      icon.classList.add('ri-close-line');
+
+      setTimeout(() => { animating = false; }, DURATION);
+    }
+
+    function closeMenu() {
+      if (animating || !isOpen) return;
+      animating = true;
+      isOpen = false;
+
+      menu.classList.remove('drawer-open');
+      menu.classList.add('drawer-closed');
+
+      icon.classList.remove('ri-close-line');
+      icon.classList.add('ri-menu-line');
+
+      setTimeout(() => {
+        menu.classList.add('hidden');
+        animating = false;
+      }, DURATION);
+    }
+
+    btn.addEventListener('click', () => {
+      if (isOpen) closeMenu();
+      else openMenu();
+    });
+  });
+</script>
+
 
 
 <!-- ========================= YOUR EXISTING SCRIPTS (UNCHANGED) ========================= -->
@@ -874,7 +1142,7 @@
       try {
         ['auth_name','auth_role','auth_section','auth_email','auth_id','auth_photo'].forEach(k => sessionStorage.removeItem(k));
       } catch (_) {}
-      window.location.href = 'about.html';
+      window.location.href = 'index.html';
     });
   });
 </script>
@@ -884,8 +1152,9 @@
   import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
   import {
     getFirestore, collectionGroup, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, doc, deleteDoc,
-    setDoc, getDoc, updateDoc
+    setDoc, getDoc, updateDoc, where, getDocs
   } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
   
 
   const firebaseConfig = {
@@ -930,6 +1199,39 @@
   const irregHintNode = document.getElementById('irreg-pick-hint');
 
   const studentScheduleEntries = [];
+    /* ✅ NEW: Guard – block schedule table for students without student info in Sections */
+  const studentSectionWarning = document.getElementById('student-section-warning');
+  const studentGuardTargets = [
+  document.getElementById('single-table-container'),
+  document.getElementById('section-card-container'),
+  document.getElementById('all-sections-stack'),
+  document.getElementById('reminders-card')   // DO NOT hide Today’s Classes
+].filter(Boolean);
+
+
+  function applyStudentScheduleGuard(block) {
+    if (!studentSectionWarning) return;
+    if (block) {
+      // show warning, hide schedule-related containers
+      studentSectionWarning.classList.remove('hidden');
+      studentGuardTargets.forEach(el => { if (el) el.style.display = 'none'; });
+    } else {
+      // hide warning, restore default display for containers
+      studentSectionWarning.classList.add('hidden');
+      studentGuardTargets.forEach(el => { if (el) el.style.display = ''; });
+    }
+  }
+/* ✅ Force-hide ANY Today's Classes card by detecting its text */
+function hideTodaysClassesCard() {
+  const allNodes = document.querySelectorAll('*');
+  allNodes.forEach(el => {
+    if (el.textContent && el.textContent.trim().toLowerCase().includes("today's classes")) {
+      const wrapper = el.closest('div');
+      if (wrapper) wrapper.style.display = 'none';
+    }
+  });
+}
+
 
   if (USER_ROLE === 'student' && body) {
     body.innerHTML = '';
@@ -1335,6 +1637,8 @@
   /* ------------------- end improved pick handling ------------------- */
 
   function rebuildStudentTodayPanel() {
+    if (window.__DISABLE_TODAY_PANEL) return;
+
     if (USER_ROLE !== 'student') return;
     const now = new Date();
     const dayName = now.toLocaleDateString('en-PH', { weekday:'long' });
@@ -1397,6 +1701,73 @@
   const CURRENT_USER_ID = (SESSION.id || SESSION.email || '').trim();
   // window.__IRREG shape updated: keep subjects as before (saved names), add tempPickIds and tempSubjectNames
   window.__IRREG = window.__IRREG || { sections: new Set(), subjects: new Set(), tempPickIds: new Set(), tempSubjectNames: new Set(), ready:false, locked:false, _tempInitialized:false };
+    // ✅ Immediately guard schedule for students until we verify their student info
+  if (USER_ROLE === 'student') {
+    applyStudentScheduleGuard(true);
+  }
+
+  // Check in Firestore if this student has already added their student info in their section
+  async function verifyStudentHasSectionInfo() {
+    // Only applies to logged-in students
+    if (USER_ROLE !== 'student') return;
+
+    // If no section or no user id, keep blocked
+    if (!USER_SECTION || !CURRENT_USER_ID) {
+      applyStudentScheduleGuard(true);
+      return;
+    }
+
+    try {
+      const studentsRef = collection(db, 'sections', USER_SECTION, 'students');
+      const qMine = query(
+        studentsRef,
+        where('ownerId', '==', CURRENT_USER_ID || '__none__')
+      );
+      const snap = await getDocs(qMine);
+
+      const hasInfo = !snap.empty;
+      // If the student has at least one student record in this section, allow schedule display
+    applyStudentScheduleGuard(!hasInfo);
+
+if (!hasInfo) {
+    // Empty reminders
+    if (remindersList) remindersList.innerHTML = '';
+
+    // EMPTY Today’s Classes card
+    if (studentTodayList) {
+        studentTodayList.innerHTML = `
+            <div class="text-sm text-gray-500 flex items-center gap-2">
+                <i class="ri-calendar-2-line text-gray-400 text-base"></i>
+                Add your student info in Sections page.
+            </div>
+        `;
+    }
+
+    // Header placeholders
+    if (studentTodayLabel) studentTodayLabel.textContent = "Today • —";
+    if (studentNowTime) studentNowTime.textContent = "--:--";
+
+    // 🚫 IMPORTANT — STOP rebuildStudentTodayPanel()
+    window.__DISABLE_TODAY_PANEL = true;
+
+    return; 
+}
+
+
+
+
+
+
+    } catch (err) {
+      console.error('Failed to verify student section info for schedule page:', err);
+      // On error, stay safe: keep it blocked
+      applyStudentScheduleGuard(true);
+    }
+  }
+
+  // Run once on load
+  verifyStudentHasSectionInfo();
+
 
   /* ✅ NEW: show/hide the hint based on picked count */
   function updateIrregHintVisibility(){

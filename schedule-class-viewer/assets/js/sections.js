@@ -2199,11 +2199,9 @@ async function renameSection(oldId, newParsed){
 }
 
 /* ========= INIT (load persistent choices first) ========== */
+/* ========= INIT (load persistent choices first) ========== */
 async function init(){
-  document.getElementById('mobile-menu-btn')?.addEventListener('click',()=>{
-    document.getElementById('mobile-menu')?.classList.toggle('hidden');
-  });
-
+  // mobile drawer is handled by nav.js (with animation)
   await loadIrregularConfirmed();
 
   setupCourseDropdown();
@@ -2214,3 +2212,4 @@ async function init(){
   setDayOptionsForYear();
 }
 init();
+
