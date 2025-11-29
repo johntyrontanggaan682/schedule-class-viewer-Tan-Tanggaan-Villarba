@@ -1,0 +1,13 @@
+{
+  "hosting": [
+    {
+      "site": "slsu-lucena-class-schedule-viewer",
+      "public": "schedule-class-viewer",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    }
+  ]
+}
