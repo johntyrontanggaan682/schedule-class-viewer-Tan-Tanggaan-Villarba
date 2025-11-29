@@ -19,6 +19,39 @@ tailwind.config = {
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
+  /* Make Section Detail buttons fit nicely on real mobile screens */
+@media (max-width: 768px) {
+  /* Allow the buttons row to wrap */
+  #section-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Make Add Schedule / Add Reminder share the width */
+  #add-section-student-btn,
+  #add-section-schedule-btn,
+  #add-section-reminder-btn {
+    flex: 1 1 calc(50% - 0.25rem);   /* two buttons per row */
+    max-width: calc(50% - 0.25rem);
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.8rem;               /* smaller text so it doesn't get cut */
+  }
+
+  /* Keep the close (X) button small and on the right */
+  #close-section-detail-btn {
+    flex: 0 0 auto;
+    margin-left: auto;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+  }
+}
+
   /* ---- Section Detail Modal – mobile layout ---- */
 @media (max-width: 768px){
   /* modal wrapper: stick to top, no side padding */
