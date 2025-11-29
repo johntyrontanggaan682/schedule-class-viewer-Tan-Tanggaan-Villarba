@@ -106,21 +106,21 @@
 
         #schedule-table-body td { line-height: 1.3; }
 
-
+    /* ✅ KEEP Today's Classes card locked in place on desktop */
 .role-student #student-today-panel{
-  position: static;      
+  position: static;      /* use normal flex layout */
   right: auto;
   margin: 0;
   z-index: 1;
 }
 
+/* ✅ No extra right margins needed now */
 .role-student #single-table-container,
 .role-student #section-card-container,
 .role-student #all-sections-stack,
 .role-student #schedule-table-body{
   margin-right: 0;
 }
-
 
     #hero-wrap{
       display:flex;
@@ -1692,12 +1692,17 @@ function hideTodaysClassesCard() {
  const USER_STATUS = (sessionStorage.getItem('auth_status')||'').toLowerCase();
 const IS_IRREG = (USER_ROLE === 'student' && USER_STATUS === 'irregular');
 const CURRENT_USER_ID = (SESSION.id || SESSION.email || '').trim();
-// window.__IRREG shape updated: keep subjects as before (saved names), add tempPickIds and tempSubjectNames
-window.__IRREG = window.__IRREG || { sections: new Set(), subjects: new Set(), tempPickIds: new Set(), tempSubjectNames: new Set(), ready:false, locked:false, _tempInitialized:false };
 
-if (USER_ROLE === 'student' && !IS_IRREG) {
-  applyStudentScheduleGuard(true);
-}
+// window.__IRREG shape updated: keep subjects as before (saved names), add tempPickIds and tempSubjectNames
+window.__IRREG = window.__IRREG || {
+  sections: new Set(),
+  subjects: new Set(),
+  tempPickIds: new Set(),
+  tempSubjectNames: new Set(),
+  ready: false,
+  locked: false,
+  _tempInitialized: false
+};
 
 
 async function verifyStudentHasSectionInfo() {
