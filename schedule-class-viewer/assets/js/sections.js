@@ -1613,12 +1613,33 @@ function closeAddSection(){
   addSecText.textContent = 'Save';
 }
 
+// NEW: inline warning element
+const addSecWarning = document.getElementById('add-section-warning');
+
 addSecBtn?.addEventListener('click', ()=>{
   if (!isAdmin) return;
+
   if (!currentCourse) {
-    alert('Please select a course first.');
-    return;
+  if (addSecWarning) {
+
+    addSecWarning.style.setProperty("display", "inline-flex", "important");
+    addSecWarning.classList.remove("hidden");
+
+    addSecWarning.classList.remove("add-section-shake");
+    void addSecWarning.offsetWidth; 
+    addSecWarning.classList.add("add-section-shake");
+
+    clearTimeout(addSecWarning.hideTimer);
+    addSecWarning.hideTimer = setTimeout(() => {
+      addSecWarning.classList.add("hidden");
+      addSecWarning.style.removeProperty("display");
+    }, 2000);
   }
+  return;
+}
+
+  if (addSecWarning) addSecWarning.classList.add('hidden');
+
   addSecForm.reset();
   addSecDegree.value = degreeForCourse(currentCourse);
   addSecYearLabel.value = '';
@@ -1627,10 +1648,8 @@ addSecBtn?.addEventListener('click', ()=>{
   addSecCode.value = '';
   addSecMismatch.classList.add('hidden');
 
-  // dynamic placeholder example based on course
   const short = (COURSE_SHORT[currentCourse] || 'BIT');
-  addSecTitle.placeholder = `e.g. ${short.toLowerCase()} 1c-c or ${short.toUpperCase()} 2a`;
-
+  addSecTitle.placeholder = `e.g. ${short} 3B-B`;
   openAddSection();
 });
 
@@ -1678,7 +1697,6 @@ addSecForm?.addEventListener('submit', async (e)=>{
   if (!parsed || !parsed.code){
     const course = currentCourse || DEFAULT_COURSE;
     const short = (COURSE_SHORT[course] || 'BIT').toLowerCase();
-    // Example text: "e.g. bit 1c-c or BIT 2a" / "e.g. btvt-ed cp 1c-c or BTVT-ED CP 2a"
     addSecMismatch.textContent =
       `Please enter a valid title like "${short} 1c-c" or "${short.toUpperCase()} 2a".`;
     addSecMismatch.classList.remove('hidden');
@@ -1750,7 +1768,7 @@ addSecForm?.addEventListener('submit', async (e)=>{
 });
 
 
-/* ====== Reminders (unchanged logic) ====== */
+/* ====== Reminders  ====== */
 const remModal   = document.getElementById('reminder-modal');
 const remOpenBtn = document.getElementById('add-section-reminder-btn');
 const remClose   = document.getElementById('rem-close');
@@ -2128,7 +2146,7 @@ confirmSave?.addEventListener('click', async ()=>{
   confirmText.textContent = 'Save';
 });
 
-/* ========= Section edit/delete helpers (kept) ========= */
+/* ========= Section edit/delete helpers ========= */
 async function copyDocs(srcParentRef, dstParentRef, subcol){
   const src = collection(srcParentRef, subcol);
   const dst = collection(dstParentRef, subcol);
@@ -2198,10 +2216,7 @@ async function renameSection(oldId, newParsed){
   if (activeSection === oldId) activeSection = newParsed.code;
 }
 
-/* ========= INIT (load persistent choices first) ========== */
-/* ========= INIT (load persistent choices first) ========== */
 async function init(){
-  // mobile drawer is handled by nav.js (with animation)
   await loadIrregularConfirmed();
 
   setupCourseDropdown();

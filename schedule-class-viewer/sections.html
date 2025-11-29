@@ -19,38 +19,291 @@ tailwind.config = {
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
 <style>
-  /* Make Section Detail buttons fit nicely on real mobile screens */
+  /* ===== Add Section inline warning ===== */
+#add-section-warning{
+  display:inline-flex;
+  align-items:center;
+  padding:0.15rem 0.6rem;
+  margin-left:0.25rem;
+  border-radius:9999px;
+  background:#fee2e2;          /* light red background */
+  border:1px solid #fecaca;    /* border red */
+  color:#b91c1c;               /* text red */
+  font-size:0.75rem;           /* small text */
+}
+
+/* respect Tailwind's .hidden */
+#add-section-warning.hidden{
+  display:none;
+}
+
+/* small vibration animation */
+@keyframes addSecShake{
+  0%,100%{ transform:translateX(0); }
+  20%,60%{ transform:translateX(-3px); }
+  40%,80%{ transform:translateX(3px); }
+}
+
+.add-section-shake{
+  animation:addSecShake 0.24s ease-in-out 0s 2;
+}
+
+  
+  /* === FINAL FIX: FORCE X BUTTON TO TOP-RIGHT ON ALL MOBILE WEBVIEWS === */
+@media (max-width: 1024px) {
+  #section-detail-panel .modal-head {
+    position: relative !important;
+  }
+
+  #close-section-detail-btn {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+  /* === FIX: X button alignment on mobile ONLY === */
 @media (max-width: 768px) {
-  /* Allow the buttons row to wrap */
+  #close-section-detail-btn {
+    position: absolute !important;
+    top: 1.25rem !important;      /* move it UP */
+    right: 1.25rem !important;    /* move it to the FAR RIGHT */
+    margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* ensure the header container becomes relative so X can be positioned */
+  #section-detail-panel .modal-head {
+    position: relative !important;
+  }
+}
+
+  /* === FIX for X button dropping to bottom (mobile only) === */
+@media (max-width: 480px) {
+  #section-action-bar {
+    display: flex;
+    flex-wrap: nowrap;      /* prevents X from dropping */
+    align-items: center;
+  }
+
+  #close-section-detail-btn {
+    order: 99;              /* push X to the far right */
+    margin-left: 0.25rem;   /* small spacing */
+    align-self: center;     /* vertically centered */
+  }
+}
+
+ /* === MOBILE FIX for "Add Schedule" + "Add Reminder" buttons === */
+/* === MOBILE FIX for "Add Schedule" + "Add Reminder" buttons === */
+@media (max-width: 480px) {
+  /* make the white/green pill a bit taller and fully fit the text */
+  #add-section-schedule-btn,
+  #add-section-reminder-btn {
+    padding: 0.55rem 1.3rem;     /* more vertical + horizontal padding */
+    /* IMPORTANT: do NOT force display here so the .hidden class still works */
+    align-items: center;
+    line-height: 1.2;
+    border-radius: 9999px;       /* keep pill shape */
+    white-space: nowrap;
+  }
+
+  /* Enroll (Confirm) button – make it bigger on mobile for students */
+  .role-student #confirm-choose-btn {
+    padding: 0.55rem 1.3rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+  }
+
+  /* small tweak so buttons don’t look cramped next to the X */
+  #section-action-bar {
+    gap: 0.4rem;
+  }
+}
+
+/* Hide Add Schedule + Add Reminder completely when a STUDENT is logged in */
+.role-student #add-section-schedule-btn,
+.role-student #add-section-reminder-btn {
+  display: none !important;
+}
+/* === ENLARGE student buttons (Regular + Irregular) === */
+
+/* Bigger Add Student button (regular students only) */
+.role-student #add-section-student-btn {
+  padding: 0.65rem 1.4rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 9999px !important;
+}
+
+/* Bigger ENROLL button for irregular students */
+.role-student #confirm-choose-btn {
+  padding: 0.65rem 1.4rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 9999px !important;
+}
+/* === FINAL OVERRIDE FOR MESSENGER WEBVIEW (1024px false width) === */
+@media (max-width: 1200px) {
+  /* HIDE admin buttons for students */
+  .role-student #add-section-schedule-btn,
+  .role-student #add-section-reminder-btn {
+    display: none !important;
+  }
+
+  /* ENLARGE Add Student (regular) */
+  .role-student #add-section-student-btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    border-radius: 9999px !important;
+  }
+
+  /* ENLARGE Enroll/Confirm (irregular) */
+  .role-student #confirm-choose-btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    border-radius: 9999px !important;
+  }
+}
+
+
+  /* ===== Make Add Reminder modal scrollable ===== */
+#reminder-modal > div {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;     /* desktop/tablet height */
+  overflow: hidden;     /* hide outer overflow */
+}
+
+#reminder-modal .modal-head {
+  flex: 0 0 auto;        /* header stays fixed */
+}
+
+#rem-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;      /* form scrolls */
+  padding-bottom: 1rem;  /* avoid cutoff */
+}
+
+/* ===== Mobile full-height modal ===== */
+@media (max-width: 768px) {
+  #reminder-modal {
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  #reminder-modal > div {
+    height: 100vh;
+    max-height: none;
+    width: 100%;
+    border-radius: 0;
+  }
+}
+
+  /* ===== Make Add Schedule form scrollable (all devices) ===== */
+#schedule-modal > div {
+  /* this is the white panel inside the dark overlay */
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh; /* keep 90% of screen on larger screens */
+}
+
+#schedule-modal .modal-head {
+  flex: 0 0 auto; /* header stays fixed at the top of the panel */
+}
+
+#schedule-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto; /* form body scrolls when content is tall */
+}
+
+/* ===== Mobile: full-height scrollable sheet ===== */
+@media (max-width: 768px) {
+  #schedule-modal {
+    align-items: flex-start; /* stick to top, like a bottom sheet */
+    padding: 0;
+  }
+
+  #schedule-modal > div {
+    height: 100vh;
+    max-height: none !important;
+    width: 100%;
+    border-radius: 0; /* edge-to-edge on mobile */
+  }
+}
+
+ /* ===== Mobile layout for Section header buttons + modals ===== */
+@media (max-width: 768px) {
+  /* Section header: put title on top, buttons below (like PC but not cut) */
+  #section-detail-panel .modal-head > .flex {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
   #section-action-bar {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: center;       /* center vertically */
     justify-content: flex-start;
     gap: 0.5rem;
   }
 
-  /* Make Add Schedule / Add Reminder share the width */
+  /* Make the action buttons smaller so they fit nicely */
   #add-section-student-btn,
   #add-section-schedule-btn,
   #add-section-reminder-btn {
-    flex: 1 1 calc(50% - 0.25rem);   /* two buttons per row */
-    max-width: calc(50% - 0.25rem);
-    justify-content: center;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    font-size: 0.8rem;               /* smaller text so it doesn't get cut */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 9999px;
+    white-space: nowrap;
   }
 
-  /* Keep the close (X) button small and on the right */
+  /* X button: small and centered in the row */
   #close-section-detail-btn {
-    flex: 0 0 auto;
-    margin-left: auto;
     width: 2.25rem;
     height: 2.25rem;
     padding: 0;
+    margin-left: auto;
+  }
+
+  /* Section Detail modal: full screen on mobile */
+  #section-detail-modal {
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  #section-detail-panel {
+    width: 100%;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  /* Schedule modal: full-height sheet + scrollable form on mobile */
+  #schedule-modal {
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  #schedule-modal > div {
+    width: 100%;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
   }
 }
+
 
   /* ---- Section Detail Modal – mobile layout ---- */
 @media (max-width: 768px){
@@ -397,17 +650,22 @@ tailwind.config = {
             </div>
           </div>
 
-          <!-- NEW: Confirm Choice (irregular only; shown when a section is chosen) -->
-          <button id="confirm-choose-btn" class="hidden px-4 py-3 rounded-button bg-primary text-white text-sm flex items-center gap-2 active:scale-95">
-            <span class="ri-check-double-line"></span>
-            <span>Confirm</span>
-          </button>
-
+         
           <!-- Add Section (admin only; kept) -->
-          <button id="add-section-btn" class="hidden px-4 py-3 rounded-button bg-primary text-white text-sm flex items-center gap-2 active:scale-95">
-            <i class="ri-add-line"></i>
-            <span>Add Section</span>
-          </button>
+<div class="flex items-center gap-2">
+  <button id="add-section-btn"
+    class="hidden px-4 py-3 rounded-button bg-primary text-white text-sm flex items-center gap-2 active:scale-95">
+    <i class="ri-add-line"></i>
+    <span>Add Section</span>
+  </button>
+
+  <!-- NEW inline warning (starts hidden) -->
+  <span id="add-section-warning"
+        class="hidden">
+    Please select a course <br> and year first
+  </span>
+</div>
+
         </div>
 
         <!-- SECTIONS GRID WITH EMPTY INDICATION -->
@@ -680,7 +938,7 @@ tailwind.config = {
 
               <div class="flex md:justify-end">
                 <div class="w-full md:w-48">
-                  <label class="block text-sm font-medium text-gray-700 mb-2 text-right md:text-right">End time</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-2 text-center md:text-right">End time</label>
                   <input type="time" id="end-time" class="w-full px-4 py-3 border border-gray-300 rounded-button focus:ring-2 focus:ring-primary focus:border-primary text-sm" required step="300">
                 </div>
               </div>
@@ -906,48 +1164,57 @@ tailwind.config = {
 
 <!-- Drawer toggle with animation + icon change -->
 <script>
-  (function () {
-    const btn  = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
-    if (!btn || !menu) return;
+window.addEventListener('load', () => {
+  const btn  = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
 
-    const icon = btn.querySelector('i');
-    let open = false;
+  const icon = btn.querySelector('i');
+  let open = false;
 
-    btn.addEventListener('click', () => {
-      if (!open) {
-        // OPEN drawer
-        menu.classList.remove('hidden', 'drawer-anim-close');
-        void menu.offsetWidth; // force reflow
-        menu.classList.add('drawer-anim-open');
-        if (icon) {
-          icon.classList.remove('ri-menu-line');
-          icon.classList.add('ri-close-line');
-        }
-        open = true;
-      } else {
-        // CLOSE drawer
-        menu.classList.remove('drawer-anim-open');
-        menu.classList.add('drawer-anim-close');
-        if (icon) {
-          icon.classList.remove('ri-close-line');
-          icon.classList.add('ri-menu-line');
-        }
-        open = false;
-      }
-    });
+  btn.addEventListener('click', () => {
+    if (!open) {
+      // OPEN menu
+      menu.classList.remove('hidden', 'drawer-anim-close');
+      void menu.offsetWidth; // reflow
+      menu.classList.add('drawer-anim-open');
 
-    menu.addEventListener('animationend', (e) => {
-      if (e.animationName === 'drawerOpen') {
-        menu.classList.remove('drawer-anim-open');
+      if (icon) {
+        icon.classList.remove('ri-menu-line');
+        icon.classList.add('ri-close-line');
       }
-      if (e.animationName === 'drawerClose') {
-        menu.classList.add('hidden');
-        menu.classList.remove('drawer-anim-close');
+
+      open = true;
+    } else {
+      // CLOSE menu
+      menu.classList.remove('drawer-anim-open');
+      menu.classList.add('drawer-anim-close');
+
+      if (icon) {
+        icon.classList.remove('ri-close-line');
+        icon.classList.add('ri-menu-line');
       }
-    });
-  })();
+
+      open = false;
+    }
+  });
+
+  menu.addEventListener('animationend', (e) => {
+    if (e.animationName === 'drawerOpen') {
+      menu.classList.remove('drawer-anim-open');
+    }
+    if (e.animationName === 'drawerClose') {
+      menu.classList.add('hidden');
+      menu.classList.remove('drawer-anim-close');
+    }
+  });
+});
 </script>
+
+
+</body>
+</html>
+
 
 <script src="assets/js/profile.js"></script>
 <script src="assets/js/nav.js"></script>
