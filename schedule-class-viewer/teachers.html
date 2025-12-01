@@ -960,7 +960,9 @@ const isStudent = ROLE === 'student';
       e.preventDefault();
       const title = (document.getElementById('t_title').value || 'Sir').trim();
       const name  = document.getElementById('t_name').value.trim();
-      const dept  = document.getElementById('t_dept').value.trim();
+      const deptInputEl = document.getElementById('t-dept-input');
+const dept = (deptInputEl?.value || '').trim();
+
       const office= document.getElementById('t_office').value.trim();
       const subjects = Array.from(subjContainer.querySelectorAll('input[data-subject-input="true"]'))
         .map(i=>i.value.trim()).filter(Boolean);
@@ -1237,13 +1239,22 @@ const isStudent = ROLE === 'student';
 
       input.addEventListener('focus', () => openList());
       input.addEventListener('input', () => {
-        filterList(input.value);
-        openList();
-        if(input.value.trim() === ''){
-          selectEl.value = '';
-          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
+  filterList(input.value);
+  openList();
+
+  const val = input.value.trim();
+
+  if (val === '') {
+    selectEl.value = '';
+    hiddenInput.value = '';
+    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+  } else {
+    hiddenInput.value = val;
+    selectEl.value = val;
+    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+});
+
       input.addEventListener('keydown', (e) => {
         const max = filtered.length - 1;
         if(e.key === 'ArrowDown'){
@@ -1301,7 +1312,7 @@ const isStudent = ROLE === 'student';
       function renderList(items){
         list.innerHTML = '';
         if(items.length === 0){
-          list.innerHTML = '<li class="px-3 py-2 text-gray-500">No matches</li>';
+          list.innerHTML = '';
           return;
         }
         items.forEach((opt, idx) => {
