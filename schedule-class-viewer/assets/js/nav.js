@@ -138,8 +138,16 @@
     } catch (e) {
       console.error('Admin header nav error:', e);
     }
+  (function () {
+    const logo = document.querySelector('nav img[alt="SLSU Lucena Logo"]');
+    if (!logo) return;
 
-    // ===== Navigation Handler (original behaviour) =====
+    logo.style.cursor = 'pointer';
+    logo.addEventListener('click', function () {
+      window.location.reload();
+    });
+  })();
+
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
