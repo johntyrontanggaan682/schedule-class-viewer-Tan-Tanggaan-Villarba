@@ -4,6 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sections • SLSU Lucena</title>
+<script>
+  (function () {
+    try {
+      var role = sessionStorage.getItem('auth_role');
+      if (!role) {
+        window.location.replace('index.html');
+      } else {
+        document.documentElement.style.visibility = 'visible';
+      }
+    } catch (e) {
+      window.location.replace('index.html');
+    }
+  })();
+</script>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>
 tailwind.config = {
