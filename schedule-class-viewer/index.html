@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SLSU Lucena Class Schedule Viewer</title>
   <title>Sign In • SLSU Lucena</title>
+  <script>
+(function () {
+  function lockForward() {
+    try { 
+      history.pushState(null, '', location.href); 
+    } catch(e){}
+  }
+  window.addEventListener('pageshow', function () {
+    lockForward();
+  });
+})();
+</script>
+
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
