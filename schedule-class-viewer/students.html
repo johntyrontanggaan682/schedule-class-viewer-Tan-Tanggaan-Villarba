@@ -9,19 +9,40 @@
     visibility: hidden; /* page is invisible by default */
   }
 </style>
-  <script>
-  (function () {
-    try {
-      var role = sessionStorage.getItem('auth_role');
-      if (!role) {
-        window.location.replace('index.html');
-      } else {
-        document.documentElement.style.visibility = 'visible';
-      }
-    } catch (e) {
-      window.location.replace('index.html');
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZLXYqe3TaVzkHZh3i4h78VBwI0KckMpE",
+    authDomain: "log-in-cad70.firebaseapp.com",
+    projectId: "log-in-cad70",
+    storageBucket: "log-in-cad70.firebasestorage.app",
+    messagingSenderId: "538387168387",
+    appId: "1:538387168387:web:ef65e3ce36c5a405572fb6",
+    measurementId: "G-Q6KF6ST8XF"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      location.replace('index.html');
+    } else {
+      document.documentElement.style.visibility = 'visible';
     }
-  })();
+  });
+
+  window.addEventListener('pageshow', ev => {
+    if (ev.persisted) {
+      if (auth.currentUser) {
+        document.documentElement.style.visibility = 'visible';
+      } else {
+        location.replace('index.html');
+      }
+    }
+  });
 </script>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>

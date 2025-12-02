@@ -10,18 +10,31 @@
   }
 </style>
   <script>
-  (function () {
-    try {
-      var role = sessionStorage.getItem('auth_role');
-      if (!role) {
-        window.location.replace('index.html');
-      } else {
-        document.documentElement.style.visibility = 'visible';
-      }
-    } catch (e) {
-      window.location.replace('index.html');
+(function(){
+  const R=()=>location.replace('index.html');
+  function okBySession(){ const id=sessionStorage.getItem('auth_id'); const role=sessionStorage.getItem('auth_role'); return id && role && /^(student|teacher|admin)$/i.test(role); }
+  function unhide(){ document.documentElement.style.visibility='visible'; }
+  function handleAuthWithFB(auth){
+    if(typeof auth.onIdTokenChanged==='function'){
+      auth.onIdTokenChanged(u=> u ? unhide() : R());
+    } else if(typeof auth.onAuthStateChanged==='function'){
+      auth.onAuthStateChanged(u=> u ? unhide() : R());
+    } else {
+      if(auth.currentUser) unhide(); else R();
     }
+    window.addEventListener('pageshow', e=>{ if(e.persisted){ if(auth.currentUser) unhide(); else R(); }});
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ if(!auth.currentUser) R(); }});
+  }
+  (function wait(){
+    if(window.__FB && window.__FB.auth){ try{ handleAuthWithFB(window.__FB.auth); return; }catch(e){ R(); } }
+    if(okBySession()){ unhide(); return; }
+    setTimeout(function(){
+      if(window.__FB && window.__FB.auth){ try{ handleAuthWithFB(window.__FB.auth); return; }catch(e){ R(); } }
+      if(okBySession()){ unhide(); return; }
+      R();
+    },50);
   })();
+})();
 </script>
 
   <!-- Apply role class ASAP to avoid any flash (hides add button instantly for students) -->
