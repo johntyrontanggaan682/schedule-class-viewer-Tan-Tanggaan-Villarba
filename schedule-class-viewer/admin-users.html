@@ -62,6 +62,23 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" />
 
   <style>
+    
+    /* Make Clear Filters more visible */
+#btn-clear-filters {
+  font-size: 12px !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  background: #e0f2e9 !important;      
+  color: #065f46 !important;             
+  font-weight: 600 !important;           
+  box-shadow: 0 2px 6px rgba(16,185,129,0.25) !important;
+  transition: background 0.15s ease;
+}
+
+#btn-clear-filters:hover {
+  background: #c7ecd9 !important;        
+}
+
     :where([class^="ri-"])::before{content:"\f3c2"}
     body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f5f7fb;}
 
@@ -155,23 +172,58 @@
       transform:translateY(-1px);
     }
 
-    .data-grid{
-      border-collapse:separate;border-spacing:0;width:100%;font-size:0.875rem;
-    }
-    .data-grid thead th{
-      position:sticky;top:0;z-index:1;background:#f8fafc;color:#64748b;
-      font-size:0.75rem;text-transform:uppercase;letter-spacing:.04em;
-      border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-right:1px solid #e5e7eb;
-      padding:.6rem .75rem;text-align:left;
-    }
-    .data-grid thead th:first-child{border-left:1px solid #e2e8f0;border-top-left-radius:.75rem;}
-    .data-grid thead th:last-child{border-top-right-radius:.75rem;}
-    .data-grid tbody td{
-      border-right:1px solid #eef2f7;border-bottom:1px solid #eef2f7;padding:.65rem .8rem;vertical-align:middle;background:#fff;
-    }
+.data-grid{
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+  font-size:0.95rem; 
+  min-width:1200px; 
+}
+
+/* Header spacing slightly larger too */
+.data-grid thead th{
+  position:sticky;top:0;z-index:1;background:#f8fafc;color:#64748b;
+  font-size:0.78rem; 
+  text-transform:uppercase;letter-spacing:.04em;
+  border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-right:1px solid #e5e7eb;
+  padding:.8rem 1rem;text-align:left; 
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* Larger cells: more padding and slightly taller rows */
+.data-grid tbody td{
+  border-right:1px solid #eef2f7;
+  border-bottom:1px solid #eef2f7;
+  padding:.9rem 1rem;              
+  vertical-align:middle;
+  background:#fff;
+  line-height:1.25;                 
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
     .data-grid tbody td:first-child{border-left:1px solid #e5e7eb;}
     .data-grid tbody tr:hover td{background:#f9fafb;}
-    #filter-dept,#filter-role,#filter-status {max-height: 140px !important;overflow-y: auto !important;}
+    #filter-role,#filter-status {max-height: 140px !important;overflow-y: auto !important;}
+
+    /* Make the table scroll horizontally when needed but allow it to use full width */
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      max-height: calc(100vh - 280px); 
+    }
+
+    /* On very wide screens, let main area breathe */
+    @media (min-width: 1400px) {
+      .main-max {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen overflow-x-hidden">
@@ -189,9 +241,9 @@
     </div>
   </header>
 
-  <!-- Layout -->
-  <!-- moved main layout to the LEFT and slightly reduced side padding -->
-  <div class="pt-20 max-w-7xl ml-0 mr-auto px-2 md:px-4 lg:px-6 flex gap-4">
+  <!-- Layout: expanded to full width (changed to max-w-full px-4 so table can use full viewport) -->
+  <div class="pt-20 max-w-full mx-auto px-4 lg:px-6 flex gap-4 main-max">
+
 
     <!-- Sidebar -->
     <aside class="hidden lg:block w-64 shrink-0">
@@ -286,40 +338,56 @@
       <section class="card filter-glow p-4 md:p-5 space-y-3">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div class="flex-1 flex items-center gap-2">
-            <div class="relative w-full md:w-96">
+           <div class="relative w-full md:w-[600px]">
               <i class="ri-search-line text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
               <input id="search-users" type="text" placeholder="Search users…" class="w-full pl-8 pr-3 py-2 rounded-full text-sm bg-white filter-select" />
             </div>
           </div>
-          <div class="flex flex-wrap gap-2 text-xs">
-            <div class="relative w-[170px]">
-              <select id="filter-role" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
-                <option value="">All roles</option>
-                <option value="student">Students</option>
-                <option value="teacher">Teachers</option>
-                <option value="admin">Administrators</option>
-              </select>
-              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            </div>
-            <div class="relative w-[170px]">
-              <select id="filter-dept" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
-                <option value="">All departments/sections</option>
-              </select>
-              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            </div>
-            <div class="relative w-[170px]">
-              <select id="filter-status" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
-                <option value="">All status</option>
-                <option value="regular">Regular</option>
-                <option value="irregular">Irregular</option>
-                <option value="active">Active</option>
-              </select>
-              <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            </div>
-            <button id="btn-clear-filters" class="hidden text-[11px] text-slate-500 hover:text-primary flex items-center gap-1">
-              <i class="ri-eraser-line text-xs"></i><span>Clear filters</span>
-            </button>
-          </div>
+<div class="flex flex-wrap gap-2 text-xs">
+  <!-- Course filter (new) -->
+  <div class="relative w-[200px]">
+    <select id="filter-course" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+      <option value="">All courses</option>
+      <option>BIT Computer Technology</option>
+      <option>BTVT-ED Automotive Technology</option>
+      <option>BTVT-ED Computer Programming</option>
+      <option>BTVT-ED Civil Technology</option>
+      <option>BTVT-ED Electrical Technology</option>
+      <option>BTVT-ED Electronics Technology</option>
+      <option>BTVT-ED Food & Service Management</option>
+      <option>BTVT-ED Mechanical Technology</option>
+    </select>
+    <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+  </div>
+
+  <div class="relative w-[170px]">
+    <select id="filter-role" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+      <option value="">All roles</option>
+      <option value="student">Students</option>
+      <option value="teacher">Teachers</option>
+      <option value="admin">Administrators</option>
+    </select>
+    <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+  </div>
+
+  <!-- Dept/Section dropdown removed as requested -->
+
+  <div class="relative w-[170px]">
+    <select id="filter-status" class="pl-3 pr-7 py-2 rounded-full text-xs bg-white appearance-none filter-select w-full">
+      <option value="">All status</option>
+      <option value="regular">Regular</option>
+      <option value="irregular">Irregular</option>
+      <option value="active">Active</option>
+    </select>
+    <i class="ri-arrow-down-s-line text-slate-400 text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+  </div>
+  
+
+  <button id="btn-clear-filters" class="hidden text-[11px] text-slate-500 hover:text-primary flex items-center gap-1">
+    <i class="ri-eraser-line text-xs"></i><span>Clear filters</span>
+  </button>
+</div>
+
         </div>
 
         <div id="active-filters" class="flex flex-wrap gap-2 text-[11px] text-slate-600"></div>
@@ -359,8 +427,8 @@
           </div>
         </header>
 
-        <!-- NO horizontal scroll -->
-        <div class="overflow-x-hidden scroll-soft rounded-xl border border-slate-200/80">
+        <!-- Horizontal scroll enabled so full columns are viewable -->
+        <div class="table-scroll scroll-soft rounded-xl border border-slate-200/80">
           <table class="data-grid">
             <thead>
               <tr>
@@ -491,12 +559,17 @@
     const statTotal   = $("stat-total-users");
     const statActive  = $("stat-active-users");
 
-    const searchInput     = $("search-users");
-    const roleFilterSel   = $("filter-role");
-    const deptFilterSel   = $("filter-dept");
-    const statusFilterSel = $("filter-status");
-    const clearFiltersBtn = $("btn-clear-filters");
-    const activeFiltersEl = $("active-filters");
+const searchInput     = $("search-users");
+const courseFilterSel = $("filter-course");   // <-- NEW
+const roleFilterSel   = $("filter-role");
+// deptFilterSel removed
+const statusFilterSel = $("filter-status");
+const clearFiltersBtn = $("btn-clear-filters");
+const activeFiltersEl = $("active-filters");
+
+// course filter change
+if (courseFilterSel) courseFilterSel.addEventListener("change", () => { renderFilterChips(); applyFilters(); });
+
 
     const bulkPanel        = $("bulk-panel");
     const bulkCountEl      = $("bulk-count");
@@ -774,18 +847,7 @@
         }
 
         const first = Array.from(sectionsSet).filter(Boolean);
-        [{
-	  "resource": "/c:/Users/John Tyron/CLONEE/schedule-class-viewer-Tan-Tanggaan-Villarba/schedule-class-viewer/admin-users.html",
-	  "owner": "_generated_diagnostic_collection_name_#1",
-	  "severity": 8,
-	  "message": "')' expected.",
-	  "source": "javascript",
-	  "startLineNumber": 744,
-	  "startColumn": 92,
-	  "endLineNumber": 744,
-	  "endColumn": 93,
-	  "origin": "extHost1"
-}]
+        return first.length ? first.join(" • ") : (u.section || u.yearSection || u.department || "—");
       }
       return u.department || "—";
     }
@@ -804,42 +866,32 @@
       return u.department || "—";
     }
 
-    function updateFilterOptionsForRole(){
-      const role = roleFilterSel.value;
-      let deptPlaceholder = "All departments/sections";
-      let options = [];
+function updateFilterOptionsForRole(){
+  const role = roleFilterSel.value;
 
-      if (role === "student"){ deptPlaceholder = "All sections"; options = LIVE_SECTIONS.slice(); }
-      else if (role === "teacher"){ deptPlaceholder = "All departments"; options = LIVE_DEPTS.slice(); }
-      else { const set = new Set(); LIVE_SECTIONS.forEach(s=>set.add(s)); LIVE_DEPTS.forEach(d=>set.add(d));
-        options = Array.from(set).sort((a,b)=>a.localeCompare(b)); deptPlaceholder = "All departments/sections"; }
-
-      const prev = deptFilterSel.value;
-      deptFilterSel.innerHTML = `<option value="">${deptPlaceholder}</option>`;
-      options.forEach(d => { const opt = document.createElement("option"); opt.value = d; opt.textContent = d; deptFilterSel.appendChild(opt); });
-      if (prev && options.includes(prev)) deptFilterSel.value = prev;
-
-      if (role === "student"){
-        statusFilterSel.disabled = false;
-        statusFilterSel.innerHTML = `
-          <option value="">All status</option>
-          <option value="regular">Regular</option>
-          <option value="irregular">Irregular</option>
-          <option value="active">Active</option>`;
-        if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
-      } else if (role === "teacher"){
-        statusFilterSel.innerHTML = `<option value="active">Active</option>`;
-        statusFilterSel.value = "active"; statusFilterSel.disabled = true;
-      } else {
-        statusFilterSel.disabled = false;
-        statusFilterSel.innerHTML = `
-          <option value="">All status</option>
-          <option value="regular">Regular</option>
-          <option value="irregular">Irregular</option>
-          <option value="active">Active</option>`;
-        if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
-      }
-    }
+  // We no longer expose department/section dropdown.
+  // Only update status filter behavior based on role.
+  if (role === "student"){
+    statusFilterSel.disabled = false;
+    statusFilterSel.innerHTML = `
+      <option value="">All status</option>
+      <option value="regular">Regular</option>
+      <option value="irregular">Irregular</option>
+      <option value="active">Active</option>`;
+    if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
+  } else if (role === "teacher"){
+    statusFilterSel.innerHTML = `<option value="active">Active</option>`;
+    statusFilterSel.value = "active"; statusFilterSel.disabled = true;
+  } else {
+    statusFilterSel.disabled = false;
+    statusFilterSel.innerHTML = `
+      <option value="">All status</option>
+      <option value="regular">Regular</option>
+      <option value="irregular">Irregular</option>
+      <option value="active">Active</option>`;
+    if (!["", "regular", "irregular", "active"].includes(statusFilterSel.value.toLowerCase())) statusFilterSel.value = "";
+  }
+}
 
     function openUserModal(u){
       userModalInitials.textContent = (u.name || "U").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("");
@@ -856,14 +908,25 @@
       userModalStatus.className   = statusClasses(u.status);
       const idLabel = u.studentId || u.employeeId || u.userCode || u.docId || "—";
       userModalId.textContent = idLabel;
-      const fullDept = buildDeptLabelFull(u) || "—";
-      if (!fullDept || fullDept === "—"){ userModalDept.textContent = "—"; }
-      else {
-        const parts = fullDept.split("•").map(s => s.trim()).filter(Boolean);
-        userModalDept.innerHTML = parts.length > 1
-          ? parts.map((p, idx) => idx < parts.length - 1 ? `${p},` : p).join("<br>")
-          : parts[0];
-      }
+// Prefer explicit section field first (so 'View' shows exactly what was saved)
+const rawSection = (u.section || "").toString().trim();
+const rawDepartment = (u.department || u.dept || u.t_dept || "").toString().trim();
+const fallbackFull = buildDeptLabelFull(u) || "—";
+
+const fullDeptPrefer = rawSection || rawDepartment || (fallbackFull === "—" ? "" : fallbackFull);
+if (!fullDeptPrefer) {
+  userModalDept.textContent = "—";
+} else {
+  // If value contains the '•' separator (constructed lists), split and render multiple lines,
+  // otherwise show the raw value as-is.
+  const parts = fullDeptPrefer.indexOf("•") >= 0
+    ? fullDeptPrefer.split("•").map(s => s.trim()).filter(Boolean)
+    : [fullDeptPrefer];
+  userModalDept.innerHTML = parts.length > 1
+    ? parts.map((p, idx) => idx < parts.length - 1 ? `${p},` : p).join("<br>")
+    : parts[0];
+}
+
       userModalCreated.textContent = formatDateTime(u.createdAt || null);
       userModalLogin.textContent   = u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "Never";
       userModal.classList.remove("hidden"); userModal.classList.add("flex");
@@ -872,69 +935,84 @@
     [userModalX, userModalClose].forEach(btn => { if (btn) btn.addEventListener("click", closeUserModal); });
     if (userModal){ userModal.addEventListener("click", (e) => { if (e.target === userModal) closeUserModal(); }); }
 
-    function renderFilterChips(){
-      activeFiltersEl.innerHTML = "";
-      const chips = [];
-      const qText = searchInput.value.trim();
-      if (qText) chips.push({ type:"search", label:`Search: "${qText}"` });
-      if (roleFilterSel.value){
-        const labelMap = { student:"Students", teacher:"Teachers", admin:"Administrators" };
-        chips.push({ type:"role", label:`Role: ${labelMap[roleFilterSel.value] || roleFilterSel.value}` });
+function renderFilterChips(){
+  activeFiltersEl.innerHTML = "";
+  const chips = [];
+  const qText = searchInput.value.trim();
+  if (qText) chips.push({ type:"search", label:`Search: "${qText}"` });
+  if (courseFilterSel && courseFilterSel.value){
+    chips.push({ type:"course", label:`Course: ${courseFilterSel.value}` });
+  }
+
+  if (roleFilterSel.value){
+    const labelMap = { student:"Students", teacher:"Teachers", admin:"Administrators" };
+    chips.push({ type:"role", label:`Role: ${labelMap[roleFilterSel.value] || roleFilterSel.value}` });
+  }
+
+  if (statusFilterSel.value){
+    const label = statusFilterSel.options[statusFilterSel.selectedIndex]?.textContent || statusFilterSel.value;
+    chips.push({ type:"status", label:`Status: ${label}` });
+  }
+
+  chips.forEach(chip => {
+    const span = document.createElement("button");
+    span.className = "flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-medium shadow-sm border border-emerald-200";
+    span.innerHTML = `<span>${chip.label}</span><i class="ri-close-line text-[10px]"></i>`;
+    span.addEventListener("click", () => {
+      if (chip.type === "search") {
+        searchInput.value = "";
       }
-      if (deptFilterSel.value) chips.push({ type:"dept", label:`Dept/Section: ${deptFilterSel.value}` });
-      if (statusFilterSel.value){
-        const label = statusFilterSel.options[statusFilterSel.selectedIndex]?.textContent || statusFilterSel.value;
-        chips.push({ type:"status", label:`Status: ${label}` });
+      if (chip.type === "course" && courseFilterSel) {
+        courseFilterSel.value = "";
       }
-      chips.forEach(chip => {
-        const span = document.createElement("button");
-        span.className = "flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700";
-        span.innerHTML = `<span>${chip.label}</span><i class="ri-close-line text-[10px]"></i>`;
-        span.addEventListener("click", () => {
-          if (chip.type === "search") searchInput.value = "";
-          if (chip.type === "role") { roleFilterSel.value = ""; updateFilterOptionsForRole(); }
-          if (chip.type === "dept") deptFilterSel.value = "";
-          if (chip.type === "status") statusFilterSel.value = "";
-          applyFilters();
-        });
-        activeFiltersEl.appendChild(span);
-      });
-      clearFiltersBtn.classList.toggle("hidden", chips.length === 0);
+      if (chip.type === "role") {
+        roleFilterSel.value = "";
+        updateFilterOptionsForRole();
+      }
+      if (chip.type === "status") {
+        statusFilterSel.value = "";
+      }
+      applyFilters();
+    });
+    activeFiltersEl.appendChild(span);
+  });
+  clearFiltersBtn.classList.toggle("hidden", chips.length === 0);
+}
+
+function applyFilters(){
+  const term = searchInput.value.trim().toLowerCase();
+  const courseFilter = courseFilterSel ? courseFilterSel.value : "";
+  const roleFilter = roleFilterSel.value;
+  const statusFilter = statusFilterSel.value;
+
+  FILTERED_USERS = ALL_USERS.filter(u => {
+    if (term){
+      const hay = [u.name, u.email, u.role, buildDeptLabelFull(u), u.studentId, u.employeeId, u.userCode, u.course].filter(Boolean).join(" ").toLowerCase();
+      if (!hay.includes(term)) return false;
+    }
+    if (courseFilter){
+      const ucourse = (u.course || "").toString().trim().toLowerCase();
+      if (ucourse !== courseFilter.toString().trim().toLowerCase()) return false;
     }
 
-    function applyFilters(){
-      const term = searchInput.value.trim().toLowerCase();
-      const roleFilter = roleFilterSel.value;
-      const deptFilter = deptFilterSel.value;
-      const statusFilter = statusFilterSel.value;
-
-      FILTERED_USERS = ALL_USERS.filter(u => {
-        if (term){
-          const hay = [u.name, u.email, u.role, buildDeptLabelFull(u), u.studentId, u.employeeId, u.userCode, u.course].filter(Boolean).join(" ").toLowerCase();
-          if (!hay.includes(term)) return false;
-        }
-        if (roleFilter){
-          const r = (u.role || "").toString().toLowerCase();
-          if (roleFilter === "student" && !r.startsWith("stud")) return false;
-          if (roleFilter === "teacher" && !r.startsWith("teach")) return false;
-          if (roleFilter === "admin" && !r.startsWith("admin")) return false;
-        }
-        if (deptFilter){
-          const d = buildDeptLabelFull(u); if (!d) return false;
-          const parts = d.split("•").map(s => s.trim());
-          if (!parts.includes(deptFilter)) return false;
-        }
-        if (statusFilter){
-          const s = normalizeStatus(u.status).toLowerCase();
-          if (s !== statusFilter.toLowerCase()) return false;
-        }
-        return true;
-      });
-
-      CURRENT_PAGE = 1;
-      renderFilterChips();
-      renderTable();
+    if (roleFilter){
+      const r = (u.role || "").toString().toLowerCase();
+      if (roleFilter === "student" && !r.startsWith("stud")) return false;
+      if (roleFilter === "teacher" && !r.startsWith("teach")) return false;
+      if (roleFilter === "admin" && !r.startsWith("admin")) return false;
     }
+
+    if (statusFilter){
+      const s = normalizeStatus(u.status).toLowerCase();
+      if (s !== statusFilter.toLowerCase()) return false;
+    }
+    return true;
+  });
+
+  CURRENT_PAGE = 1;
+  renderFilterChips();
+  renderTable();
+}
 
     function renderTable(){
       tbody.innerHTML = "";
@@ -964,27 +1042,31 @@
         const avatarHtml = u.photoURL
           ? `<img src="${u.photoURL}" alt="" class="w-8 h-8 rounded-full object-cover" />`
           : `<div class="avatar-initials bg-emerald-50 text-emerald-700 w-8 h-8 text-[12px]">${(u.name||"U").trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||"").join("")}</div>`;
-        const deptPreview = buildDeptLabelPreview(u) || "—";
+       const deptPreview = ( (u.section || "").toString().trim()
+                      || (u.department || "").toString().trim()
+                      || buildDeptLabelPreview(u)
+                      || "—" );
         const courseText = (u.course || "").toString().trim() || "—";
         const idLabel = u.studentId || u.employeeId || u.userCode || "";
-        tr.innerHTML = `
-          <td><input type="checkbox" class="user-select w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/50" data-id="${u.docId}" ${isSelected ? "checked" : ""} /></td>
-          <td>
-            <button class="flex items-center gap-2 min-w-0 text-left w-full user-row-open" data-id="${u.docId}">
-              ${avatarHtml}
-              <span class="min-w-0">
-                <div class="text-[13px] font-medium text-slate-900 truncate">${u.name || "Unknown User"}</div>
-                <div class="text-[12px] text-slate-500 truncate">${idLabel || u.docId}</div>
-              </span>
-            </button>
-          </td>
-          <td><span class="${roleClasses(u.role)}">${normalizeRole(u.role)}</span></td>
-          <td><div class="text-[12px] text-slate-700 truncate max-w-[160px]">${courseText}</div></td>
-          <td><div class="text-[12px] text-slate-700 truncate max-w-[220px]">${deptPreview}</div></td>
-          <td><div class="text-[12px] text-slate-700 truncate max-w-[240px]">${u.email || "—"}</div></td>
-          <td><span class="${statusClasses(u.status)}">${normalizeStatus(u.status)}</span></td>
-          <td class="text-right"><button class="px-2.5 py-1 rounded-full border border-slate-200 text-[12px] text-slate-700 hover:border-primary/60 hover:text-primary user-row-open" data-id="${u.docId}">View</button></td>
-        `;
+tr.innerHTML = `
+  <td><input type="checkbox" class="user-select w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/50" data-id="${u.docId}" ${isSelected ? "checked" : ""} /></td>
+  <td>
+    <button class="flex items-center gap-3 min-w-0 text-left w-full user-row-open" data-id="${u.docId}">
+      ${avatarHtml}
+      <span class="min-w-0">
+        <div class="text-[14px] font-medium text-slate-900 truncate">${u.name || "Unknown User"}</div>
+        <div class="text-[13px] text-slate-500 truncate">${idLabel || u.docId}</div>
+      </span>
+    </button>
+  </td>
+  <td><span class="${roleClasses(u.role)}">${normalizeRole(u.role)}</span></td>
+  <td><div class="text-[13px] text-slate-700 truncate max-w-[220px]">${courseText}</div></td>
+  <td><div class="text-[13px] text-slate-700 truncate max-w-[320px]">${deptPreview}</div></td>
+  <td><div class="text-[13px] text-slate-700 truncate max-w-[380px]">${u.email || "—"}</div></td>
+  <td><span class="${statusClasses(u.status)}">${normalizeStatus(u.status)}</span></td>
+  <td class="text-right"><button class="px-3 py-1 rounded-full border border-slate-200 text-[13px] text-slate-700 hover:border-primary/60 hover:text-primary user-row-open" data-id="${u.docId}">View</button></td>
+`;
+
         tbody.appendChild(tr);
       });
 
@@ -1087,11 +1169,22 @@
 
     ["keyup","change"].forEach(ev => { searchInput.addEventListener(ev, () => applyFilters()); });
     roleFilterSel.addEventListener("change", () => { updateFilterOptionsForRole(); applyFilters(); });
-    [deptFilterSel, statusFilterSel].forEach(sel => { sel.addEventListener("change", applyFilters); });
-    clearFiltersBtn.addEventListener("click", () => {
-      searchInput.value = ""; roleFilterSel.value = ""; updateFilterOptionsForRole();
-      deptFilterSel.value = ""; statusFilterSel.value = ""; applyFilters();
-    });
+    // deptFilterSel removed from change-listeners; only status remains
+    statusFilterSel.addEventListener("change", applyFilters);
+    pageSizeSel.addEventListener("change", () => {
+  PAGE_SIZE = parseInt(pageSizeSel.value || "10", 10);
+  CURRENT_PAGE = 1;
+  renderTable();
+});
+
+clearFiltersBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  if (courseFilterSel) courseFilterSel.value = "";
+  roleFilterSel.value = ""; updateFilterOptionsForRole();
+  // deptFilterSel removed
+  statusFilterSel.value = ""; applyFilters();
+});
+
 
     async function loadUsers(){
       const usersCol = collection(db, "users");
