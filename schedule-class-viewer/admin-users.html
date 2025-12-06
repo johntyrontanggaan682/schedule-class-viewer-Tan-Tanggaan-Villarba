@@ -705,6 +705,21 @@ if (courseFilterSel) courseFilterSel.addEventListener("change", () => { renderFi
       const opts = { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" };
       return d.toLocaleString(undefined, opts);
     }
+    function formatRelativeTime(ms){
+  if (!ms) return "Never";
+  const then = Number(ms);
+  if (Number.isNaN(then)) return "—";
+  const diffMs = Math.max(0, Date.now() - then);
+  const sec = Math.floor(diffMs / 1000);
+  if (sec < 10) return "Just now";
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h ago`;
+  const days = Math.floor(hr / 24);
+  return days === 1 ? `1 day ago` : `${days} days ago`;
+}
 
     async function buildOwnerAndStudentMaps(){
       const ownerMap = new Map();
@@ -928,7 +943,7 @@ if (!fullDeptPrefer) {
 }
 
       userModalCreated.textContent = formatDateTime(u.createdAt || null);
-      userModalLogin.textContent   = u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "Never";
+userModalLogin.textContent   = formatRelativeTime(u.lastLoginAt);
       userModal.classList.remove("hidden"); userModal.classList.add("flex");
     }
     function closeUserModal(){ userModal.classList.add("hidden"); userModal.classList.remove("flex"); }

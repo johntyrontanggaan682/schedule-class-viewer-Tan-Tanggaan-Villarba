@@ -824,7 +824,7 @@
 
   // ⛔ no more auto teacher doc here
 }
-
+await setDoc(doc(db, "users", user.uid), { lastLoginAt: serverTimestamp() }, { merge: true });
 
         window.location.href = 'home.html?welcome=1';
       } catch (err) {
